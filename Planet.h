@@ -40,6 +40,10 @@ public:
     void setReferenceCity(const Vec &referenceCity) {
         Planet::referenceCity = referenceCity;
     }
+
+    float getRadio(){
+        return axis.modulus()/2;
+    }
 };
 
 

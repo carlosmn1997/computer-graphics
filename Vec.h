@@ -6,6 +6,7 @@
 #define COMPUTER_GRAPHICS_VEC_H
 
 #include <iostream>
+#include <cmath>
 using namespace std;
 
 enum type { POINT, DIRECTION };
@@ -16,22 +17,8 @@ class Vec
 {
 public:
     Vec(){}
-    Vec(float i, float j, float k, type type);
-    Vec(float i, float j, float k, float type);
-
-    float getI() const;
-
-    void setI(float i);
-
-    float getJ() const;
-
-    void setJ(float j);
-
-    float getK() const;
-
-    void setK(float k);
-
-    float getType() const;
+    Vec(float x, float y, float z, type type);
+    Vec(float x, float y, float z, float type);
 
     void setType(float type);
     //void accelerate(float intensity);
@@ -39,27 +26,68 @@ public:
 
     friend ostream& operator<<(ostream& os, const Vec& vec);
 
-    Vec operator+ (const Vec & first) const {
-        if(type != first.getType()){
+    Vec operator+ (const Vec & second) const {
+        if(type != second.getType()){
             std::cout<< "Expected same types";
             std::exit(1);
         }
-        return Vec(i+first.getI(), j+first.getJ(), k+first.getK(), POINT);
+        return Vec(x+second.getX(), y+second.getY(), z+second.getZ(), type);
     }
-/*
-    Vec operator* (const Vec & first) const {
-        return Vec(i+first.getI(), j+first.getJ(), k+first.getK(), POINT);
+
+    float getX() const;
+
+    void setX(float x);
+
+    float getY() const;
+
+    void setY(float y);
+
+    float getZ() const;
+
+    void setZ(float z);
+
+    float getType() const;
+
+    Vec operator- (const Vec & second) const {
+        if(type != second.getType()){
+            std::cout<< "Expected same types";
+            std::exit(1);
+        }
+        return Vec(x-second.getX(), y-second.getY(), z-second.getZ(), type);
     }
-    */
+
     // scalar * vec
     Vec operator* (const float& first) const {
-        return Vec(i*first, j*first, k*first, type);
+        return Vec(x*first, y*first, z*first, type);
     }
     friend Vec operator* (const float& first, const Vec& second){
-        return Vec(second.i*first, second.j*first, second.k*first, second.type);
+        return Vec(second.x*first, second.y*first, second.z*first, second.type);
+    }
+
+    // https://www.varsitytutors.com/precalculus-help/find-the-unit-vector-in-the-same-direction-as-a-given-vector
+    void getUnitVector(){
+        float mod = this->modulus();
+        x = x / mod;
+        y = y / mod;
+        z = z / mod;
+    }
+
+    float modulus(){
+        return sqrt(x*x + y*y + z*z);
+    }
+
+    static Vec crossProduct(Vec d, Vec e){
+        if(d.getType() != DIRECTION && e.getType() != DIRECTION){
+            std::cout<< "Expected both direction in cross product";
+            std::exit(1);
+        }
+        float auxX = d.getY()*e.getZ() - d.getZ()*e.getY();
+        float auxY = d.getZ()*e.getX() - d.getX()*e.getZ();
+        float auxZ = d.getX()*e.getY() - d.getY()*e.getX();
+        return Vec(auxX, auxY, auxZ, d.getType());
     }
 private:
-    float i, j, k, type;
+    float x, y, z, type;
 };
 
 

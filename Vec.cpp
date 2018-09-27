@@ -4,10 +4,10 @@
 
 #include "Vec.h"
 
-Vec::Vec(float i, float j, float k, enum type type) {
-    this->i = i;
-    this->j = j;
-    this->k = k;
+Vec::Vec(float x, float y, float z, enum type type) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
     if(type == POINT){
         this->type = 1;
     } else {
@@ -15,57 +15,43 @@ Vec::Vec(float i, float j, float k, enum type type) {
     }
 }
 
-Vec::Vec(float i, float j, float k, float type) {
-    this->i = i;
-    this->j = j;
-    this->k = k;
+Vec::Vec(float x, float y, float z, float type) {
+    this->x = x;
+    this->y = y;
+    this->z = z;
     this->type = type;
 }
 
 
 ostream& operator<<(ostream& os, const Vec& vec){
-    os << '(' << vec.i << ", " << vec.j << ", " << vec.k << ", " << vec.type << ')';
+    os << '(' << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.type << ')';
     return os;
 }
 
-float Vec::getI() const {
-    return i;
+float Vec::getX() const {
+    return x;
 }
 
-void Vec::setI(float i) {
-    Vec::i = i;
+void Vec::setX(float x) {
+    Vec::x = x;
 }
 
-float Vec::getJ() const {
-    return j;
+float Vec::getY() const {
+    return y;
 }
 
-void Vec::setJ(float j) {
-    Vec::j = j;
+void Vec::setY(float y) {
+    Vec::y = y;
 }
 
-float Vec::getK() const {
-    return k;
+float Vec::getZ() const {
+    return z;
 }
 
-void Vec::setK(float k) {
-    Vec::k = k;
+void Vec::setZ(float z) {
+    Vec::z = z;
 }
 
 float Vec::getType() const {
     return type;
 }
-
-void Vec::setType(float type) {
-    Vec::type = type;
-}
-
-/*
-void Car::accelerate(float intensity) {
-    speed = speed + ACCELERATION_FACTOR * intensity;
-}
-
-void Car::brake(float intensity) {
-    speed = speed - BRAKING_FACTOR * intensity;
-}
-*/
