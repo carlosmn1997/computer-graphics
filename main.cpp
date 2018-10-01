@@ -17,7 +17,7 @@ void example1() {
 
     // First ReferenceSystem
     //ReferenceSystem r1(M_PI, M_PI_2, planet1);
-    ReferenceSystem r1(M_PI_2, 0, planet1);
+    ReferenceSystem r1(M_PI_2, M_PI_2, planet1);
 
     // Second planet
     Vec axis2(0, 10, 0, DIRECTION);
@@ -26,7 +26,7 @@ void example1() {
     Planet planet2(center2, axis2, referenceCity2);
 
     // Second ReferenceSystem
-    ReferenceSystem r2(M_PI_2, M_PI_2, planet2);
+    ReferenceSystem r2(M_PI_2, -M_PI_2, planet2);
 
     Vec distance = r2.getCenter() - r1.getCenter();
 
