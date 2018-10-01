@@ -8,6 +8,27 @@
 
 using namespace std;
 
+void calculateDistances(ReferenceSystem r1, ReferenceSystem r2){
+
+    Vec distance = r2.getOrigin() - r1.getOrigin();
+
+    cout << "Distancia UCS: " << distance << endl;
+    Vec distanceOrigin = r1.changeReferenceSystem(distance);
+    cout << "Distancia Origen: " << distanceOrigin << endl;
+    Vec distanceDestiny = r2.changeReferenceSystem(distance);
+    cout << "Distancia Destino: " << distanceDestiny << endl;
+
+    if(distanceOrigin.getZ()<0){
+        std::cout<< "ERORR: The transported matter would go through the origin planet";
+        std::exit(1);
+    }
+    else if(distanceDestiny.getZ()<0){
+        std::cout<< "ERORR: The transported matter would go through the destination planet";
+        std::exit(1);
+    }
+
+}
+
 void example1() {
     // First planet
     Vec axis1(0, 10, 0, DIRECTION);
@@ -28,13 +49,8 @@ void example1() {
     // Second ReferenceSystem
     ReferenceSystem r2(M_PI_2, -M_PI_2, planet2);
 
-    Vec distance = r2.getOrigin() - r1.getOrigin();
+    calculateDistances(r1,r2);
 
-    cout << "Distancia UCS: " << distance << endl;
-    Vec distanceOrigin = r1.changeReferenceSystem(distance);
-    cout << "Distancia Origen: " << distanceOrigin << endl;
-    Vec distanceDestiny = r2.changeReferenceSystem(distance);
-    cout << "Distancia Destino: " << distanceDestiny << endl;
     // Si la distancia Origen o destino, la coordenada K es NEGATIVA,
     // entonces la trayectoria pasa por el propio planeta
 
