@@ -15,11 +15,11 @@ public:
     ReferenceSystem(float theta, float phi, Planet planet){
       float radio = planet.getRadio();
       center = parametricSpehere(theta, phi, radio, planet.getCenter()); // Position
-      k = center - planet.getCenter(); // Surface normal
+      k = planet.getCenter() - center ; // Surface normal
       k.getUnitVector();
       i = Vec::crossProduct(planet.getAxis(), k);
       i.getUnitVector();
-      j = Vec::crossProduct(i, k);
+      j = Vec::crossProduct(k, i);
       j.getUnitVector();
     }
 

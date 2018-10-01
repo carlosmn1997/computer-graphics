@@ -48,12 +48,25 @@ public:
 
     float getType() const;
 
+    static type getType(type type){
+        if(type == 0){
+            return DIRECTION;
+        }
+        else {
+            return POINT;
+        }
+    }
+
     Vec operator- (const Vec & second) const {
         if(type != second.getType()){
             std::cout<< "Expected same types";
             std::exit(1);
         }
-        return Vec(x-second.getX(), y-second.getY(), z-second.getZ(), type);
+        float newType = type;
+        if(type == getType(POINT) && second.getType() == getType(POINT)){
+            newType = 0; // Now is a DIRECTION
+        }
+        return Vec(x-second.getX(), y-second.getY(), z-second.getZ(), newType);
     }
 
     // scalar * vec
@@ -73,11 +86,16 @@ public:
     }
 
     float modulus(){
+        // Only modulus of a direction
+        if(type == getType(POINT)){
+            std::cout<< "Expected a DIRECTION to do the modulus";
+            std::exit(1);
+        }
         return sqrt(x*x + y*y + z*z);
     }
 
     static Vec crossProduct(Vec d, Vec e){
-        if(d.getType() != DIRECTION && e.getType() != DIRECTION){
+        if(d.getType() != getType(DIRECTION) && e.getType() != getType(DIRECTION)){
             std::cout<< "Expected both direction in cross product";
             std::exit(1);
         }

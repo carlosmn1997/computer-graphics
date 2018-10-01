@@ -5,11 +5,20 @@
 #ifndef COMPUTER_GRAPHICS_PLANET_H
 #define COMPUTER_GRAPHICS_PLANET_H
 #include "Vec.h"
+#include <cmath>
 
 class Planet
 {
 public:
     Planet(Vec center, Vec axis, Vec referenceCity){
+        float radius = (center - referenceCity).modulus();
+        // Check if  radius defined by the axis and by the distance between the center and
+        //the reference city is the same (maximum error of 10−6)
+        float difference = radius - axis.modulus()/2; // The radius
+        if(abs(difference) > 0.000001){
+            std::cout<< "Radius not OK";
+            std::exit(1);
+        }
         this->center = center;
         this->axis = axis;
         this->referenceCity = referenceCity;
