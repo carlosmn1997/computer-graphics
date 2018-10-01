@@ -28,7 +28,7 @@ void example1() {
     // Second ReferenceSystem
     ReferenceSystem r2(M_PI_2, -M_PI_2, planet2);
 
-    Vec distance = r2.getCenter() - r1.getCenter();
+    Vec distance = r2.getOrigin() - r1.getOrigin();
 
     cout << "Distancia UCS: " << distance << endl;
     Vec distanceOrigin = r1.changeReferenceSystem(distance);
