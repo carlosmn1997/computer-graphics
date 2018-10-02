@@ -12,6 +12,7 @@
 class ReferenceSystem
 {
 public:
+    /*
     ReferenceSystem(float theta, float phi, Planet planet){
       float radio = planet.getRadio();
       origin = parametricSpehere(theta, phi, radio, planet.getCenter()); // Position
@@ -21,6 +22,13 @@ public:
       i.getUnitVector();
       j = Vec::crossProduct(k, i);
       j.getUnitVector();
+    }
+*/
+    ReferenceSystem(Vec i, Vec j, Vec k, Vec origin){
+        this->i = i;
+        this->j = j;
+        this->k = k;
+        this->origin = origin;
     }
 
     const Vec &getI() const {

@@ -6,6 +6,7 @@
 #define COMPUTER_GRAPHICS_PLANET_H
 #include "Vec.h"
 #include <cmath>
+#include "ReferenceSystem.h"
 
 class Planet
 {
@@ -22,9 +23,22 @@ public:
         this->center = center;
         this->axis = axis;
         this->referenceCity = referenceCity;
+
+        // Now calculate the reference system of the own planet
+        Vec toRefCity = referenceCity - center;
+        float beta = acos(axis*toRefCity / (axis.modulus() * toRefCity.modulus()));
+        float x = toRefCity.modulus() / cos(beta);
+        Vec d = axis * x / axis.modulus();
+        Vec i = toRefCity - d;
+        i.getUnitVector();
+        Vec j = axis.getUnitVector();
+        Vec k = Vec::crossProduct(i, j);
+        this->r = ReferenceSystem(i, j, k, referenceCity);
+
     }
 private:
     Vec center, axis, referenceCity;
+    ReferenceSystem r;
 public:
     const Vec &getCenter() const {
         return center;
