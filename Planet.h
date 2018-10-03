@@ -26,16 +26,25 @@ public:
 
         // Now calculate the reference system of the own planet
         Vec toRefCity = referenceCity - center;
-        float beta = acos(axis*toRefCity / (axis.modulus() * toRefCity.modulus()));
-        float x = toRefCity.modulus() / cos(beta);
-        Vec d = axis * x / axis.modulus();
+        float beta = acos((axis * toRefCity) / (axis.modulus() * toRefCity.modulus()));
+        float x = toRefCity.modulus() * cos(beta);
+        Vec d = axis * (x / axis.modulus());
         Vec i = toRefCity - d;
         i.getUnitVector();
-        Vec j = axis.getUnitVector();
-        Vec k = Vec::crossProduct(i, j);
-        this->r = ReferenceSystem(i, j, k, referenceCity);
+        axis.getUnitVector();
+        Vec k = Vec::crossProduct(i, axis);
+        this->r = ReferenceSystem(i, axis, k, center);
 
     }
+
+    const ReferenceSystem &getR() const {
+        return r;
+    }
+
+    void setR(const ReferenceSystem &r) {
+        Planet::r = r;
+    }
+
 private:
     Vec center, axis, referenceCity;
     ReferenceSystem r;

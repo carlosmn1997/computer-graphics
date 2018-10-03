@@ -77,6 +77,14 @@ public:
         return Vec(second.x*first, second.y*first, second.z*first, second.type);
     }
 
+    float operator* (const Vec& first) const {
+        return x*first.getX()+y*first.getY()+z*first.getZ();
+    }
+    /*
+    friend float operator* (const Vec& first, const Vec& second){
+        return first.getX()*second.getX()+first.getY()*second.getY()+first.getZ()*second.getZ();
+    }
+*/
     // https://www.varsitytutors.com/precalculus-help/find-the-unit-vector-in-the-same-direction-as-a-given-vector
     void getUnitVector(){
         float mod = this->modulus();

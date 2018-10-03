@@ -5,25 +5,24 @@
 #ifndef COMPUTER_GRAPHICS_REFERENCESYSTEM_H
 #define COMPUTER_GRAPHICS_REFERENCESYSTEM_H
 
-#include "Planet.h"
 #include "Vec.h"
 #include "geometry.h"
 
 class ReferenceSystem
 {
 public:
-    /*
-    ReferenceSystem(float theta, float phi, Planet planet){
-      float radio = planet.getRadio();
-      origin = parametricSpehere(theta, phi, radio, planet.getCenter()); // Position
-      k = planet.getCenter() - origin ; // Surface normal
+    ReferenceSystem(float theta, float phi, ReferenceSystem r, float radius){
+      origin = parametricSpehere(theta, phi, radius, r.getOrigin()); // Position of station
+      k = r.getOrigin() - origin ; // Surface normal
       k.getUnitVector();
-      i = Vec::crossProduct(planet.getAxis(), k);
+      i = Vec::crossProduct(r.getJ(), k);
       i.getUnitVector();
       j = Vec::crossProduct(k, i);
       j.getUnitVector();
     }
-*/
+
+    ReferenceSystem(){}
+
     ReferenceSystem(Vec i, Vec j, Vec k, Vec origin){
         this->i = i;
         this->j = j;
