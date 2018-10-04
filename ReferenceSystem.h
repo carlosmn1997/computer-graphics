@@ -21,6 +21,12 @@ public:
       j.getUnitVector();
     }
 
+    ReferenceSystem(Vec i, Vec j, Vec k){
+        this->i = i;
+        this->j = j;
+        this->k = k;
+    }
+
     ReferenceSystem(){}
 
     ReferenceSystem(Vec i, Vec j, Vec k, Vec origin){

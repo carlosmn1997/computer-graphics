@@ -8,6 +8,7 @@
 #include <iostream>
 #include "Vec.h"
 #include <cmath>
+
 using namespace std;
 
 int nada(){
@@ -19,11 +20,13 @@ Vec parametricSpehere(float theta, float phi, float r, Vec c){
     // https://socratic.org/questions/what-is-the-parametric-equation-of-a-sphere
     // theta -> (0, PI), (0, 180)
     // phi -> (-PI, PI], (-180, 180)
-    Vec aux(sin(theta)*sin(phi), sin(theta)*cos(phi), cos(theta), POINT);
+    Vec aux(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
+    // Vec aux(sin(theta)*sin(phi), sin(theta)*cos(phi), cos(theta), POINT);
 
     // La suma debe comprobar que son puntos con puntos y direcciones con direcciones
     return c + r*aux;
 }
+
 
 
 #endif

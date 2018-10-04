@@ -93,6 +93,12 @@ public:
         z = z / mod;
     }
 
+    void changeSign(){
+        x = -x;
+        y = -y;
+        z = -z;
+    }
+
     float modulus(){
         // Only modulus of a direction
         if(type == getType(POINT)){
