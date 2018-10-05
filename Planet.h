@@ -25,15 +25,22 @@ public:
         this->referenceCity = referenceCity;
 
         // Now calculate the reference system of the own planet
+
+        Vec k = axis;
+        k.getUnitVector();
         Vec toRefCity = referenceCity - center;
-        float beta = acos((axis * toRefCity) / (axis.modulus() * toRefCity.modulus()));
-        float x = toRefCity.modulus() * cos(beta);
-        Vec d = axis * (x / axis.modulus());
-        Vec i = toRefCity - d;
-        i.getUnitVector();
-        axis.getUnitVector();
-        Vec k = Vec::crossProduct(i, axis);
-        this->r = ReferenceSystem(i, axis, k, center);
+        float cosBeta = (axis * toRefCity) / (axis.modulus() * toRefCity.modulus());
+        float a1Scalar = toRefCity.modulus() * cosBeta;
+        Vec a1 = a1Scalar * k;
+        Vec a2 = toRefCity - a1;
+        a2.getUnitVector();
+        Vec i = a2;
+        Vec j = Vec::crossProduct(i, k);
+        this->r = ReferenceSystem(i, j, k, center);
+
+        // this->r = ReferenceSystem(i, axis, k, center);
+
+        // https://en.wikipedia.org/wiki/Vector_projection
 
     }
 

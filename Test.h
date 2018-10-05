@@ -42,9 +42,12 @@ public:
         Vec inUCS = planetRS.changeReferenceSystem(r1.getOrigin());
 
         // Second planet
-        Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
-        Vec referenceCity2(-3.535533905932738+50, 3.535533905932738+5, 0, POINT);
-        Vec center2(50, 5, 0, POINT);
+        //Vec axis2(0, 10, 0, DIRECTION);
+        Vec axis2(-7.07106781187, 7.07106781187, 0, DIRECTION);
+        //Vec axis2(0, 10, 0, DIRECTION);
+        Vec referenceCity2(-15, -10, 0, POINT);
+        //Vec referenceCity2(-3.535533905932738, 3.535533905932738, 0, POINT);
+        Vec center2(-10, -10, 0, POINT);
         Planet planet2(center2, axis2, referenceCity2);
 
         /*
@@ -58,7 +61,7 @@ public:
 
          */
         // Second ReferenceSystem
-        ReferenceSystem r2(M_PI_4, 0, planet2.getR(),planet2.getRadio());
+        ReferenceSystem r2(M_PI_2, 0, planet2.getR(),planet2.getRadio());
 
         ReferenceSystem planet2RS = planet2.getR();
         /*

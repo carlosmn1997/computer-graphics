@@ -75,9 +75,15 @@ public:
         this->matrix[3][3] = 1;
     }
     void transpose() {
+        float aux[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                this->matrix[i][j] = matrix[j][i];
+                aux[i][j] = this->matrix[i][j];
+            }
+        }
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                this->matrix[i][j] = aux[j][i];
             }
         }
     }
