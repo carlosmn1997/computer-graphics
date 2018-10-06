@@ -22,9 +22,9 @@ Vec parametricSpehere(float theta, float phi, float r, Vec c){
     // phi -> (-PI, PI], (-180, 180)
 
 
-    Vec aux(sin(theta)*cos(phi), cos(theta), sin(theta)*sin(phi), POINT);
+    //Vec aux(sin(theta)*cos(phi), cos(theta), sin(theta)*sin(phi), POINT);
 
-    // Vec aux(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
+    Vec aux(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
 
     //Vec aux(cos(theta), cos(theta), cos(theta), POINT);
 

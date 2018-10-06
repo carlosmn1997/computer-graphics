@@ -46,7 +46,7 @@ public:
         Vec axis2(-7.07106781187, 7.07106781187, 0, DIRECTION);
         //Vec axis2(0, 10, 0, DIRECTION);
         Vec referenceCity2(-15, -10, 0, POINT);
-        //Vec referenceCity2(-3.535533905932738, 3.535533905932738, 0, POINT);
+        //Vec referenceCity2(-3.535533905932738+10, 3.535533905932738+10, 0, POINT);
         Vec center2(-10, -10, 0, POINT);
         Planet planet2(center2, axis2, referenceCity2);
 
@@ -61,54 +61,18 @@ public:
 
          */
         // Second ReferenceSystem
-        ReferenceSystem r2(M_PI_2, 0, planet2.getR(),planet2.getRadio());
+        ReferenceSystem r2(M_PI_2, M_PI, planet2.getR(),planet2.getRadio());
 
         ReferenceSystem planet2RS = planet2.getR();
-        /*
-        // Vec inUCS2 = planet2RS.changeReferenceSystem(r2.getOrigin());
-        Matrix UCSMatrix(UCS);
-        Matrix planet2RSMatrix(planet2RS);
-        planet2RSMatrix.onlyDirections();
-        planet2RSMatrix.transpose(); // ya se tiene la inversa
 
-        Vec station2NewBase = planet2RSMatrix * r2.getOrigin(); // vectors aligned
         Vec center2Changed = planet2.getCenter();
         center2Changed.changeSign();
         Matrix translation(UCS);
         translation.translation(center2Changed);
-        // translation.translation(planet2.getCenter());
-        station2NewBase = translation*station2NewBase;
 
-        station2NewBase = translate(planet2.getCenter(), station2NewBase);
-        // Matrix aux = planet2RSMatrix.transpose();
-         */
+        Vec inCenter = translation * r2.getOrigin();
+        Vec inUCS2 = Matrix(planet2RS) * inCenter; // PUNTO EN UCS
 
-    // Vec inUCS2 = planet2RS.changeReferenceSystem(r2.getOrigin());
-    Matrix UCSMatrix(UCS);
-    Matrix planet2RSMatrix(planet2RS);
-    planet2RSMatrix.onlyDirections();
-    planet2RSMatrix.transpose(); // ya se tiene la inversa
-
-    Vec center2Changed = planet2.getCenter();
-    center2Changed.changeSign();
-    Matrix translation(UCS);
-    translation.translation(center2Changed); // translacion inversa
-
-    Matrix changeBase = Matrix(planet2.getR());
-
-    // Matrix cosa = translation*translation;
-    //Vec newBase = translation*translation*planet2RSMatrix*r2.getOrigin();
-    Vec aux1 = translation*r2.getOrigin();
-    Vec aux2 = planet2RSMatrix*aux1;
-
-    center2Changed = planet2.getCenter();
-    translation.translation(center2Changed); // translacion inversa
-
-    Vec aux3 = translation*aux2;
-
-    Vec newBase = changeBase*translation*planet2RSMatrix*r2.getOrigin();
-
-    //Vec inUCS2 = Matrix(UCS)*Matrix(planet2RS).transpose()*r2.getOrigin();
 
     calculateDistances(r1,r2);
 
