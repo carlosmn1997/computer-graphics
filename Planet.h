@@ -33,6 +33,10 @@ public:
         float a1Scalar = toRefCity.modulus() * cosBeta;
         Vec a1 = a1Scalar * k;
         Vec a2 = toRefCity - a1;
+        if(a2.modulus() == 0){
+            std::cout<< "Reference city can't be in the poles";
+            std::exit(1);
+        }
         a2.getUnitVector();
         Vec i = a2;
         Vec j = Vec::crossProduct(i, k);

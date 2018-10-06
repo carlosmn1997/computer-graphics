@@ -35,5 +35,4 @@ Vec parametricSpehere(float theta, float phi, float r, Vec c){
 }
 
 
-
 #endif

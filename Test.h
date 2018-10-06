@@ -18,6 +18,15 @@ public:
         example1();
         cout<<"EXAMPLE 2"<<endl;
        // example2();
+        //examplePoles();
+    }
+
+    void examplePoles(){
+        cout <<"Checking a reference city can't be in one of the poles"<< endl;
+        Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
+        Vec referenceCity2(-3.535533905932738+10, -3.535533905932738+10, 0, POINT);
+        Vec center2(10, 10, 0, POINT);
+        Planet planet2(center2, axis2, referenceCity2);
     }
 
     void example1() {
@@ -43,11 +52,11 @@ public:
 
         // Second planet
         //Vec axis2(0, 10, 0, DIRECTION);
-        Vec axis2(-7.07106781187, 7.07106781187, 0, DIRECTION);
+        Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
         //Vec axis2(0, 10, 0, DIRECTION);
-        Vec referenceCity2(-15, -10, 0, POINT);
-        //Vec referenceCity2(-3.535533905932738+10, 3.535533905932738+10, 0, POINT);
-        Vec center2(-10, -10, 0, POINT);
+        //Vec referenceCity2(-15, -10, 0, POINT);
+        Vec referenceCity2(-3.535533905932738+10, 3.535533905932738+10, 0, POINT);
+        Vec center2(10, 10, 0, POINT);
         Planet planet2(center2, axis2, referenceCity2);
 
         /*

@@ -13,12 +13,16 @@ class ReferenceSystem
 public:
     ReferenceSystem(float theta, float phi, ReferenceSystem r, float radius){
       origin = parametricSpehere(theta, phi, radius, r.getOrigin()); // Position of station
-      k = r.getOrigin() - origin ; // Surface normal
+      k = origin - r.getOrigin(); // Surface normal
       k.getUnitVector();
-      i = Vec::crossProduct(r.getJ(), k);
+      i = Vec::crossProduct(r.getI(), k); // positive azimuth
       i.getUnitVector();
-      j = Vec::crossProduct(k, i);
+      j = Vec::crossProduct(k, i); // positive inclination
       j.getUnitVector();
+
+      i = r.changeReferenceSystem(i);
+      j = r.changeReferenceSystem(j);
+      k = r.changeReferenceSystem(k);
     }
 
     ReferenceSystem(Vec i, Vec j, Vec k){
