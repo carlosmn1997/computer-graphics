@@ -1,6 +1,33 @@
 #include "lest.hpp"
+#include "../matrix.h"
 
 using namespace std;
+
+const lest::test matrixOperations[] =
+        {
+            CASE( "Inverse matrix OK" )
+            {
+                float mat[4][4] =
+                        {
+                                {4, 0, 0, 0},
+                                {0, 0, 2, 0},
+                                {0, 1, 2, 0},
+                                {1, 0, 0, 1}
+                        };
+
+                float inverseOk[4][4] =
+                        {
+                                {0.25, 0, 0, 0},
+                                {0, -1, 1, 0},
+                                {0, 0.5, 0, 0},
+                                {-0.25, 0, 0, 1}
+                        };
+                Matrix inverseMatrixCalculated = Matrix(mat).inverse();
+                Matrix inverseMatrixOk(inverseOk);
+
+                EXPECT(inverseMatrixCalculated == inverseMatrixOk);
+            }
+        };
 
 const lest::test specification[] =
         {
@@ -43,5 +70,5 @@ const lest::test specification[] =
 
 int main( int argc, char * argv[] )
 {
-    return lest::run( specification, argc, argv );
+    lest::run(matrixOperations, argc, argv );
 }
