@@ -30,7 +30,7 @@ const lest::test matrixOperations[] =
                 EXPECT(inverseMatrixCalculated == inverseMatrixOk);
             }
         };
-
+/*
 const lest::test specification[] =
         {
                 CASE( "Empty string has length zero (succeed)" )
@@ -69,31 +69,39 @@ const lest::test specification[] =
                             EXPECT_THROWS_AS( true, std::runtime_error );
                 },
         };
+*/
 
 float calculateDistances(ReferenceSystem r1, ReferenceSystem r2){
 
     Vec distance = r2.getOrigin() - r1.getOrigin();
 
-    cout << "Distancia UCS: " << distance << endl;
-    Vec distanceOrigin = r1.changeReferenceSystem(distance);
-    cout << "Distancia Origen: " << distanceOrigin << endl;
-    Vec distanceDestiny = r2.changeReferenceSystem(distance);
-    cout << "Distancia Destino: " << distanceDestiny << endl << endl;
-
-    if(distanceOrigin.getZ()<0){
-        std::cout<< "ERORR: The transported matter would go through the origin planet";
-        std::exit(1);
-    }
-    else if(distanceDestiny.getZ()<0){
-        std::cout<< "ERORR: The transported matter would go through the destination planet";
-        std::exit(1);
-    }
-
     return distance.modulus();
 
 }
 
-Vec calculateVector(ReferenceSystem referenceSystem, Vec p){
+
+/*
+ * p in UCS
+ * return vector from r.origin to p
+ */
+Vec calculateVector(ReferenceSystem r, Vec p){
+
+    Vec v;
+
+    Matrix m(r);
+
+    m = m.inverse();
+
+    v = m * p;
+
+    if(v.getZ()<0){
+        std::cout<< "ERORR: The transported matter would go through a planet";
+        std::exit(1);
+    }
+
+    v.setType(DIRECTION);
+
+    return v;
 
 }
 
@@ -118,15 +126,22 @@ const lest::test TESTP[] =
                     ReferenceSystem r1(M_PI_2, 0, planet1.getR(),planet1.getRadio());
 
 
-                    ReferenceSystem planetRS = planet1.getR();
-                    Vec inUCS = planetRS.changeReferenceSystem(r1.getOrigin());
+                    ReferenceSystem planet1RS = planet1.getR();
+
+                    Vec center1Changed = planet1.getCenter();
+                    center1Changed.changeSign();
+                    Matrix translation(UCS);
+                    translation.translation(center1Changed);
+
+                    Vec inCenter = translation * r1.getOrigin();
+                    Vec inUCS1 = Matrix(planet1RS) * inCenter; // PUNTO EN UCS
 
                     // Second planet
                     //Vec axis2(0, 10, 0, DIRECTION);
                     Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
                     //Vec axis2(0, 10, 0, DIRECTION);
                     //Vec referenceCity2(-15, -10, 0, POINT);
-                    Vec referenceCity2(-3.535533905932738+10, 3.535533905932738+10, 0, POINT);
+                    Vec referenceCity2(-3.535533905932738+50, 3.535533905932738, 0, POINT);
                     Vec center2(50, 0, 0, POINT);
                     Planet planet2(center2, axis2, referenceCity2);
 
@@ -147,24 +162,24 @@ const lest::test TESTP[] =
 
                     Vec center2Changed = planet2.getCenter();
                     center2Changed.changeSign();
-                    Matrix translation(UCS);
-                    translation.translation(center2Changed);
+                    Matrix translation2(UCS);
+                    translation2.translation(center2Changed);
 
-                    Vec inCenter = translation * r2.getOrigin();
-                    Vec inUCS2 = Matrix(planet2RS) * inCenter; // PUNTO EN UCS
+                    Vec inCenter2 = translation2 * r2.getOrigin();
+                    Vec inUCS2 = Matrix(planet2RS) * inCenter2; // PUNTO EN UCS
 
 
                     float distance = calculateDistances(r1,r2);
 
-                    Vec v1 = calculateVector(r1,inUCS);
+                    Vec v1 = calculateVector(r1,inUCS2);
 
-                    Vec v2 = calculateVector(r2,inUCS2);
+                    Vec v2 = calculateVector(r2,inUCS1);
 
-                    float diff = abs(distance - 36.0);
+                    float diff = abs(distance - 34.0);
 
-                    float diff1 = abs(v1.getZ() + v1.getY() + v1.getZ() - 36.0);
+                    float diff1 = abs(v1.getZ() + v1.getY() + v1.getZ() - 34.0);
 
-                    float diff2 = abs(v2.getZ() + v2.getY() + v2.getZ() - 36.0);
+                    float diff2 = abs(v2.getZ() + v2.getY() + v2.getZ() - 34.0);
 
                     EXPECT( 0.001 > diff );
 
@@ -177,5 +192,5 @@ const lest::test TESTP[] =
 
 int main( int argc, char * argv[] )
 {
-    return lest::run( specification, argc, argv );
+    return lest::run( TESTP, argc, argv );
 }

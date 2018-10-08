@@ -55,3 +55,7 @@ void Vec::setZ(float z) {
 float Vec::getType() const {
     return type;
 }
+
+void Vec::setType(float type){
+    Vec::type = type;
+}
