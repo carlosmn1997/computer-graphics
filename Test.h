@@ -5,9 +5,9 @@
 #ifndef COMPUTER_GRAPHICS_TEST_H
 #define COMPUTER_GRAPHICS_TEST_H
 
-
 #include "DistanceCalculator.h"
 #include "Matrix.h"
+
 
 
 class Test{
