@@ -7,12 +7,16 @@
 
 #include "Vec.h"
 #include "geometry.h"
+#include "matrix.h"
 
 class ReferenceSystem
 {
 public:
     ReferenceSystem(float theta, float phi, ReferenceSystem r, float radius){
+      // origin = radius * Vec(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
       origin = parametricSpehere(theta, phi, radius, r.getOrigin()); // Position of station
+
+
       k = origin - r.getOrigin(); // Surface normal
       k.getUnitVector();
       i = Vec::crossProduct(r.getI(), k); // positive azimuth
@@ -23,12 +27,11 @@ public:
       i = r.changeReferenceSystem(i);
       j = r.changeReferenceSystem(j);
       k = r.changeReferenceSystem(k);
-    }
 
-    ReferenceSystem(Vec i, Vec j, Vec k){
-        this->i = i;
-        this->j = j;
-        this->k = k;
+      // We let it in UCS
+      origin = radius * Vec(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
+      Matrix base = r.getMatrix();
+      origin = base * origin; // IN UCS
     }
 
     ReferenceSystem(){}
@@ -38,6 +41,31 @@ public:
         this->j = j;
         this->k = k;
         this->origin = origin;
+    }
+
+    Matrix getMatrix() {
+        float matrix[N][N];
+        matrix[0][0] = getI().getX();
+        matrix[1][0] = getI().getY();
+        matrix[2][0] = getI().getZ();
+        matrix[3][0] = 0;
+
+        matrix[0][1] = getJ().getX();
+        matrix[1][1] = getJ().getY();
+        matrix[2][1] = getJ().getZ();
+        matrix[3][1] = 0;
+
+        matrix[0][2] = getK().getX();
+        matrix[1][2] = getK().getY();
+        matrix[2][2] = getK().getZ();
+        matrix[3][2] = 0;
+
+        matrix[0][3] = getOrigin().getX();
+        matrix[1][3] = getOrigin().getY();
+        matrix[2][3] = getOrigin().getZ();
+        matrix[3][3] = 1;
+
+        return Matrix(matrix);
     }
 
     const Vec &getI() const {

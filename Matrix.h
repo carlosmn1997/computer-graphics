@@ -7,7 +7,6 @@
 
 #include <iostream>
 #include <cmath>
-#include "ReferenceSystem.h"
 #include "Vec.h"
 #include<bits/stdc++.h>
 using namespace std;
@@ -54,28 +53,6 @@ public:
         matrix[3][3] = 1; // TODO no estoy seguro
     }
 
-
-    Matrix(ReferenceSystem r) {
-        this->matrix[0][0] = r.getI().getX();
-        this->matrix[1][0] = r.getI().getY();
-        this->matrix[2][0] = r.getI().getZ();
-        this->matrix[3][0] = 0;
-
-        this->matrix[0][1] = r.getJ().getX();
-        this->matrix[1][1] = r.getJ().getY();
-        this->matrix[2][1] = r.getJ().getZ();
-        this->matrix[3][1] = 0;
-
-        this->matrix[0][2] = r.getK().getX();
-        this->matrix[1][2] = r.getK().getY();
-        this->matrix[2][2] = r.getK().getZ();
-        this->matrix[3][2] = 0;
-
-        this->matrix[0][3] = r.getOrigin().getX();
-        this->matrix[1][3] = r.getOrigin().getY();
-        this->matrix[2][3] = r.getOrigin().getZ();
-        this->matrix[3][3] = 1;
-    }
     void transpose() {
         float aux[N][N];
         for (int i = 0; i < N; i++) {
