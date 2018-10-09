@@ -134,9 +134,10 @@ public:
 
     //https://www.geeksforgeeks.org/adjoint-inverse-matrix/
 
-    // Function to get cofactor of A[p][q] in temp[][]. n is current
-    // dimension of A[][]
-    void getCofactor(float A[N][N], float temp[N][N], int p, int q, int n)
+    // C++ program to find adjoint and inverse of a matrix
+// Function to get cofactor of A[p][q] in temp[][]. n is current
+// dimension of A[][]
+    static void getCofactor(float A[N][N], float temp[N][N], int p, int q, int n)
     {
         int i = 0, j = 0;
 
@@ -163,11 +164,11 @@ public:
         }
     }
 
-    /* Recursive function for finding determinant of matrix.
-    n is current dimension of A[][]. */
-    float determinant(float A[N][N], int n)
+/* Recursive function for finding determinant of matrix.
+n is current dimension of A[][]. */
+    static float determinant(float A[N][N], float n)
     {
-        int D = 0; // Initialize result
+        float D = 0; // Initialize result
 
         // Base case : if matrix contains single element
         if (n == 1)
@@ -181,7 +182,7 @@ public:
         for (int f = 0; f < n; f++)
         {
             // Getting Cofactor of A[0][f]
-            getCofactor(A, temp, 0, f, n);
+            Matrix::getCofactor(A, temp, 0, f, n);
             D += sign * A[0][f] * determinant(temp, n - 1);
 
             // terms are to be added with alternate sign
@@ -191,8 +192,9 @@ public:
         return D;
     }
 
-    // Function to get adjoint of A[N][N] in adj[N][N].
-    void adjoint(float A[N][N], float adj[N][N])
+// Function to get adjoint of A[N][N] in adj[N][N].
+
+    void adjoint(float A[N][N],float adj[N][N])
     {
         if (N == 1)
         {
@@ -221,19 +223,21 @@ public:
         }
     }
 
-    // Function to calculate and store inverse, returns false if
-    // matrix is singular
+// Function to calculate and store inverse, returns false if
+// matrix is singular
     Matrix inverse()
     {
+        // Find determinant of A[][]
+        float inverse[N][N];
+
         float A[N][N];
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                A[i][j] = this->matrix[i][j];
+                A[i][j] = matrix[i][j];
             }
         }
-        float inverse[N][N];
-        // Find determinant of A[][]
-        int det = determinant(A, N);
+
+        float det = determinant(A, N);
         if (det == 0)
         {
             cout << "Singular matrix, can't find its inverse";

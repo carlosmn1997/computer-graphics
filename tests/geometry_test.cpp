@@ -7,6 +7,28 @@ using namespace std;
 
 const lest::test matrixOperations[] =
         {
+            CASE( "Determinant OK" )
+            {
+                float mat[4][4] =
+                        {
+                                {0, 0, 1, 6},
+                                {0, 1, 0, 0},
+                                {1, 0, 0, 0},
+                                {0, 0, 0, 1}
+                        };
+                float det = Matrix::determinant(mat, 4);
+
+                float mat2[4][4] =
+                        {
+                                {0.7, -0.7, 13, 5},
+                                {12.5, 122, 0.1, 6},
+                                {12.4, -1.2, -0.4, 7},
+                                {12.4, 1.2, 0.4, 8}
+                        };
+                float det2 = Matrix::determinant(mat2, 4);
+                EXPECT(det == -1);
+                EXPECT(det2 -(-14756.6) < 0.01);
+            },
             CASE( "Inverse matrix OK" )
             {
                 float mat[4][4] =
@@ -192,5 +214,6 @@ const lest::test TESTP[] =
 
 int main( int argc, char * argv[] )
 {
+    lest::run(matrixOperations, argc, argv);
     return lest::run( TESTP, argc, argv );
 }
