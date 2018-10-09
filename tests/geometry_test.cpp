@@ -212,7 +212,7 @@ const lest::test TESTP[] =
 
                 },
 
-                CASE( "Test 1: \"Catapulta tiene que atravesar planetas\" ejecutado correctamente" )
+                CASE( "Test 2: \"Catapulta tiene que atravesar planetas\" ejecutado correctamente" )
                 {
 
                     ReferenceSystem UCS(Vec(1,0,0, DIRECTION),
@@ -243,11 +243,11 @@ const lest::test TESTP[] =
 
                     // Second planet
                     //Vec axis2(0, 10, 0, DIRECTION);
-                    Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
+                    Vec axis2(7.07106781187*2, 7.07106781187*2, 0, DIRECTION);
                     //Vec axis2(0, 10, 0, DIRECTION);
                     //Vec referenceCity2(-15, -10, 0, POINT);
-                    Vec referenceCity2(-3.535533905932738+50, 3.535533905932738, 0, POINT);
-                    Vec center2(50, 0, 0, POINT);
+                    Vec referenceCity2((-3.535533905932738)*2+50, 3.535533905932738*2, 0, POINT);
+                    Vec center2(50, 10, 0, POINT);
                     Planet planet2(center2, axis2, referenceCity2);
 
                     /*
@@ -261,7 +261,7 @@ const lest::test TESTP[] =
 
                      */
                     // Second ReferenceSystem
-                    ReferenceSystem r2(3.0*M_PI_4, 0, planet2.getR(),planet2.getRadio());
+                    ReferenceSystem r2(M_PI_4, -M_PI, planet2.getR(),planet2.getRadio());
 
                     ReferenceSystem planet2RS = planet2.getR();
 
