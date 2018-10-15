@@ -163,7 +163,7 @@ Vec calculateVector(ReferenceSystem r, Vec p){
 
 const lest::test TESTP[] =
         {
-                CASE("Test 1: \"Planetas en linea\" ejecutado correctamente") {
+                CASE("Test 1: \"Planetas en linea\"") {
 
             ReferenceSystem UCS(Vec(1, 0, 0, DIRECTION),
                                 Vec(0, 1, 0, DIRECTION),
@@ -240,7 +240,7 @@ const lest::test TESTP[] =
 
             },
 
-            CASE("Test 2: \"Lanzamiento cruza planeta\" ejecutado correctamente") {
+            CASE("Test 2: \"Lanzamiento cruza planeta\"") {
                     ReferenceSystem UCS(Vec(1, 0, 0, DIRECTION),
                                         Vec(0, 1, 0, DIRECTION),
                                         Vec(0, 0, 1, DIRECTION),
@@ -277,7 +277,7 @@ const lest::test TESTP[] =
 
                      */
                     // Second ReferenceSystem
-                    ReferenceSystem r2(M_PI_4, -M_PI, planet2.getR(), planet2.getRadio());
+                    ReferenceSystem r2(M_PI_4, M_PI, planet2.getR(), planet2.getRadio());
                     Vec inUCS2 = r2.getOrigin(); // PUNTO EN UCS
 
                     r2.setOrigin(inUCS2);
@@ -311,11 +311,158 @@ const lest::test TESTP[] =
 
                     EXPECT(0.001 > diff2);
 
+                },
+
+                CASE("Test 4: \"Otros dos planetas\"") {
+                    ReferenceSystem UCS(Vec(1, 0, 0, DIRECTION),
+                                        Vec(0, 1, 0, DIRECTION),
+                                        Vec(0, 0, 1, DIRECTION),
+                                        Vec(0, 0, 0, POINT));
+
+                    // First planet
+                    Vec axis1(0, 0, 10, DIRECTION);
+                    Vec referenceCity1(-15, 20, 0, POINT); // The radius is 5
+                    Vec center1(-15, 15, 0, POINT);
+                    Planet planet1(center1, axis1, referenceCity1);
+
+                    // First ReferenceSystem
+                    //ReferenceSystem r1(M_PI, M_PI_2, planet1);
+                    ReferenceSystem r1(M_PI_2, M_PI_2, planet1.getR(), planet1.getRadio());
+                    Vec inUCS1 = r1.getOrigin(); // PUNTO EN UCS
+
+                    // Second planet
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    Vec axis2(7.07106781187, 7.07106781187, 0, DIRECTION);
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    //Vec referenceCity2(-15, -10, 0, POINT);
+                    Vec referenceCity2(-3.535533905932738 + 15, 3.535533905932738-15, 0, POINT);
+                    Vec center2(15, -15, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                    /*
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(M_PI_2, 0, planet2.getR(),planet2.getRadio());
+
+                    Vec axis2(0, 10, 0, DIRECTION);
+                    Vec referenceCity2(3.535533905932738-50, 3.535533905932738+5, 0, POINT);
+                    Vec center2(-50, 5, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                     */
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(3.0*M_PI_4, 0, planet2.getR(), planet2.getRadio());
+                    Vec inUCS2 = r2.getOrigin(); // PUNTO EN UCS
+
+                    r2.setOrigin(inUCS2);
+                    r1.setOrigin(inUCS1);
+                    float distance = calculateDistances(r1, r2);
+
+                    Vec v1, v2;
+                    try {
+                        v1 = calculateVector(r1, inUCS2);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v1 = Vec(-1,-1,-1,POINT);
+                    }
+                    try {
+                        v2 = calculateVector(r2, inUCS1);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v2 = Vec(-1,-1,-1,POINT);
+                    }
+                    float diff = abs(distance - 36.0555);
+
+
+                    EXPECT(0.001 > diff);
+
+
+                },
+
+                CASE("Test 3: \"Estaciones en los polos\"") {
+                    ReferenceSystem UCS(Vec(1, 0, 0, DIRECTION),
+                                        Vec(0, 1, 0, DIRECTION),
+                                        Vec(0, 0, 1, DIRECTION),
+                                        Vec(0, 0, 0, POINT));
+
+                    // First planet
+                    Vec axis1(0, 10, 0, DIRECTION);
+                    Vec referenceCity1(-3.535533905932738 + 1, -3.535533905932738, 0, POINT); // The radius is 5
+                    Vec center1(1, 0, 0, POINT);
+                    Planet planet1(center1, axis1, referenceCity1);
+
+                    // First ReferenceSystem
+                    //ReferenceSystem r1(M_PI, M_PI_2, planet1);
+                    ReferenceSystem r1(0, M_PI_2, planet1.getR(), planet1.getRadio());
+                    Vec inUCS1 = r1.getOrigin(); // PUNTO EN UCS
+
+                    // Second planet
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    Vec axis2(7.07106781187*2, 7.07106781187*2, 0, DIRECTION);
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    //Vec referenceCity2(-15, -10, 0, POINT);
+                    Vec referenceCity2(-3.535533905932738*2 + 1, 3.535533905932738*2+65, 0, POINT);
+                    Vec center2(1, 65, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                    /*
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(M_PI_2, 0, planet2.getR(),planet2.getRadio());
+
+                    Vec axis2(0, 10, 0, DIRECTION);
+                    Vec referenceCity2(3.535533905932738-50, 3.535533905932738+5, 0, POINT);
+                    Vec center2(-50, 5, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                     */
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(3*M_PI_4, M_PI, planet2.getR(), planet2.getRadio());
+                    Vec inUCS2 = r2.getOrigin(); // PUNTO EN UCS
+
+                    r2.setOrigin(inUCS2);
+                    r1.setOrigin(inUCS1);
+                    float distance = calculateDistances(r1, r2);
+
+                    Vec v1, v2;
+                    try {
+                        v1 = calculateVector(r1, inUCS2);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v1 = Vec(-1,-1,-1,POINT);
+                    }
+                    try {
+                        v2 = calculateVector(r2, inUCS1);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v2 = Vec(-1,-1,-1,POINT);
+                    }
+                    float diff = abs(distance - 50);
+
+                    float diff1 = abs(v1.getX() + v1.getY() + v1.getZ() + v1.getType() - 50);
+
+                    float diff2 = abs(v2.getX() + v2.getY() + v2.getZ() + v2.getType() - 50);
+
+                            EXPECT(0.001 > diff);
+
+                            EXPECT(0.001 > diff1);
+
+                            EXPECT(0.001 > diff2);
+
                 }
         };
 
 int main( int argc, char * argv[] )
 {
     lest::run(matrixOperations, argc, argv);
-    return lest::run( TESTP, argc, argv );
+
+    try {
+
+        return lest::run( TESTP, argc, argv );
+    }
+    catch(Exception e){
+        cout << e.getMessage() << endl;
+    }
 }
