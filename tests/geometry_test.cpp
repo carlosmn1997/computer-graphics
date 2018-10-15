@@ -264,19 +264,18 @@ const lest::test TESTP[] =
                     catch(Exception e){
                         cout << e.getMessage() << endl;
                         v2 = Vec(-1,-1,-1,POINT);
-                        EXPECT_THROWS(true);
                     }
                     float diff = abs(distance - 54.918);
 
                     float diff1 = abs(v1.getX() + v1.getY() + v1.getZ() + v1.getType() - 64.0);
 
-                    float diff2 = abs(v2.getX() + v2.getY() + v2.getZ() + v2.getType() - 64.0);
+                    float diff2 = abs(v2.getX() + v2.getY() + v2.getZ() + v2.getType() + 2);
 
-                            EXPECT(0.001 > diff);
+                    EXPECT(0.001 > diff);
 
-                            EXPECT(0.001 > diff1);
+                    EXPECT(0.001 > diff1);
 
-                            EXPECT(0.001 > diff2);
+                    EXPECT(0.001 > diff2);
 
                 }
         };
