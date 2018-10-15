@@ -30,6 +30,7 @@ const lest::test matrixOperations[] =
                 EXPECT(det == -1);
                 EXPECT(det2 -(-14756.6) < 0.01);
             },
+
             CASE( "Inverse matrix OK" )
             {
                 float mat[4][4] =
@@ -51,8 +52,41 @@ const lest::test matrixOperations[] =
                 Matrix inverseMatrixOk(inverseOk);
 
                 EXPECT(inverseMatrixCalculated == inverseMatrixOk);
+            },
+
+            CASE( "Inclination out of range" )
+            {
+                Vec axis1(0, 10, 0, DIRECTION);
+                Vec referenceCity1(3.535533905932738 + 1, 3.535533905932738, 0, POINT); // The radius is 5
+                Vec center1(1, 0, 0, POINT);
+                Planet planet1(center1, axis1, referenceCity1);
+                ReferenceSystem r1(M_PI_2, 0, planet1.getR(), planet1.getRadio());
+
+                EXPECT_THROWS( ReferenceSystem(M_PI*2, 0, r1, planet1.getRadio()) );
+            },
+
+            CASE( "Azimuth out of range" )
+                {
+                    Vec axis1(0, 10, 0, DIRECTION);
+                    Vec referenceCity1(3.535533905932738 + 1, 3.535533905932738, 0, POINT); // The radius is 5
+                    Vec center1(1, 0, 0, POINT);
+                    Planet planet1(center1, axis1, referenceCity1);
+                    ReferenceSystem r1(M_PI_2, 0, planet1.getR(), planet1.getRadio());
+
+                    EXPECT_THROWS( ReferenceSystem(0, -M_PI*2, r1, planet1.getRadio()) );
+                    EXPECT_THROWS( ReferenceSystem(0, M_PI*2, r1, planet1.getRadio()) );
+                },
+            CASE( "Radius not OK" )
+            {
+                Vec axis1(0, 10, 0, DIRECTION);
+                Vec referenceCity1(10, 10, 0, POINT); // The radius is 5
+                Vec center1(1, 0, 0, POINT);
+
+                EXPECT_THROWS( Planet planet1(center1, axis1, referenceCity1) );
             }
+
         };
+
 /*
 const lest::test specification[] =
         {

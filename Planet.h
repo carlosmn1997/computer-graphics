@@ -7,6 +7,7 @@
 #include "Vec.h"
 #include <cmath>
 #include "ReferenceSystem.h"
+#include "exception.h"
 
 class Planet
 {
@@ -17,8 +18,7 @@ public:
         //the reference city is the same (maximum error of 10−6)
         float difference = radius - axis.modulus()/2; // The radius
         if(abs(difference) > 0.000001){
-            std::cout<< "Radius not OK";
-            std::exit(1);
+            throw (Exception ("Radius not OK"));
         }
         this->center = center;
         this->axis = axis;

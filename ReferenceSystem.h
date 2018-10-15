@@ -13,7 +13,16 @@ class ReferenceSystem
 {
 public:
     ReferenceSystem(float theta, float phi, ReferenceSystem r, float radius){
-      // origin = radius * Vec(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
+        // theta -> (0, PI), (0, 180)
+        // phi -> (-PI, PI], (-180, 180)
+        if (theta < 0 || theta > M_PI) {
+            throw (Exception ("Inclination out of range"));
+        }
+        if (phi <= -M_PI || phi > M_PI) {
+            throw (Exception ("Azimuth out of range"));
+        }
+
+        // origin = radius * Vec(sin(theta)*cos(phi), sin(theta)*sin(phi), cos(theta), POINT);
       origin = parametricSpehere(theta, phi, radius, r.getOrigin()); // Position of station
 
 
