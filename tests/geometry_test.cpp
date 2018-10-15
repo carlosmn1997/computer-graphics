@@ -2,6 +2,7 @@
 #include "../ReferenceSystem.h"
 #include "../Planet.h"
 #include "../Matrix.h"
+#include "../exception.h"
 
 using namespace std;
 
@@ -117,11 +118,10 @@ Vec calculateVector(ReferenceSystem r, Vec p){
     v = m * p;
 
     if(v.getZ()<0){
-        std::cout<< "ERORR: The transported matter would go through a planet";
-        std::exit(1);
+        throw(Exception("The launch can't go through matter or the object will be destroyed"));
     }
 
-    v.setType(DIRECTION);
+    v.setType(0.0);
 
     return v;
 
@@ -174,9 +174,23 @@ const lest::test TESTP[] =
             r1.setOrigin(inUCS1);
             float distance = calculateDistances(r1, r2);
 
-            Vec v1 = calculateVector(r1, inUCS2);
+            Vec v1,v2;
+            try {
+                v1 = calculateVector(r1, inUCS2);
+            }
+            catch(Exception e){
+                cout << e.getMessage() << endl;
+                v1 = Vec(-1,-1,-1,DIRECTION);
+            }
 
-            Vec v2 = calculateVector(r2, inUCS1);
+            try {
+                v2 = calculateVector(r2, inUCS1);
+            }
+            catch(Exception e){
+                cout << e.getMessage() << endl;
+                v2 = Vec(-1,-1,-1,DIRECTION);
+            }
+
 
             float diff = abs(distance - 39.0);
 
@@ -190,7 +204,81 @@ const lest::test TESTP[] =
 
                     EXPECT(0.001 > diff2);
 
-            }
+            },
+
+            CASE("Test 2: \"Lanzamiento cruza planeta\" ejecutado correctamente") {
+                    ReferenceSystem UCS(Vec(1, 0, 0, DIRECTION),
+                                        Vec(0, 1, 0, DIRECTION),
+                                        Vec(0, 0, 1, DIRECTION),
+                                        Vec(0, 0, 0, POINT));
+
+                    // First planet
+                    Vec axis1(0, 10, 0, DIRECTION);
+                    Vec referenceCity1(3.535533905932738 + 1, 3.535533905932738, 0, POINT); // The radius is 5
+                    Vec center1(1, 0, 0, POINT);
+                    Planet planet1(center1, axis1, referenceCity1);
+
+                    // First ReferenceSystem
+                    //ReferenceSystem r1(M_PI, M_PI_2, planet1);
+                    ReferenceSystem r1(M_PI_2, 0, planet1.getR(), planet1.getRadio());
+                    Vec inUCS1 = r1.getOrigin(); // PUNTO EN UCS
+
+                    // Second planet
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    Vec axis2(7.07106781187*2, 7.07106781187*2, 0, DIRECTION);
+                    //Vec axis2(0, 10, 0, DIRECTION);
+                    //Vec referenceCity2(-15, -10, 0, POINT);
+                    Vec referenceCity2(-3.535533905932738*2 + 50, 3.535533905932738*2+10, 0, POINT);
+                    Vec center2(50, 10, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                    /*
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(M_PI_2, 0, planet2.getR(),planet2.getRadio());
+
+                    Vec axis2(0, 10, 0, DIRECTION);
+                    Vec referenceCity2(3.535533905932738-50, 3.535533905932738+5, 0, POINT);
+                    Vec center2(-50, 5, 0, POINT);
+                    Planet planet2(center2, axis2, referenceCity2);
+
+                     */
+                    // Second ReferenceSystem
+                    ReferenceSystem r2(M_PI_4, -M_PI, planet2.getR(), planet2.getRadio());
+                    Vec inUCS2 = r2.getOrigin(); // PUNTO EN UCS
+
+                    r2.setOrigin(inUCS2);
+                    r1.setOrigin(inUCS1);
+                    float distance = calculateDistances(r1, r2);
+
+                    Vec v1, v2;
+                    try {
+                        v1 = calculateVector(r1, inUCS2);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v1 = Vec(-1,-1,-1,POINT);
+                    }
+                    try {
+                        v2 = calculateVector(r2, inUCS1);
+                    }
+                    catch(Exception e){
+                        cout << e.getMessage() << endl;
+                        v2 = Vec(-1,-1,-1,POINT);
+                        EXPECT_THROWS(true);
+                    }
+                    float diff = abs(distance - 54.918);
+
+                    float diff1 = abs(v1.getX() + v1.getY() + v1.getZ() + v1.getType() - 64.0);
+
+                    float diff2 = abs(v2.getX() + v2.getY() + v2.getZ() + v2.getType() - 64.0);
+
+                            EXPECT(0.001 > diff);
+
+                            EXPECT(0.001 > diff1);
+
+                            EXPECT(0.001 > diff2);
+
+                }
         };
 
 int main( int argc, char * argv[] )

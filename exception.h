@@ -15,7 +15,7 @@ public:
     Exception(const string& msg) : msg_(msg) {}
     ~Exception() {}
 
-    string getMessage() const {return(msg_);}
+    string getMessage() const {return("EXCEPTION: "+msg_);}
 private:
     string msg_;
 };
