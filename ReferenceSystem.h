@@ -15,10 +15,11 @@ public:
     ReferenceSystem(float theta, float phi, ReferenceSystem r, float radius){
         // theta -> (0, PI), (0, 180)
         // phi -> (-PI, PI], (-180, 180)
-        if (theta < 0 || theta > M_PI) {
+
+        if (theta < 0 || theta - M_PI > 0.0001) {
             throw (Exception ("Inclination out of range"));
         }
-        if (phi <= -M_PI || phi > M_PI) {
+        if (phi + M_PI < -0.0001 || phi - M_PI > 0.0001) {
             throw (Exception ("Azimuth out of range"));
         }
 
