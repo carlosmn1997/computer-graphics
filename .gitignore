@@ -53,3 +53,4 @@ fabric.properties
 # modules.xml
 
 cmake-build-debug/
+img/
