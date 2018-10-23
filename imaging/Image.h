@@ -100,6 +100,15 @@ private:
     int x, y, c, m;
 
     RGB * image;
+
+    float parserMAX(string s){
+        const char * c = s.c_str();
+        s="";
+        for(int i=5;i<s.length();i++){
+            s+=c[i];
+        }
+        return stof(s);
+    }
 };
 
 #endif //COMPUTER_GRAPHICS_IMAGE_H
