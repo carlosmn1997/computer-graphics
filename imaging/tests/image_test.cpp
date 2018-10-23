@@ -9,6 +9,9 @@ const lest::test toneMapping[] =
             {
 
                 Image image("mpi_atrium_1.ppm");
+                //image.clamping();
+                image.equalization();
+                image.gammaCurve();
                 image.writeImage();
                 EXPECT(0.001 > 0.002);
             }

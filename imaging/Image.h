@@ -11,6 +11,7 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <cmath>
 
 using namespace std;
 
@@ -28,7 +29,7 @@ public:
 
         // Reading #MAX = ...
         file >> word; // We need parsing
-        float m = 65535;
+        m = 65535;
 
         // Reading filename
         string line;
@@ -45,22 +46,28 @@ public:
 
         // Reading RGB
         float coefficient = m / c;
-        for (int i = 0; i < x; i++){
-            for (int j = 0; j < y; j++){
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
                 int R, G, B;
                 file >> R >> G >> B;
                 float vR = (float)R * coefficient;
                 float vG = (float)G * coefficient;
                 float vB = (float)B * coefficient;
-                image[(i*y)+j] = RGB(vR, vG, vB);
+                setPixel(i, j, RGB(vR, vG, vB));
+                //image[(i*y)+j] = RGB(vR, vG, vB);
             }
         }
 
         file.close();
     }
 
-    RGB getPixel(int x, int y){
-        return image[x*this->y + y];
+    RGB getPixel(int i, int j){
+        //cout<<x*this->y + y<<endl;
+        return image[i*this->x + j];
+    }
+
+    void setPixel(int i, int j, RGB newPixel){
+        image[i*this->x + j] = newPixel;
     }
 
     void writeImage(){
@@ -70,27 +77,88 @@ public:
         file << x << " " << y << endl;
         file << "65535" << endl;
 
-        float coefficient = (c / 65535);
-        for (int i = 0; i < x; i++){
-            for (int j = 0; j < y; j++){
+        //float coefficient = (c / 65535);
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
                 int R, G, B;
                 int mucho = 10000000;
-                R = pixel.getR()* coefficient;
-                G = pixel.getG() * coefficient;
-                B = pixel.getB() * coefficient;
-                file << R << " " << G << " " << B << '\t';
+                R = pixel.getR(); //* coefficient;
+                G = pixel.getG();// * coefficient;
+                B = pixel.getB();// * coefficient;
+                file << R << " " << G << " " << B << "     ";
             }
             file << '\n';
         }
 
         file.close();
     }
-/*
-    void setPixel(int x, int y, RGB p){
-        image[x][y] = p;
+
+    void equalization(){
+        float minR, minG, minB, maxR, maxG, maxB;
+        minR = m;
+        minG = m;
+        minB = m;
+        maxR = 0;
+        maxG = 0;
+        maxB = 0;
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                minR = min(minR, pixel.getR());
+                minG = min(minG, pixel.getG());
+                minB = min(minB, pixel.getB());
+                maxR = max(maxR, pixel.getR());
+                maxG = max(maxG, pixel.getG());
+                maxB = max(maxB, pixel.getB());
+            }
+        }
+
+        float coefficientR = (minR / maxR);
+        float coefficientG = (minG / maxG);
+        float coefficientB = (minB / maxB);
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                pixel.setR(pixel.getR() * coefficientR);
+                pixel.setG(pixel.getG() * coefficientG);
+                pixel.setB(pixel.getB() * coefficientB);
+                //image[(i*y)+j] = pixel;
+                setPixel(i, j, pixel);
+            }
+        }
     }
- */
+
+    //https://stackoverflow.com/questions/16521003/gamma-correction-formula-gamma-or-1-gamma
+    // https://docs.opencv.org/3.4/d3/dc1/tutorial_basic_linear_transform.html al final
+    void gammaCurve(){
+        float factor = 2.2;
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                float kk = pow(pixel.getR()/m, 1.0/factor);
+                pixel.setR(m*pow(pixel.getR()/m, 1.0/factor));
+                pixel.setG(m*pow(pixel.getG()/m, 1.0/factor));
+                pixel.setB(m*pow(pixel.getB()/m, 1.0/factor));
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+
+    void clamping(){
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                pixel.setR(min(pixel.getR(), m));
+                pixel.setG(min(pixel.getG(), m));
+                pixel.setB(min(pixel.getB(), m));
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+
 private:
     //vector<vector<float>> image;
 
@@ -98,7 +166,8 @@ private:
     // y = altura
     // c = colorResolution
     // m = maximumResolution
-    int x, y, c, m;
+    int x, y, c;
+    float m;
 
     RGB * image;
 
@@ -110,6 +179,29 @@ private:
         }
         return stof(s);
     }
+
+    static float min(float a, float b){
+        if(a < b){
+            return a;
+        }
+        else{
+            return b;
+        }
+    }
+
+    static float max(float a, float b){
+        if(a > b){
+            return a;
+        }
+        else{
+            return b;
+        }
+    }
+    // https://rosettacode.org/wiki/Gamma_function
+    // Existen diferentes implementaciones de la funcion gamma
+    //static float gammaFunction(float x){
+    //    return sqrt(2*M_PI/x)*pow(x/)
+    //}
 };
 
 #endif //COMPUTER_GRAPHICS_IMAGE_H
