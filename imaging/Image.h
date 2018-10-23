@@ -44,7 +44,7 @@ public:
         file >> c;
 
         // Reading RGB
-        float coefficient = 1.0 / c;
+        float coefficient = m / c;
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
                 int R, G, B;
@@ -52,7 +52,7 @@ public:
                 float vR = (float)R * coefficient;
                 float vG = (float)G * coefficient;
                 float vB = (float)B * coefficient;
-                image[i*j+j] = RGB(vR, vG, vB);
+                image[(i*y)+j] = RGB(vR, vG, vB);
             }
         }
 
@@ -60,7 +60,7 @@ public:
     }
 
     RGB getPixel(int x, int y){
-        return image[x*y + y];
+        return image[x*this->y + y];
     }
 
     void writeImage(){
@@ -70,14 +70,15 @@ public:
         file << x << " " << y << endl;
         file << "65535" << endl;
 
+        float coefficient = (c / 65535);
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
                 RGB pixel = getPixel(i, j);
                 int R, G, B;
                 int mucho = 10000000;
-                R = pixel.getR()* 65535;
-                G = pixel.getG() * 65535;
-                B = pixel.getB() * 65535;
+                R = pixel.getR()* coefficient;
+                G = pixel.getG() * coefficient;
+                B = pixel.getB() * coefficient;
                 file << R << " " << G << " " << B << '\t';
             }
             file << '\n';

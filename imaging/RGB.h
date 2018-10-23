@@ -17,7 +17,7 @@ public:
     }
 
     float getR() const {
-        return B;
+        return R;
     }
 
     void setR(float R) {
