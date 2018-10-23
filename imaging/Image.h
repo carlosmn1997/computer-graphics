@@ -19,7 +19,7 @@ public:
     // We suppose that the file is correct
     Image(string fileName){
         ifstream file;
-        file.open("../img/mpi_atrium_1.ppm");
+        file.open("../img/"+fileName);
 
         string word;
 
