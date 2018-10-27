@@ -95,36 +95,33 @@ public:
     }
 
     void equalization(){
-        float minR, minG, minB, maxR, maxG, maxB;
-        minR = m;
-        minG = m;
-        minB = m;
-        maxR = 0;
-        maxG = 0;
-        maxB = 0;
+        float maxY, X,Y,Z,r,g,b;
+        maxY = 0;
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
-                minR = min(minR, pixel.getR());
-                minG = min(minG, pixel.getG());
-                minB = min(minB, pixel.getB());
-                maxR = max(maxR, pixel.getR());
-                maxG = max(maxG, pixel.getG());
-                maxB = max(maxB, pixel.getB());
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                maxY = max(maxY, RGB_Y(r,g,b));
             }
         }
 
-        float coefficientR = (minR / maxR);
-        float coefficientG = (minG / maxG);
-        float coefficientB = (minB / maxB);
+        float coefficient = (m / maxY);
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
-                pixel.setR(pixel.getR() * coefficientR);
-                pixel.setG(pixel.getG() * coefficientG);
-                pixel.setB(pixel.getB() * coefficientB);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = RGB_Y(r,g,b) * coefficient;
+                Z = RGB_Z(r,g,b);
+                pixel.setR(XYZ_R(X,Y,Z));
+                pixel.setG(XYZ_G(X,Y,Z));
+                pixel.setB(XYZ_B(X,Y,Z));
                 //image[(i*y)+j] = pixel;
                 setPixel(i, j, pixel);
             }
@@ -148,16 +145,95 @@ public:
     }
 
     void clamping(){
+        float X,Y,Z;
+        float r,g,b;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
-                pixel.setR(min(pixel.getR(), m));
-                pixel.setG(min(pixel.getG(), m));
-                pixel.setB(min(pixel.getB(), m));
+                r = pixel.getR(); g = pixel.getG(); b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = min(RGB_Y(r,g,b),m);
+                Z = RGB_Z(r,g,b);
+                r = XYZ_R(X,Y,Z); g = XYZ_G(X,Y,Z); b = XYZ_B(X,Y,Z);
+                pixel.setR(r);
+                pixel.setG(g);
+                pixel.setB(b);
                 setPixel(i, j, pixel);
             }
         }
     }
+
+    void equalizeAndClamp(){
+        float minR, minG, minB, maxR, maxG, maxB;
+        minR = m;
+        minG = m;
+        minB = m;
+        maxR = 0;
+        maxG = 0;
+        maxB = 0;
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                minR = min(minR, pixel.getR());
+                minG = min(minG, pixel.getG());
+                minB = min(minB, pixel.getB());
+                maxR = max(maxR, pixel.getR());
+                maxG = max(maxG, pixel.getG());
+                maxB = max(maxB, pixel.getB());
+            }
+        }
+
+        maxR = maxR * 0.9;
+        maxG = maxG * 0.9;
+        maxB = maxB * 0.9;
+
+        float coefficientR = (m / maxR);
+        float coefficientG = (m / maxG);
+        float coefficientB = (m / maxB);
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                pixel.setR(min(pixel.getR() * coefficientR,m));
+                pixel.setG(min(pixel.getG() * coefficientG,m));
+                pixel.setB(min(pixel.getB() * coefficientB,m));
+                //image[(i*y)+j] = pixel;
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+
+    float RGB_X(float r, float g, float b){
+        //return 0.4887180 * r + 0.1762044 * g;
+        return 0.4887180*r + 0.3106803*g + 0.2006017*b;
+    }
+
+    float RGB_Y(float r, float g, float b){
+        //return 0.3106803 * r + 0.8129847 * g + 0.0102048 * b;
+        return 0.1762044*r + 0.8129847*g + 0.0108109*b;
+    }
+
+    float RGB_Z(float r, float g, float b){
+        //return 0.2006017 * r + 0.0108109 * g + 0.9897952 * b;
+        return  0.0102048*g  + 0.9897952*b;
+    }
+
+    float XYZ_R(float x, float y, float z){
+        //return 2.3706743 * x - 0.5138850 * y + 0.0052982 * z;
+        return 2.3706743 * x - 0.9000405*y - 0.4706338*z;
+    }
+
+    float XYZ_G(float x, float y, float z){
+        //return -0.9000405 * x + 1.4253036 * y - 0.0146949 * z;
+        return -0.5138850*x + 1.4253036*y + 0.0885814*z;
+    }
+
+    float XYZ_B(float x, float y, float z){
+        //return -0.4706338 * x + 0.0885814 * y + 1.0093968 * z;
+        return 0.0052982*x - 0.0146949*y  + 1.0093968 *z;
+    }
+
 
 private:
     //vector<vector<float>> image;
@@ -177,7 +253,7 @@ private:
         for(int i=5;i<s.length();i++){
             s+=c[i];
         }
-        return stof(s);
+        return stod(s);
     }
 
     static float min(float a, float b){
