@@ -75,17 +75,17 @@ public:
         file.open("salida.ppm");
         file << "P3" << endl;
         file << x << " " << y << endl;
-        file << "65535" << endl;
+        file << "255" << endl;
 
-        //float coefficient = (c / 65535);
+        float coefficient = 255;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
                 int R, G, B;
                 int mucho = 10000000;
-                R = pixel.getR(); //* coefficient;
-                G = pixel.getG();// * coefficient;
-                B = pixel.getB();// * coefficient;
+                R = pixel.getR() * coefficient;
+                G = pixel.getG() * coefficient;
+                B = pixel.getB() * coefficient;
                 file << R << " " << G << " " << B << "     ";
             }
             file << '\n';
@@ -108,7 +108,7 @@ public:
             }
         }
 
-        float coefficient = (m / maxY);
+        float coefficient = (1 / maxY);
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
@@ -117,8 +117,20 @@ public:
                 g = pixel.getG();
                 b = pixel.getB();
                 X = RGB_X(r,g,b);
-                Y = RGB_Y(r,g,b) * coefficient;
+                Y = RGB_Y(r,g,b); //* coefficient * m;
                 Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+
+                // equalization
+                Y = Y * coefficient;
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
                 pixel.setR(XYZ_R(X,Y,Z));
                 pixel.setG(XYZ_G(X,Y,Z));
                 pixel.setB(XYZ_B(X,Y,Z));
@@ -146,18 +158,31 @@ public:
 
     void clamping(){
         float X,Y,Z;
+        float x,y;
         float r,g,b;
-        for (int i = 0; i < y; i++){
-            for (int j = 0; j < x; j++){
+        for (int i = 0; i < this->y; i++){
+            for (int j = 0; j < this->x; j++){
                 RGB pixel = getPixel(i, j);
                 r = pixel.getR(); g = pixel.getG(); b = pixel.getB();
                 X = RGB_X(r,g,b);
-                Y = min(RGB_Y(r,g,b),m);
+                Y = RGB_Y(r,g,b);
                 Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+
+                // equalization
+                Y = min(Y, 1);
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
                 r = XYZ_R(X,Y,Z); g = XYZ_G(X,Y,Z); b = XYZ_B(X,Y,Z);
-                pixel.setR(r);
-                pixel.setG(g);
-                pixel.setB(b);
+                pixel.setR(min(r, 1));
+                pixel.setG(min(g,1));
+                pixel.setB(min(b,1));
                 setPixel(i, j, pixel);
             }
         }
