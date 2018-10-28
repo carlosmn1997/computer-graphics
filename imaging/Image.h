@@ -224,41 +224,53 @@ public:
     }
 
     void equalizeAndClamp(){
-        float minR, minG, minB, maxR, maxG, maxB;
-        minR = m;
-        minG = m;
-        minB = m;
-        maxR = 0;
-        maxG = 0;
-        maxB = 0;
+        float maxY, X,Y,Z,r,g,b;
+        maxY = 0;
+        float clamp = 0.9;
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
-                minR = min(minR, pixel.getR());
-                minG = min(minG, pixel.getG());
-                minB = min(minB, pixel.getB());
-                maxR = max(maxR, pixel.getR());
-                maxG = max(maxG, pixel.getG());
-                maxB = max(maxB, pixel.getB());
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                maxY = max(maxY, RGB_Y(r,g,b));
             }
         }
 
-        maxR = maxR * 0.9;
-        maxG = maxG * 0.9;
-        maxB = maxB * 0.9;
+        maxY = 0.9*maxY;
 
-        float coefficientR = (m / maxR);
-        float coefficientG = (m / maxG);
-        float coefficientB = (m / maxB);
+        float coefficient = (1 / maxY);
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
-                pixel.setR(min(pixel.getR() * coefficientR,m));
-                pixel.setG(min(pixel.getG() * coefficientG,m));
-                pixel.setB(min(pixel.getB() * coefficientB,m));
-                //image[(i*y)+j] = pixel;
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = RGB_Y(r,g,b); //* coefficient * m;
+                Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+
+                // equalization
+                if(Y>maxY){
+                    Y=1;
+                }
+                else {
+                    Y = Y * coefficient;
+                }
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
+                pixel.setR(min(XYZ_R(X,Y,Z),1));
+                pixel.setG(min(XYZ_G(X,Y,Z),1));
+                pixel.setB(min(XYZ_B(X,Y,Z),1));
                 setPixel(i, j, pixel);
             }
         }
