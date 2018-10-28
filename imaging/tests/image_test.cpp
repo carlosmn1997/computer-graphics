@@ -8,7 +8,7 @@ const lest::test toneMapping[] =
             CASE( "Tone Mapping" )
             {
 
-                Image image("mpi_atrium_1.ppm");
+                Image image("mpi_office.ppm");
                 image.clamping();
                 //image.equalization();
                 //image.gammaCurve();

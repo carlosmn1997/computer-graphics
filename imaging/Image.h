@@ -75,9 +75,9 @@ public:
         file.open("salida.ppm");
         file << "P3" << endl;
         file << x << " " << y << endl;
-        file << "255" << endl;
+        file << "65535" << endl;
 
-        float coefficient = 255;
+        float coefficient = 65535;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
@@ -134,7 +134,6 @@ public:
                 pixel.setR(XYZ_R(X,Y,Z));
                 pixel.setG(XYZ_G(X,Y,Z));
                 pixel.setB(XYZ_B(X,Y,Z));
-                //image[(i*y)+j] = pixel;
                 setPixel(i, j, pixel);
             }
         }
@@ -143,15 +142,51 @@ public:
     //https://stackoverflow.com/questions/16521003/gamma-correction-formula-gamma-or-1-gamma
     // https://docs.opencv.org/3.4/d3/dc1/tutorial_basic_linear_transform.html al final
     void gammaCurve(){
+        //equalization();
         float factor = 2.2;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
+                float maxY, X,Y,Z,r,g,b;
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = RGB_Y(r,g,b); //* coefficient * m;
+                Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+                // equalization
+                //Y = Y / 65535;
+                // gamming
+                Y = pow(Y / 65535, (1.0 / 2.2)); //* 65535;
+                // Y = pow(Y, 1.0/factor);
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
+
+                pixel.setR(min(XYZ_R(X,Y,Z), 1));
+                pixel.setG(min(XYZ_G(X,Y,Z),1));
+                pixel.setB(min(XYZ_B(X,Y,Z),1));
+                setPixel(i, j, pixel);
+
+
+                // pixel.setR(XYZ_R(X,Y,Z));
+                // pixel.setG(XYZ_G(X,Y,Z));
+                // pixel.setB(XYZ_B(X,Y,Z));
+                // setPixel(i, j, pixel);
+                /*
                 RGB pixel = getPixel(i, j);
                 float kk = pow(pixel.getR()/m, 1.0/factor);
                 pixel.setR(m*pow(pixel.getR()/m, 1.0/factor));
                 pixel.setG(m*pow(pixel.getG()/m, 1.0/factor));
                 pixel.setB(m*pow(pixel.getB()/m, 1.0/factor));
                 setPixel(i, j, pixel);
+                 */
             }
         }
     }
@@ -173,8 +208,8 @@ public:
                 y = Y / (X+Y+Z);
 
 
-                // equalization
-                Y = min(Y, 1);
+                // Clamping
+                Y = min(Y, 0.7);
 
                 X = (Y / y)*x;
                 Z = (Y / y) * (1 - x - y);
