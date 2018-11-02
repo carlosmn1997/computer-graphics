@@ -141,12 +141,24 @@ public:
 
     //https://stackoverflow.com/questions/16521003/gamma-correction-formula-gamma-or-1-gamma
     // https://docs.opencv.org/3.4/d3/dc1/tutorial_basic_linear_transform.html al final
-    void gammaCurve(){
+    void gammaCurve(float factor){
         //equalization();
-        float factor = 2.2;
+        float maxY,r,g,b;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
-                float maxY, X,Y,Z,r,g,b;
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                maxY = max(maxY, RGB_Y(r,g,b));
+            }
+        }
+
+        float coefficient = 1/maxY;
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                float X,Y,Z;
                 RGB pixel = getPixel(i, j);
                 r = pixel.getR();
                 g = pixel.getG();
@@ -162,7 +174,7 @@ public:
                 // equalization
                 //Y = Y / 65535;
                 // gamming
-                Y = pow(Y / 65535, (1.0 / 2.2)); //* 65535;
+                Y = pow(min(Y * coefficient,1), (1.0 / factor)); //* 65535;
                 // Y = pow(Y, 1.0/factor);
 
                 X = (Y / y)*x;
@@ -173,20 +185,6 @@ public:
                 pixel.setG(min(XYZ_G(X,Y,Z),1));
                 pixel.setB(min(XYZ_B(X,Y,Z),1));
                 setPixel(i, j, pixel);
-
-
-                // pixel.setR(XYZ_R(X,Y,Z));
-                // pixel.setG(XYZ_G(X,Y,Z));
-                // pixel.setB(XYZ_B(X,Y,Z));
-                // setPixel(i, j, pixel);
-                /*
-                RGB pixel = getPixel(i, j);
-                float kk = pow(pixel.getR()/m, 1.0/factor);
-                pixel.setR(m*pow(pixel.getR()/m, 1.0/factor));
-                pixel.setG(m*pow(pixel.getG()/m, 1.0/factor));
-                pixel.setB(m*pow(pixel.getB()/m, 1.0/factor));
-                setPixel(i, j, pixel);
-                 */
             }
         }
     }
@@ -226,7 +224,7 @@ public:
     void equalizeAndClamp(){
         float maxY, X,Y,Z,r,g,b;
         maxY = 0;
-        float clamp = 0.9;
+        float clamp = 0.3;
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
@@ -238,7 +236,7 @@ public:
             }
         }
 
-        maxY = 0.9*maxY;
+        maxY = 0.9 * maxY;
 
         float coefficient = (1 / maxY);
 
@@ -258,11 +256,12 @@ public:
 
 
                 // equalization
+
                 if(Y>maxY){
-                    Y=1;
+                    Y=clamp;
                 }
                 else {
-                    Y = Y * coefficient;
+                    Y = min(Y * coefficient,clamp);
                 }
 
                 X = (Y / y)*x;
@@ -273,6 +272,134 @@ public:
                 pixel.setB(min(XYZ_B(X,Y,Z),1));
                 setPixel(i, j, pixel);
             }
+        }
+    }
+
+    void Reinhard(){
+        float maxY, X,Y,Z,r,g,b;
+        float sum=0.0;
+        maxY = 0;
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                maxY = max(maxY, RGB_Y(r,g,b));
+                sum += log(100+Y);
+            }
+        }
+
+        float coefficient = 1/maxY;
+
+        float med_Lm = (exp(sum))/(x*y);
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = RGB_Y(r,g,b); //* coefficient * m;
+                Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+                float Y_2 = (0.18/med_Lm)*(Y);
+
+                Y= (Y_2*(1+(Y_2/(maxY*maxY))))/(1+Y_2);
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
+                pixel.setR(min(XYZ_R(X,Y,Z),1));
+                pixel.setG(min(XYZ_G(X,Y,Z),1));
+                pixel.setB(min(XYZ_B(X,Y,Z),1));
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+/*
+    void Reinhard(){
+        float X,Y,Z,r,g,b;
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                Y = RGB_Y(r,g,b);
+                X = RGB_X(r,g,b);
+                Z = RGB_Z(r,g,b);
+
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+                Y = Y / (1-Y*R_1(i,j,s_m(i,j)));
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
+                pixel.setR(min(XYZ_R(X,Y,Z),1));
+                pixel.setG(min(XYZ_G(X,Y,Z),1));
+                pixel.setB(min(XYZ_B(X,Y,Z),1));
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+*/
+
+private:
+    //vector<vector<float>> image;
+
+    // x = anchura
+    // y = altura
+    // c = colorResolution
+    // m = maximumResolution
+    int x, y, c;
+    float m;
+
+    RGB * image;
+
+    float R_1(int x, int y, float s){
+        float alpha = 0.1; //NO FINAL VALUE
+        float a = 1/(M_PI*alpha*s);
+        float b = (x*x+y*y)/(alpha*alpha*s*s);
+        return pow(a,-b);
+    }
+
+    float s_m(int x, int y){
+        return 0.0;
+    }
+
+    float parserMAX(string s){
+        const char * c = s.c_str();
+        s="";
+        for(int i=5;i<s.length();i++){
+            s+=c[i];
+        }
+        return stod(s);
+    }
+
+    static float min(float a, float b){
+        if(a < b){
+            return a;
+        }
+        else{
+            return b;
+        }
+    }
+
+    static float max(float a, float b){
+        if(a > b){
+            return a;
+        }
+        else{
+            return b;
         }
     }
 
@@ -306,45 +433,6 @@ public:
         return 0.0052982*x - 0.0146949*y  + 1.0093968 *z;
     }
 
-
-private:
-    //vector<vector<float>> image;
-
-    // x = anchura
-    // y = altura
-    // c = colorResolution
-    // m = maximumResolution
-    int x, y, c;
-    float m;
-
-    RGB * image;
-
-    float parserMAX(string s){
-        const char * c = s.c_str();
-        s="";
-        for(int i=5;i<s.length();i++){
-            s+=c[i];
-        }
-        return stod(s);
-    }
-
-    static float min(float a, float b){
-        if(a < b){
-            return a;
-        }
-        else{
-            return b;
-        }
-    }
-
-    static float max(float a, float b){
-        if(a > b){
-            return a;
-        }
-        else{
-            return b;
-        }
-    }
     // https://rosettacode.org/wiki/Gamma_function
     // Existen diferentes implementaciones de la funcion gamma
     //static float gammaFunction(float x){
