@@ -24,6 +24,8 @@ public:
         }
     }
 
+    Plane() {}
+
     bool intercepts(Vec v){
         float i = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ();
         return (i<0.001&&i>-0.001);
