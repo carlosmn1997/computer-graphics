@@ -5,15 +5,19 @@
 #ifndef COMPUTER_GRAPHICS_RENDER_H
 #define COMPUTER_GRAPHICS_RENDER_H
 
-#include "../Vec.h"
+#include <fstream>
 #include "../imaging/RGB.h"
 #include "Plane.h"
+#include "Sphere.h"
 
 class Render{
 
 public:
 
-    Render(const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {}
+    Render(const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {
+        this->numSpheres = 0;
+        this->numPlanos = 0;
+    }
 
     Render() {}
 
@@ -22,13 +26,48 @@ public:
         this->numPlanos++;
     }
 
+    void addSphere(Sphere s){
+        this->spheres[numSpheres]=s;
+        this->numSpheres++;
+    }
+
     void trazar(){
         for(int i=0;i<144;i++){
             for(int j=0;j<256;j++){
                 Vec pixel(l.modulus()-0.5*i,u.modulus()-0.5*j,f.modulus(),1);
-                img[i][j]=pixelColor(pixel);
+                cout<<"nuevo pixel"<<endl;
+                RGB x = pixelColor(pixel);
+                if(x.getR()<254.90){
+                    cout<<"CCACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" <<endl;
+                }
+                img[i][j]= x;
             }
         }
+    }
+
+    void escribirImagen(string path){
+        ofstream file;
+        file.open(path);
+        file << "P3" << endl;
+        file << "256 144" << endl;
+        file << "65535" << endl;
+
+        float coefficient = 65535/255;
+        for (int i = 0; i < 256; i++){
+            for (int j = 0; j < 144; j++){
+                int R, G, B;
+                R = max(img[i][j].getR() * coefficient,0);
+                G = max(img[i][j].getB() * coefficient,0);
+                B = max(img[i][j].getG() * coefficient,0);
+                file << R << " " << G << " " << B << "   ";
+            }
+            file << '\n';
+            if(i%20==0&&i!=0) {
+                cout << "20 filas escritas" << endl;
+            }
+        }
+        cout<<"final"<<endl;
+        file.close();
     }
 
     const Vec &getU() const {
@@ -68,26 +107,58 @@ private:
     RGB pixelColor(Vec pixel){
         Vec v = pixel-o;
         float minMod=-1;
-        RGB color(255,255,255);
+        RGB color(0,0,0);
+        Vec ptoHit;
+        Plane planeHit;
+        bool hit=false;
         for(int i=0;i<numPlanos;++i){
             Plane p = ps[i];
-            if(p.intercepts(v)){
-                Vec point = p.intPoint(v,pixel);
+            Vec point;
+            if(p.intercepts(pixel,v,point)){
+                hit=true;
+                cout<<"Intercepta"<<endl;
                 Vec vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
-                    color=p.getProps();
+                    ptoHit = point;
+                    color = p.getProps();
                 }
             }
         }
+        for(int i=0;i<numSpheres;i++){
+            cout<<"No entra"<<endl;
+            Sphere s = spheres[i];
+            Vec point;
+            if(s.intercepts(pixel,v,point)){
+                hit=true;
+                Vec vp = point - pixel;
+                if(minMod==-1||minMod>vp.modulus()){
+                    minMod=vp.modulus();
+                    ptoHit = point;
+                    color = s.getProps();
+                }
+            }
+        }
+        cout<<"acaba"<<endl;
         return color;
+    }
+
+    static float max(float a, float b){
+        if(a > b){
+            return a;
+        }
+        else{
+            return b;
+        }
     }
 
     Vec u,l,f;
     Vec o;
     Plane ps[200];
+    Sphere spheres[200];
     RGB img[144][256];
     int numPlanos;
+    int numSpheres;
 };
 
 #endif //COMPUTER_GRAPHICS_RENDER_H

@@ -28,7 +28,7 @@ public:
 
     Vec operator+ (const Vec & second) const {
         if(type != second.getType()){
-            std::cout<< "Expected same types";
+            std::cout<< "Expected same types vector add";
             std::exit(1);
         }
         return Vec(x+second.getX(), y+second.getY(), z+second.getZ(), type);
@@ -59,7 +59,7 @@ public:
 
     Vec operator- (const Vec & second) const {
         if(type != second.getType()){
-            std::cout<< "Expected same types";
+            std::cout<< "Expected same types sub vector";
             std::exit(1);
         }
         float newType = type;

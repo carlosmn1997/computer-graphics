@@ -1,28 +1,25 @@
-#include "../Plane.h"
-#include "lest.hpp"
+#include <ostream>
+#include "../Render.h"
 
 using namespace std;
 
-const lest::test PLANE[] =
-        {
-                CASE( "Intercepta" )
-                {
-                    Vec o(10,0,0,1);
-                    Vec n(-0.70710678118,0.70710678118,0,0);
-                    RGB r(255,0,0);
-                    Plane pla(o,n,r);
-                    Vec v(1,0,0,0);
-                    Vec p(0,0,0,1);
-                    bool b = pla.intercepts(v);
-                    Vec inte = pla.intPoint(v,p);
-                    float f = abs(10 - inte.getX());
-                    EXPECT(!b);
-                    EXPECT(f<0.0001);
-                }
-
-        };
-
 int main( int argc, char * argv[] )
 {
-    return lest::run( PLANE, argc, argv );
+   Vec l(144,0,0,0);
+   Vec u(0,256,0,0);
+   Vec f(0,0,100,0);
+   Vec o(0,0,0,1);
+   Render r(u,l,f,o);
+   Vec origin1(0,0,400,1);
+   Vec normal(0,0,-1,0);
+   Plane p(origin1,normal,RGB(255,0,0));
+   r.addPlane(p);
+   Vec origin2(0,-144,0,1);
+   Vec normal2(0,1,0,0);
+   Plane q(origin2,normal2,RGB(0,255,0));
+   r.addPlane(q);
+   r.trazar();
+   cout<<"acabo y escribo"<<endl;
+   r.escribirImagen("nombre.ppm");
+   return 0;
 }

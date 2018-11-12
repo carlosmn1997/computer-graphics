@@ -7,6 +7,7 @@
 
 #include "../Vec.h"
 #include "../imaging/RGB.h"
+#include "../ReferenceSystem.h"
 
 class Plane{
 public:
@@ -21,23 +22,32 @@ public:
             this->origin=origin;
             this->normal=normal;
             this->props=props;
+            createRefSystem();
         }
     }
 
     Plane() {}
 
-    bool intercepts(Vec v){
-        float i = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ();
-        return (i<0.001&&i>-0.001);
-    }
-
-    Vec intPoint(Vec v,Vec p){
+    bool intercepts(Vec p, Vec v, Vec &point){
+        float b = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ();
         float a = normal.getX()*(origin.getX()-p.getX())+normal.getY()*(origin.getY()-p.getY());
         a += normal.getZ()*(origin.getZ()-p.getZ());
-        float b = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ();
-        float t = a/b;
-        Vec interception(p.getX()+t*v.getX(),p.getY()+t*v.getY(),p.getZ()+t*v.getZ(),1);
-        return interception;
+        if(b<0.001&&b>-0.001){
+            return false;
+        }
+        else{
+            float t = a/b;
+            if(t < -0.001){
+                return false;
+            }
+            else{
+                point.setX(p.getX()+t*v.getX());
+                point.setY(p.getY()+t*v.getY());
+                point.setZ(p.getZ()+t*v.getZ());
+                point.setType(1);
+                return true;
+            }
+        }
     }
 
     const Vec &getOrigin() const {
@@ -65,9 +75,24 @@ public:
     }
 
 private:
+    void createRefSystem(){
+        d = -origin.getX()*normal.getX() -origin.getY()*normal.getY() - origin.getZ()*normal.getZ();
+        float z=(-d -normal.getX()-normal.getY())/normal.getZ();
+        z -= normal.getZ();
+        Vec p(origin.getX()+1,origin.getY()+1,z,1);
+        Vec i = p-origin;
+        Vec k = Vec::crossProduct(i,normal);
+        r.setI(i);
+        r.setJ(normal);
+        r.setK(k);
+        r.setOrigin(origin);
+    }
+
     Vec origin;
     Vec normal;
     RGB props;
+    ReferenceSystem r;
+    float d;
 };
 
 #endif //COMPUTER_GRAPHICS_PLANE_H
