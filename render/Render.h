@@ -32,16 +32,17 @@ public:
     }
 
     void trazar(){
-        for(int i=0;i<144;i++){
-            for(int j=0;j<256;j++){
-                Vec pixel(l.modulus()-0.5*i,u.modulus()-0.5*j,f.modulus(),1);
-                cout<<"nuevo pixel"<<endl;
+        for(int i=0;i<l.modulus();i++){
+            for(int j=0;j<u.modulus();j++){
+                Vec pixel(i+0.5,j+0.5,f.modulus(),1);
+                //cout<<"nuevo pixel"<<endl;
                 RGB x = pixelColor(pixel);
                 if(x.getR()<254.90){
-                    cout<<"CCACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" <<endl;
+                  //  cout<<"CCACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" <<endl;
                 }
                 img[i][j]= x;
             }
+            cout<<"Voy por: "<<i<<endl;
         }
     }
 
@@ -53,8 +54,8 @@ public:
         file << "65535" << endl;
 
         float coefficient = 65535/255;
-        for (int i = 0; i < 256; i++){
-            for (int j = 0; j < 144; j++){
+        for (int i = 0; i < 144; i++){
+            for (int j = 0; j < 256; j++){
                 int R, G, B;
                 R = max(img[i][j].getR() * coefficient,0);
                 G = max(img[i][j].getB() * coefficient,0);
@@ -112,11 +113,14 @@ private:
         Plane planeHit;
         bool hit=false;
         for(int i=0;i<numPlanos;++i){
+            if(i == 1){
+                i = 1;
+            }
             Plane p = ps[i];
             Vec point;
             if(p.intercepts(pixel,v,point)){
                 hit=true;
-                cout<<"Intercepta"<<endl;
+                //cout<<"Intercepta"<<endl;
                 Vec vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
@@ -126,7 +130,7 @@ private:
             }
         }
         for(int i=0;i<numSpheres;i++){
-            cout<<"No entra"<<endl;
+            //cout<<"No entra"<<endl;
             Sphere s = spheres[i];
             Vec point;
             if(s.intercepts(pixel,v,point)){
@@ -136,10 +140,12 @@ private:
                     minMod=vp.modulus();
                     ptoHit = point;
                     color = s.getProps();
+                    if (color.getR() <= 0){
+                        //cout<<"kkkkk"<<endl;
+                    }
                 }
             }
         }
-        cout<<"acaba"<<endl;
         return color;
     }
 
