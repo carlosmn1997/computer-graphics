@@ -32,15 +32,14 @@ public:
     }
 
     void trazar(){
-        for(int i=0;i<144;i++){
-            for(int j=0;j<256;j++){
-                Vec pixel(l.modulus()-0.5*i,u.modulus()-0.5*j,f.modulus(),1);
-                cout<<"nuevo pixel"<<endl;
+        float uMod = u.modulus();
+        float lMod = l.modulus();
+        float fMod = f.modulus();
+        for(int i=uMod;i>-uMod;i--){
+            for(int j=-lMod;j<lMod;j++){
+                Vec pixel(j+0.5,i-0.5,fMod,1);
                 RGB x = pixelColor(pixel);
-                if(x.getR()<254.90){
-                    cout<<"CCACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa" <<endl;
-                }
-                img[i][j]= x;
+                img[72-i][j+128]= x;
             }
         }
     }
@@ -53,8 +52,8 @@ public:
         file << "65535" << endl;
 
         float coefficient = 65535/255;
-        for (int i = 0; i < 256; i++){
-            for (int j = 0; j < 144; j++){
+        for (int i = 0; i < 144; i++){
+            for (int j = 0; j < 256; j++){
                 int R, G, B;
                 R = max(img[i][j].getR() * coefficient,0);
                 G = max(img[i][j].getB() * coefficient,0);
@@ -105,6 +104,7 @@ public:
 private:
 
     RGB pixelColor(Vec pixel){
+        //cout << pixel.getX() << " - "<< pixel.getY() << endl;
         Vec v = pixel-o;
         float minMod=-1;
         RGB color(0,0,0);
@@ -116,30 +116,28 @@ private:
             Vec point;
             if(p.intercepts(pixel,v,point)){
                 hit=true;
-                cout<<"Intercepta"<<endl;
+                //cout<<"Intercepta  -->  " << i << endl;
                 Vec vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
-                    ptoHit = point;
                     color = p.getProps();
                 }
             }
         }
         for(int i=0;i<numSpheres;i++){
-            cout<<"No entra"<<endl;
             Sphere s = spheres[i];
             Vec point;
             if(s.intercepts(pixel,v,point)){
                 hit=true;
+                cout<<"Intercepta esferita papa" <<endl;
+                cout << point.getX() << "-" << point.getY() << "-" << point.getZ() << endl;
                 Vec vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
-                    ptoHit = point;
                     color = s.getProps();
                 }
             }
         }
-        cout<<"acaba"<<endl;
         return color;
     }
 

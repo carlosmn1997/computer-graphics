@@ -65,9 +65,6 @@ private:
     Vec center, axis, referenceCity;
     ReferenceSystem r;
     RGB props;
-
-private:
-    float A,B,C;
 public:
 
     const RGB &getProps() const {
@@ -106,7 +103,8 @@ public:
         return axis.modulus()/2;
     }
 
-    bool intercepts(Vec p, Vec v, Vec &z){
+    bool intercepts(Vec p, Vec v, Vec &point){
+        float A,B,C;
         float vX,vY,vZ,pX,pY,pZ;
         float cX,cY,cZ;
         vX = v.getX();
@@ -119,11 +117,11 @@ public:
         cY = center.getY();
         cZ = center.getZ();
         A = vX*vX+vY*vY+vZ*vZ; // A * t^2
-        B = pX*vX + vX*cX + pY*vY + vY*cY + pZ*vZ + vZ*cZ; // B * t
+        B = pX*vX - vX*cX + pY*vY - vY*cY + pZ*vZ - vZ*cZ; // B * t
         B = B*2;
-        C = pX*pX - 2*pX*cX + cX*cX + pY*pY - 2*pY*cY + cY*cY + pZ*pZ - 2*pZ*cZ + cZ*cZ - getRadio(); // C * 1
+        C = pX*pX - 2*pX*cX + cX*cX + pY*pY - 2*pY*cY + cY*cY + pZ*pZ - 2*pZ*cZ + cZ*cZ - getRadio()*getRadio(); // C * 1
         bool hit = true;
-        if(A < 0.001 || A > -0.001){
+        if(A < 0.001 && A > -0.001){
             hit = false;
         }
         else{
@@ -132,17 +130,25 @@ public:
                 hit = false;
             }
             else{
-                float t_pos = (-B + sqrt(B*B-4*A*C))/2*A;
-                float t_neg = (-B - sqrt(B*B-4*A*C))/2*A;
-                Vec point_A(p+t_pos*v);
-                Vec point_B(p+t_neg*v);
+                float t_pos = (-B + sqrt(root))/(2*A);
+                float t_neg = (-B - sqrt(root))/(2*A);
+                cout << p.getType() << "-" << v.getType() << endl;
+                Vec point_A,point_B;
+                point_A.setX(p.getX()+t_pos*v.getX());
+                point_A.setY(p.getY()+t_pos*v.getY());
+                point_A.setZ(p.getZ()+t_pos*v.getZ());
+                point_A.setType(1);
+                point_B.setX(p.getX()+t_neg*v.getX());
+                point_B.setY(p.getY()+t_neg*v.getY());
+                point_B.setZ(p.getZ()+t_neg*v.getZ());
+                point_B.setType(1);
                 Vec dis_A = point_A-p;
                 Vec dis_B = point_B-p;
                 if(dis_A.modulus()<dis_B.modulus()){
-                    z=point_A;
+                    point=point_A;
                 }
                 else{
-                    z=point_B;
+                    point=point_B;
                 }
             }
         }
