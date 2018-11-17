@@ -28,9 +28,12 @@ public:
 
     Plane() {}
 
+    // p -> centro pixel
+    // v -> vector que pasa por el centro del pixel
+    // point -> punto de intersección
     bool intercepts(Vec p, Vec v, Vec &point){
-        float b = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ();
-        float a = normal.getX()*(origin.getX()-p.getX())+normal.getY()*(origin.getY()-p.getY());
+        float b = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ(); // denominador
+        float a = normal.getX()*(origin.getX()-p.getX())+normal.getY()*(origin.getY()-p.getY()); // numerador
         a += normal.getZ()*(origin.getZ()-p.getZ());
         if(b<0.1&&b>-0.1){
             return false;
