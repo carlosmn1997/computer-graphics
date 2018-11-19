@@ -9,6 +9,7 @@
 #include "../imaging/RGB.h"
 #include "Plane.h"
 #include "Sphere.h"
+#include "../imaging/Image.h"
 
 class Render{
 
@@ -17,6 +18,12 @@ public:
     Render(const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {
         this->numSpheres = 0;
         this->numPlanos = 0;
+        RGB negro(0,0,0);
+        for (int i = 0; i < 144; i++){
+            for (int j = 0; j < 256; j++){
+                img[i][j] = negro;
+            }
+        }
     }
 
     Render() {}
@@ -48,8 +55,10 @@ public:
         ofstream file;
         file.open(path);
         file << "P3" << endl;
+        file << "#MAX=65535" << endl;
+        file << "# mpi_atrium_3.ppm" << endl;
         file << "256 144" << endl;
-        file << "65535" << endl;
+        file << "10000" << endl;
 
         float coefficient = 65535/255;
         for (int i = 0; i < 144; i++){
@@ -67,6 +76,9 @@ public:
         }
         cout<<"final"<<endl;
         file.close();
+        Image image(path);
+        image.equalization();
+        image.writeImage();
     }
 
     const Vec &getU() const {
@@ -120,7 +132,9 @@ private:
                 Vec vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
-                    color = p.getProps();
+                    // vp es el rayo
+                    // pixel es el punto de interseccion
+                    color = renderEquation(pixel, vp, p);
                 }
             }
         }
@@ -150,13 +164,54 @@ private:
         }
     }
 
+    // x -> punto de interseccion
+    // wo -> recta que ha intersectado
+    // o -> objeto con el que ha intersectado
+    // HACERLO EN COORDENADAS LOCALES
+    RGB renderEquation(Vec x, Vec wo, Plane p){
+        // TODO Cambio de coordenadas
+        // Sistema de coordenadas local respecto del punto x en el objeto o
+        ReferenceSystem local = p.createReferenceSystemLocal(x);
+
+        float directLight, incidenceAngle;
+        directLight = calculateDirectLight(x);
+        RGB BRDF = p.getProps();
+        incidenceAngle = 1;
+        return BRDF * directLight * incidenceAngle;
+
+    }
+
+    // El centro de local es el punto de intersección
+    float calculateDirectLight(Vec x){
+        //Vec x = local.changeReferenceSystem(local.getOrigin());
+        float totalLight = 0;
+        Vec light(1, 1, 1, 1);
+        //Vec lightLocal = local.changeReferenceSystem(light);
+        for (int i = 0; i < 1; i++){
+            //TODO  Por cada geometría comprobar si intercepta o no, sino es sombra
+
+            Vec rayo = light - x;
+            // ¿Luz me viene de espaldas?
+            //if (rayo.getZ()>=0) {
+                // p / |c-x|^2
+                totalLight += 1000000 / (pow((rayo).modulus(),2));
+            //}
+            //else{
+          //      cout<<"kk"<<endl;
+            //}
+        }
+        return totalLight;
+    }
+
     Vec u,l,f;
     Vec o;
     Plane ps[200];
     Sphere spheres[200];
+    float lights[10];
     RGB img[144][256];
     int numPlanos;
     int numSpheres;
+    int numLigthts;
 };
 
 #endif //COMPUTER_GRAPHICS_RENDER_H

@@ -20,7 +20,7 @@ public:
     // We suppose that the file is correct
     Image(string fileName){
         ifstream file;
-        file.open("../img/"+fileName);
+        file.open(fileName);
 
         string word;
 

@@ -39,6 +39,10 @@ public:
     void setB(float B) {
         this->B = B;
     }
+
+    RGB operator* (const float& first) const {
+        return RGB(R*first, G*first, B*first);
+    }
 };
 
 

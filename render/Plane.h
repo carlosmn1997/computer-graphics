@@ -77,6 +77,15 @@ public:
         Plane::props = props;
     }
 
+    ReferenceSystem createReferenceSystemLocal(Vec x){
+        ReferenceSystem local;
+        local.setOrigin(x);
+        local.setI(r.getI());
+        local.setJ(r.getJ());
+        local.setK(r.getK());
+        return local;
+    }
+
 private:
     void createRefSystem(){
         d = -origin.getX()*normal.getX() -origin.getY()*normal.getY() - origin.getZ()*normal.getZ();
