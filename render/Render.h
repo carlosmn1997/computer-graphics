@@ -39,16 +39,21 @@ public:
     }
 
     void trazar(){
-        float uMod = u.modulus();
-        float lMod = l.modulus();
-        float fMod = f.modulus();
+        int uMod = u.modulus();
+        int lMod = l.modulus();
+        u.getUnitVector();
+        l.getUnitVector();
         for(int i=uMod;i>-uMod;i--){
             for(int j=-lMod;j<lMod;j++){
-                Vec pixel(j+0.5,i-0.5,fMod,1);
+                Vec pixel = f + (i-0.5)*u + (j+0.5) * l;
+                pixel.setType(1);
                 RGB x = pixelColor(pixel);
-                img[72-i][j+128]= x;
+                img[uMod-i][lMod+j]= x;
             }
         }
+        cout << "ACABO" << endl;
+        u=u*uMod;
+        l=l*lMod;
     }
 
     void escribirImagen(string path){
@@ -174,7 +179,7 @@ private:
         ReferenceSystem local = p.createReferenceSystemLocal(x);
 
         float directLight, incidenceAngle;
-        directLight = calculateDirectLight(x);
+        directLight = calculateDirectLight(local);
         RGB BRDF = p.getProps();
         incidenceAngle = 1;
         return BRDF * directLight * incidenceAngle;
@@ -182,20 +187,24 @@ private:
     }
 
     // El centro de local es el punto de intersección
-    float calculateDirectLight(Vec x){
-        //Vec x = local.changeReferenceSystem(local.getOrigin());
+    float calculateDirectLight(ReferenceSystem local){
+        Matrix referenceSystem = local.getMatrix().inverse();
+        //referenceSystem = local.getMatrix();
+        Vec x = referenceSystem*local.getOrigin();
+        //x = local.getOrigin();
         float totalLight = 0;
         Vec light(1, 1, 1, 1);
-        //Vec lightLocal = local.changeReferenceSystem(light);
+        Vec lightLocal = referenceSystem*light;
+        //lightLocal = light;
         for (int i = 0; i < 1; i++){
             //TODO  Por cada geometría comprobar si intercepta o no, sino es sombra
 
-            Vec rayo = light - x;
+            Vec rayo = lightLocal - x;
             // ¿Luz me viene de espaldas?
-            //if (rayo.getZ()>=0) {
+            if (rayo.getZ()>=0) {
                 // p / |c-x|^2
                 totalLight += 1000000 / (pow((rayo).modulus(),2));
-            //}
+            }
             //else{
           //      cout<<"kk"<<endl;
             //}

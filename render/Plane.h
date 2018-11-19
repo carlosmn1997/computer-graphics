@@ -77,6 +77,10 @@ public:
         Plane::props = props;
     }
 
+    ReferenceSystem getR(){
+        return r;
+    }
+
     ReferenceSystem createReferenceSystemLocal(Vec x){
         ReferenceSystem local;
         local.setOrigin(x);
@@ -88,15 +92,18 @@ public:
 
 private:
     void createRefSystem(){
-        d = -origin.getX()*normal.getX() -origin.getY()*normal.getY() - origin.getZ()*normal.getZ();
-        float z=(-d -normal.getX()-normal.getY())/normal.getZ();
-        z -= normal.getZ();
+        float z = ((-normal.getX() - normal.getY()) / (normal.getZ())) + origin.getZ();
         Vec p(origin.getX()+1,origin.getY()+1,z,1);
         Vec i = p-origin;
         Vec k = Vec::crossProduct(i,normal);
+
+        i.getUnitVector();
+        normal.getUnitVector();
+        k.getUnitVector();
+
         r.setI(i);
-        r.setJ(normal);
-        r.setK(k);
+        r.setJ(k);
+        r.setK(normal);
         r.setOrigin(origin);
     }
 
