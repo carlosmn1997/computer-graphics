@@ -60,10 +60,10 @@ public:
         ofstream file;
         file.open(path);
         file << "P3" << endl;
-        file << "#MAX=65535" << endl;
+        file << "#MAX=1000000" << endl;
         file << "# mpi_atrium_3.ppm" << endl;
         file << "256 144" << endl;
-        file << "10000" << endl;
+        file << "10000000" << endl;
 
         float coefficient = 65535/255;
         for (int i = 0; i < 144; i++){
@@ -82,6 +82,7 @@ public:
         cout<<"final"<<endl;
         file.close();
         Image image(path);
+        //image.gammaCurve(2.2);
         image.equalization();
         image.writeImage();
     }

@@ -29,7 +29,8 @@ public:
 
         // Reading #MAX = ...
         file >> word; // We need parsing
-        m = 65535;
+        //m = 65535;
+        m = 1000000;
 
         // Reading filename
         string line;
@@ -45,7 +46,7 @@ public:
         file >> c;
 
         // Reading RGB
-        float coefficient = m / c;
+        float coefficient = 1;//m / c;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 int R, G, B;
@@ -75,14 +76,13 @@ public:
         file.open("salida.ppm");
         file << "P3" << endl;
         file << x << " " << y << endl;
-        file << "65535" << endl;
+        file << "255" << endl;
 
-        float coefficient = 65535;
+        float coefficient = 255;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
                 int R, G, B;
-                int mucho = 10000000;
                 R = pixel.getR() * coefficient;
                 G = pixel.getG() * coefficient;
                 B = pixel.getB() * coefficient;
@@ -95,9 +95,9 @@ public:
     }
 
     void equalization(){
-        float maxY, X,Y,Z,r,g,b;
+        float maxY, minY, X,Y,Z,r,g,b;
         maxY = 0;
-
+        minY = 1000000;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 RGB pixel = getPixel(i, j);
@@ -105,10 +105,9 @@ public:
                 g = pixel.getG();
                 b = pixel.getB();
                 maxY = max(maxY, RGB_Y(r,g,b));
+                minY = min(minY, RGB_Y(r,g,b));
             }
         }
-
-        float coefficient = (1 / maxY);
 
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
@@ -120,20 +119,23 @@ public:
                 Y = RGB_Y(r,g,b); //* coefficient * m;
                 Z = RGB_Z(r,g,b);
 
-                float x,y,z;
+                // Paso a xyY
+                float x,y;
                 x = X / (X+Y+Z);
                 y = Y / (X+Y+Z);
 
-
+                float XNew, YNew, ZNew;
                 // equalization
-                Y = Y * coefficient;
+                YNew = Y / (maxY-minY);
 
-                X = (Y / y)*x;
-                Z = (Y / y) * (1 - x - y);
+                XNew = (YNew * x) / y;
+                ZNew = (XNew / x) - XNew - YNew;
+                //ZNew = (YNew / y) * ( 1 - x - y );
 
-                pixel.setR(XYZ_R(X,Y,Z));
-                pixel.setG(XYZ_G(X,Y,Z));
-                pixel.setB(XYZ_B(X,Y,Z));
+
+                pixel.setR(min(XYZ_R(XNew,YNew,ZNew),1));
+                pixel.setG(min(XYZ_G(XNew,YNew,ZNew),1));
+                pixel.setB(min(XYZ_B(XNew,YNew,ZNew),1));
                 setPixel(i, j, pixel);
             }
         }
@@ -405,22 +407,22 @@ private:
 
     float RGB_X(float r, float g, float b){
         //return 0.4887180 * r + 0.1762044 * g;
-        return 0.4887180*r + 0.3106803*g + 0.2006017*b;
+        return 0.49*r + 0.31*g + 0.2*b;
     }
 
     float RGB_Y(float r, float g, float b){
         //return 0.3106803 * r + 0.8129847 * g + 0.0102048 * b;
-        return 0.1762044*r + 0.8129847*g + 0.0108109*b;
+        return 0.17697*r + 0.8124*g + 0.01063*b;
     }
 
     float RGB_Z(float r, float g, float b){
         //return 0.2006017 * r + 0.0108109 * g + 0.9897952 * b;
-        return  0.0102048*g  + 0.9897952*b;
+        return  0.01*g  + 0.99*b;
     }
 
     float XYZ_R(float x, float y, float z){
         //return 2.3706743 * x - 0.5138850 * y + 0.0052982 * z;
-        return 2.3706743 * x - 0.9000405*y - 0.4706338*z;
+        return 2.364614 * x - 0.896541*y - 0.468073*z;
     }
 
     float XYZ_G(float x, float y, float z){

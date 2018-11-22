@@ -1,0 +1,8 @@
+//
+// Created by Carlos on 20/11/2018.
+//
+
+#ifndef COMPUTER_GRAPHICS_LIGHT_H
+#define COMPUTER_GRAPHICS_LIGHT_H
+
+#endif //COMPUTER_GRAPHICS_LIGHT_H
