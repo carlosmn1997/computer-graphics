@@ -93,6 +93,10 @@ public:
         z = z / mod;
     }
 
+    bool operator==(const Vec &rhs) const;
+
+    bool operator!=(const Vec &rhs) const;
+
     void changeSign(){
         x = -x;
         y = -y;

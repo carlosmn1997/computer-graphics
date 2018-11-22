@@ -16,6 +16,16 @@ public:
         this->B = B;
     }
 
+    bool operator==(const RGB &rhs) const {
+        return R == rhs.R &&
+               G == rhs.G &&
+               B == rhs.B;
+    }
+
+    bool operator!=(const RGB &rhs) const {
+        return !(rhs == *this);
+    }
+
     float getR() const {
         return R;
     }
@@ -42,6 +52,18 @@ public:
 
     RGB operator* (const float& first) const {
         return RGB(R*first, G*first, B*first);
+    }
+
+    RGB operator / (const float& first) const {
+        return RGB(R/first, G/first, B/first);
+    }
+
+    RGB operator* (const RGB& first) const {
+        return RGB(R*first.getR(), G*first.getG(), B*first.getB());
+    }
+
+    RGB operator+ (const RGB& first) const {
+        return RGB(R+first.getR(), G+first.getG(), B+first.getB());
     }
 };
 

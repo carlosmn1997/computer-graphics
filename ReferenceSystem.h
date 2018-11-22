@@ -117,8 +117,24 @@ public:
         float type = vec.getType();
         return Vec(auxX, auxY, auxZ, type);
     }
+
+    bool operator==(const ReferenceSystem &rhs) const;
+
+    bool operator!=(const ReferenceSystem &rhs) const;
+
 private:
     Vec i, j, k, origin;
 };
+
+bool ReferenceSystem::operator==(const ReferenceSystem &rhs) const {
+    return i == rhs.i &&
+           j == rhs.j &&
+           k == rhs.k &&
+           origin == rhs.origin;
+}
+
+bool ReferenceSystem::operator!=(const ReferenceSystem &rhs) const {
+    return !(rhs == *this);
+}
 
 #endif //COMPUTER_GRAPHICS_REFERENCESYSTEM_H

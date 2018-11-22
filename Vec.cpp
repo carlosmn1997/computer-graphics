@@ -59,3 +59,14 @@ float Vec::getType() const {
 void Vec::setType(float type){
     Vec::type = type;
 }
+
+bool Vec::operator==(const Vec &rhs) const {
+    return x == rhs.x &&
+           y == rhs.y &&
+           z == rhs.z &&
+           type == rhs.type;
+}
+
+bool Vec::operator!=(const Vec &rhs) const {
+    return !(rhs == *this);
+}

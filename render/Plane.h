@@ -31,23 +31,27 @@ public:
     // p -> centro pixel
     // v -> vector que pasa por el centro del pixel
     // point -> punto de intersección
-    bool intercepts(Vec p, Vec v, Vec &point){
-        float b = v.getX()*normal.getX()+v.getY()*normal.getY()+v.getZ()*normal.getZ(); // denominador
-        float a = normal.getX()*(origin.getX()-p.getX())+normal.getY()*(origin.getY()-p.getY()); // numerador
-        a += normal.getZ()*(origin.getZ()-p.getZ());
-        if(b<0.1&&b>-0.1){
+    // r -> respecto de qué sistema nos estan mirando
+    bool intercepts(Vec p, Vec v, Vec &point, ReferenceSystem r) {
+        // Cambiando el sistema de referencia
+        Matrix m = r.getMatrix().inverse();
+        //Vec origin = m * this->origin;
+        //Vec normal = m * this->normal;
+        float b = v.getX() * normal.getX() + v.getY() * normal.getY() + v.getZ() * normal.getZ(); // denominador
+        float a = normal.getX() * (origin.getX() - p.getX()) + normal.getY() * (origin.getY() - p.getY()); // numerador
+        a += normal.getZ() * (origin.getZ() - p.getZ());
+        if (b < 0.1 && b > -0.1) {
             return false;
-        }
-        else{
-            float t = a/b;
-            if(t < -0.001){
+        } else {
+            float t = a / b;
+            point.setX(p.getX() + t * v.getX());
+            point.setY(p.getY() + t * v.getY());
+            point.setZ(p.getZ() + t * v.getZ());
+            point.setType(1);
+            Vec enLocal = m * point;
+            if (enLocal.getZ() < -0.001) {
                 return false;
-            }
-            else{
-                point.setX(p.getX()+t*v.getX());
-                point.setY(p.getY()+t*v.getY());
-                point.setZ(p.getZ()+t*v.getZ());
-                point.setType(1);
+            } else {
                 return true;
             }
         }
@@ -107,9 +111,93 @@ private:
         r.setOrigin(origin);
     }
 
+public:
+    bool operator==(const Plane &rhs) const {
+        return origin == rhs.origin &&
+               normal == rhs.normal &&
+               props == rhs.props &&
+               kd == rhs.kd &&
+               ks == rhs.ks &&
+               alpha == rhs.alpha &&
+               ksp == rhs.ksp &&
+               kr == rhs.kr &&
+               r == rhs.r &&
+               d == rhs.d;
+    }
+
+    bool operator!=(const Plane &rhs) const {
+        return !(rhs == *this);
+    }
+
+private:
+
     Vec origin;
     Vec normal;
     RGB props;
+    // kd -> diffuse coefficient
+    // ks -> specular coefficient
+    // alpha -> shininess
+    // ksp -> perfect specular reflection
+    // kr -> perfect specular refraction
+    RGB kd, ks, alpha, ksp, kr;
+public:
+    const RGB &getKd() const {
+        return kd;
+    }
+
+    void setKd(const RGB &kd) {
+        Plane::kd = kd;
+    }
+
+    const RGB &getKs() const {
+        return ks;
+    }
+
+    void setKs(const RGB &ks) {
+        Plane::ks = ks;
+    }
+
+    const RGB &getAlpha() const {
+        return alpha;
+    }
+
+    void setAlpha(const RGB &alpha) {
+        Plane::alpha = alpha;
+    }
+
+    const RGB &getKsp() const {
+        return ksp;
+    }
+
+    void setKsp(const RGB &ksp) {
+        Plane::ksp = ksp;
+    }
+
+    const RGB &getKr() const {
+        return kr;
+    }
+
+    void setKr(const RGB &kr) {
+        Plane::kr = kr;
+    }
+
+    void setR(const ReferenceSystem &r) {
+        Plane::r = r;
+    }
+
+    float getD() const {
+        return d;
+    }
+
+    void setD(float d) {
+        Plane::d = d;
+    }
+
+    bool isEmitter(){
+        return props.getR() > 0 || props.getG() > 0 || props.getB() > 0;
+    }
+
+private:
     ReferenceSystem r;
     float d;
 };
