@@ -99,6 +99,7 @@ private:
         float z = ((-normal.getX() - normal.getY()) / (normal.getZ())) + origin.getZ();
         Vec p(origin.getX()+1,origin.getY()+1,z,1);
         Vec i = p-origin;
+
         Vec k = Vec::crossProduct(i,normal);
 
         i.getUnitVector();

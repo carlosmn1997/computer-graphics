@@ -165,7 +165,7 @@ private:
                 }
             }
         }
-        int numPaths = 10;
+        int numPaths = 1;
         for (int j = 0; j < numPaths; j++){
            color = color + renderEquation(ptoHit,v,planeHit);
         }
@@ -211,7 +211,7 @@ private:
         bool emitter = false;
 
         if (p.getKd().getB()>0.8){
-           // cout<<"choco azul"<<endl;
+           cout<<"choco azul"<<endl;
         }
         if (p.getKd().getR()>0.8){
             //cout<<"choco rojo"<<endl;

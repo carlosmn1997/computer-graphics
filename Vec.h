@@ -122,6 +122,7 @@ public:
         float auxZ = d.getX()*e.getY() - d.getY()*e.getX();
         return Vec(auxX, auxY, auxZ, d.getType());
     }
+
 private:
     float x, y, z, type;
 };
