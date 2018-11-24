@@ -32,7 +32,7 @@ public:
     // v -> vector que pasa por el centro del pixel en globales
     // point -> punto de intersección
     // r -> respecto de qué sistema nos estan mirando
-    bool intercepts(Vec p, Vec v, Vec &point, ReferenceSystem r) {
+    bool intercepts(Vec p, Vec v, Vec &point) {
         // Cambiando el sistema de referencia
         Matrix m = r.getMatrix().inverse();
         //Vec origin = m * this->origin;

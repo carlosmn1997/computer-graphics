@@ -14,6 +14,7 @@
 #include <random>
 #include <iostream>
 #include <stdlib.h>
+#include "RandomNumber.h"
 
 
 using namespace std;
@@ -33,6 +34,7 @@ public:
         }
         ReferenceSystem UCS(u,l,f,o);
         this->UCS = UCS;
+        this->r = RandomNumber();
     }
 
     Render() {}
@@ -56,7 +58,7 @@ public:
             for(int j=-lMod;j<lMod;j++){
                 Vec pixel = f + (i-0.5)*u + (j+0.5) * l;
                 pixel.setType(1);
-                if ((uMod-i)==73 && (lMod+j) == 51){
+                if (i==17 && (lMod+j) == 0){
                     cout << "debug" << endl;
                 }
                 RGB x = pixelColor(pixel);
@@ -82,7 +84,7 @@ public:
         for (int i = 0; i < 144; i++){
             for (int j = 0; j < 256; j++){
                 int R, G, B;
-                if(i==73&&j==51){
+                if(i==73&&j==54){
                     cout<<"PASA"<<endl;
                 }
                 R = max(img[i][j].getR() * coefficient,0);
@@ -152,7 +154,7 @@ private:
         for(int i=0;i<numPlanos;++i){
             Plane p = ps[i];
             Vec point;
-            if(p.intercepts(pixel,v,point,UCS)){
+            if(p.intercepts(pixel,v,point)){
                 hit=true;
                 //cout<<"Intercepta  -->  " << i << endl;
                 Vec vp = point - pixel;
@@ -168,7 +170,7 @@ private:
                 }
             }
         }
-        int numPaths = 1;
+        int numPaths = 10;
         for (int j = 0; j < numPaths; j++){
            color = color + renderEquation(ptoHit,v,planeHit);
         }
@@ -204,17 +206,14 @@ private:
     // o -> objeto con el que ha intersectado
     // HACERLO EN COORDENADAS LOCALES
     RGB renderEquation(Vec x, Vec wo, Plane p){
-        random_device rd;
-        mt19937 mt(rd());
-        uniform_real_distribution<float> dist(0.0, 1.0);
-        RGB color(0, 0, 0);
+        RGB color(1, 1, 1);
         RGB acumulado(1.0, 1.0, 1.0);
         bool absorcion = false;
         bool interseccion = true;
         bool emitter = false;
 
         if (p.getKd().getB()>0.8){
-           cout<<"choco azul"<<endl;
+           //cout<<"choco azul"<<endl;
         }
         if (p.getKd().getR()>0.8){
             //cout<<"choco rojo"<<endl;
@@ -254,6 +253,7 @@ private:
                 // Muestrear rayo uniform cosine sampling
                 float randNum = randZeroToOne();//dist(mt);
                 float theta = acos(sqrt(1-randNum));
+                randNum = randZeroToOne();
                 float phi = 2 * M_PI * randNum;
 
                 // Sphere coordenates -> cartesian
@@ -263,14 +263,15 @@ private:
 
                 Vec randPoint(i,j,k,POINT);
                 // To local coordinates
-                randPoint = referenceSystem*randPoint;
-                wo = randPoint - x;
+                //randPoint = referenceSystem*randPoint;
+                wo = randPoint - Vec(0, 0, 0, POINT);
+                wo.getUnitVector();
 
                 // To global coordinates
                 wo = local.getMatrix()*wo;
                 x = local.getMatrix()*x;
 
-                // TODO itercepts true or false
+                //wo = Vec(1, -1, -1, DIRECTION);
                 interseccion = nearestIntersection(wo, x, p, wo, p, local);
 
 
@@ -296,7 +297,7 @@ private:
             Plane p = ps[i];
             if (p != myPlane){
                 Vec point;
-                if(p.intercepts(x,v,point,r)){
+                if(p.intercepts(x,v,point)){
                     hit=true;
                     Vec vp = point - x;
                     if(minMod==-1||minMod>vp.modulus()){
@@ -353,7 +354,13 @@ private:
 
     float randZeroToOne()
     {
-        return rand() / (RAND_MAX + 1.);
+        //double lower_bound = 0;
+        //double upper_bound = 1;
+        //std::uniform_real_distribution<double> unif(lower_bound,upper_bound);
+        //std::default_random_engine re;
+        //return unif(re);
+        //return rand() / (RAND_MAX + 1.);
+        return r.giveNumber();
     }
 
     Vec u,l,f;
@@ -366,6 +373,7 @@ private:
     int numPlanos;
     int numSpheres;
     int numLigthts;
+    RandomNumber r;
 };
 
 #endif //COMPUTER_GRAPHICS_RENDER_H
