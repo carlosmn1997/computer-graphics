@@ -15,6 +15,7 @@
 #include <iostream>
 #include <stdlib.h>
 #include "RandomNumber.h"
+#include "Light.h"
 
 
 using namespace std;
@@ -26,6 +27,7 @@ public:
     Render(const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {
         this->numSpheres = 0;
         this->numPlanos = 0;
+        this->numLights = 0;
         RGB negro(0,0,0);
         for (int i = 0; i < 144; i++){
             for (int j = 0; j < 256; j++){
@@ -47,6 +49,11 @@ public:
     void addSphere(Sphere s){
         this->spheres[numSpheres]=s;
         this->numSpheres++;
+    }
+
+    void addLight(Light l){
+        this->lights[numLights]=l;
+        this->numLights++;
     }
 
     void trazar(){
@@ -170,7 +177,7 @@ private:
                 }
             }
         }
-        int numPaths = 10;
+        int numPaths = 30;
         for (int j = 0; j < numPaths; j++){
            color = color + renderEquation(ptoHit,v,planeHit);
         }
@@ -244,11 +251,15 @@ private:
             // TODO normalizar entre 0 y 0.9
 
             if (rr < kd + ks){
+
+                // Luz directa
+                color = color + (p.getKd() / M_PI)*directLight(local, p);
                 // TODO phong
                 // TODO acumular angulo de incidencia
                 acumulado = acumulado * (p.getKd() / M_PI);
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
                 // acumulado = acumulado / ((kd + ks)*)
+
 
                 // Muestrear rayo uniform cosine sampling
                 float randNum = randZeroToOne();//dist(mt);
@@ -268,6 +279,7 @@ private:
                 wo.getUnitVector();
 
                 // To global coordinates
+                // TODO no estoy seguro de wo
                 wo = local.getMatrix()*wo;
                 x = local.getMatrix()*x;
 
@@ -312,8 +324,19 @@ private:
         return hit;
     }
 
+    RGB directLight(ReferenceSystem local, Plane p) {
+        Light l;
+        RGB color(1.0, 1.0, 1.0);
+        for (int i = 0; i < numLights; i++) {
+            l = lights[i];
+            Vec distance = l.getPosition() - local.getOrigin();
+            color = color + (l.getPower() / pow(distance.modulus(),2));
+        }
+        return color;
+    }
+
     // El centro de local es el punto de intersección
-    float calculateDirectLight(ReferenceSystem local){
+    float calculateDirectLight2(ReferenceSystem local){
         Matrix referenceSystem = local.getMatrix().inverse();
         //referenceSystem = local.getMatrix();
         Vec x = referenceSystem*local.getOrigin();
@@ -368,11 +391,11 @@ private:
     ReferenceSystem UCS;
     Plane ps[200];
     Sphere spheres[200];
-    float lights[10];
+    Light lights[10];
     RGB img[144][256];
     int numPlanos;
     int numSpheres;
-    int numLigthts;
+    int numLights;
     RandomNumber r;
 };
 

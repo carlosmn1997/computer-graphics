@@ -1,5 +1,6 @@
 #include <ostream>
 #include "../Render.h"
+#include "../Light.h"
 
 using namespace std;
 
@@ -113,8 +114,8 @@ void pathTracer3(){
    Vec origin2(0,-100,0,1);
    Vec normal2(0,1,0,0);
    // Suelo
-   Plane q(origin2,normal2,RGB(10000,10000,10000));
-   q.setKd(RGB(0,0,0));
+   Plane q(origin2,normal2,RGB(0,0,0));
+   q.setKd(RGB(0.8,0.8,0.8));
    r.addPlane(q);
    Vec origin3(0,100,0,1);
    Vec normal3(0,-1,0,0);
@@ -123,11 +124,22 @@ void pathTracer3(){
    t.setKd(RGB(0.1,0.1,0.8));
    r.addPlane(t);
    // Plano derecha
-   Vec origin4(50,0,0,1);
+   Vec origin4(150,0,0,1);
    Vec normal4(-1,0,0,0);
    Plane v(origin4,normal4,RGB(0, 0,0));
    v.setKd(RGB(0.1,0.8,0.1));
-   //r.addPlane(v);
+   r.addPlane(v);
+   // Plano izquierda
+    Vec origin5(-150,0,0,1);
+    Vec normal5(1,0,0,0);
+    Plane w(origin5,normal5,RGB(0, 0,0));
+    w.setKd(RGB(0.1,0.8,0.1));
+   r.addPlane(w);
+
+   // Luz
+   Light luz(1000000000, Vec(0, 0, 150, POINT));
+   r.addLight(luz);
+
    r.trazar();
    cout<<"acabo y escribo"<<endl;
    r.escribirImagen("nombre.ppm");
