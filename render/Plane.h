@@ -28,8 +28,8 @@ public:
 
     Plane() {}
 
-    // p -> centro pixel
-    // v -> vector que pasa por el centro del pixel
+    // p -> centro pixel en globales
+    // v -> vector que pasa por el centro del pixel en globales
     // point -> punto de intersección
     // r -> respecto de qué sistema nos estan mirando
     bool intercepts(Vec p, Vec v, Vec &point, ReferenceSystem r) {
@@ -48,8 +48,7 @@ public:
             point.setY(p.getY() + t * v.getY());
             point.setZ(p.getZ() + t * v.getZ());
             point.setType(1);
-            Vec enLocal = m * point;
-            if (enLocal.getZ() < -0.001) {
+            if (t < -0.001) {
                 return false;
             } else {
                 return true;
@@ -96,14 +95,64 @@ public:
 
 private:
     void createRefSystem(){
-        float z = ((-normal.getX() - normal.getY()) / (normal.getZ())) + origin.getZ();
-        Vec p(origin.getX()+1,origin.getY()+1,z,1);
-        Vec i = p-origin;
+        float x,y,z;
+        bool xDone = false;
+        bool yDone=false;
+        bool zDone=false;
+        int numberDone=0;
+        if(normal.getX()==0){
+            xDone = true;
+            x = 1;
+            numberDone++;
+        }
+
+        if(normal.getY()==0){
+            yDone = true;
+            y = 1;
+            numberDone++;
+        }
+
+        if(normal.getZ()==0){
+            zDone = true;
+            z = 1;
+            numberDone++;
+        }
+
+        if(numberDone==2){
+            if(!xDone){
+                x = 0;
+            }
+            else if(!yDone){
+                y = 0;
+            }
+            else{
+                z = 0;
+            }
+        }
+        else if(numberDone==1){
+            if(xDone){
+                y = 1;
+                z = -normal.getY()/normal.getZ();
+            }
+            else if(!yDone){
+                x = 1;
+                z = -normal.getX()/normal.getZ();
+            }
+            else{
+                x = 1;
+                y = -normal.getX()/normal.getY();
+            }
+        }
+        else{
+            x = 1;
+            y = 1;
+            z = (-normal.getY()-normal.getX())/normal.getZ();
+        }
+
+        Vec i(x,y,z,0);
+        i.getUnitVector();
 
         Vec k = Vec::crossProduct(i,normal);
-
-        i.getUnitVector();
-        normal.getUnitVector();
         k.getUnitVector();
 
         r.setI(i);

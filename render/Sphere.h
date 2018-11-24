@@ -132,7 +132,7 @@ public:
             else{
                 float t_pos = (-B + sqrt(root))/(2*A);
                 float t_neg = (-B - sqrt(root))/(2*A);
-                cout << p.getType() << "-" << v.getType() << endl;
+                //cout << p.getType() << "-" << v.getType() << endl;
                 Vec point_A,point_B;
                 point_A.setX(p.getX()+t_pos*v.getX());
                 point_A.setY(p.getY()+t_pos*v.getY());

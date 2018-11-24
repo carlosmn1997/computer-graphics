@@ -21,6 +21,14 @@ void rayTracingExample(){
    Vec normal3(0,-1,0,0);
    Plane t(origin3,normal3,RGB(0,0,255));
    r.addPlane(t);
+   Vec origin4(150,0,0,1);
+   Vec normal4(-1,0,0,0);
+   Plane w(origin4,normal4,RGB(5,5,5));
+   r.addPlane(w);
+   Vec origin5(-200,0,0,1);
+   Vec normal5(1,0,0,0);
+   Plane v(origin5,normal5,RGB(255,255,255));
+   r.addPlane(v);
    Vec centre(0,0,200,1);
    Vec axis(0,100,0,0);
    Vec refCity(0,0,150,1);

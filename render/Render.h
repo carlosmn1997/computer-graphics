@@ -56,10 +56,10 @@ public:
             for(int j=-lMod;j<lMod;j++){
                 Vec pixel = f + (i-0.5)*u + (j+0.5) * l;
                 pixel.setType(1);
-                RGB x = pixelColor(pixel);
-                if ((uMod-i)==130 && (lMod+j) == 80){
+                if ((uMod-i)==73 && (lMod+j) == 51){
                     cout << "debug" << endl;
                 }
+                RGB x = pixelColor(pixel);
                 img[uMod-i][lMod+j]= x;
             }
             cout << "Llevo " << i << " de " << -uMod<<endl;
@@ -82,6 +82,9 @@ public:
         for (int i = 0; i < 144; i++){
             for (int j = 0; j < 256; j++){
                 int R, G, B;
+                if(i==73&&j==51){
+                    cout<<"PASA"<<endl;
+                }
                 R = max(img[i][j].getR() * coefficient,0);
                 G = max(img[i][j].getG() * coefficient,0);
                 B = max(img[i][j].getB() * coefficient,0);
@@ -266,7 +269,6 @@ private:
                 // To global coordinates
                 wo = local.getMatrix()*wo;
                 x = local.getMatrix()*x;
-
 
                 // TODO itercepts true or false
                 interseccion = nearestIntersection(wo, x, p, wo, p, local);
