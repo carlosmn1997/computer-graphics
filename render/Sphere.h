@@ -197,6 +197,21 @@ public:
         return hit;
     }
 
+    bool contains( Vec p ){
+        if(p.getType()!=1){
+            std::cout<< "Expected point in sphere contains";
+            std::exit(1);
+        }
+        Vec rad = p - center;
+        float diff = rad.modulus() - getRadio();
+        if(diff < 0.001 && diff > -0.001){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
 };
 
 

@@ -145,8 +145,16 @@ void pathTracer3(){
     w.setKs(RGB(0.2,0.2,0.2));
     w.setAlpha(0.2);
    r.addPlane(w);
+   Vec center(0,-60,175,1);
+   Vec normal6(0,80,0,0);
+   Vec refCity(0,-60,135,1);
+   Sphere s(center,normal6,refCity);
+   s.setKd(RGB(0.1,0.8,0.1));
+   s.setKs(RGB(0.2,0.2,0.2));
+   s.setAlpha(0.2);
+    r.addSphere(s);
 
-   // Luz
+    // Luz
    Light luz(1000000000, Vec(0, 0, 150, POINT));
    r.addLight(luz);
 

@@ -64,11 +64,14 @@ public:
         RandomNumber rn(0.01,0.99);
         Vec pixel;
         double restI,sumJ;
-        RGB x(0,0,0);
-        int numPaths = 100; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 20; // NUMBER OF RAYS PER PIXEL
         for(int i=uMod;i>-uMod;i--){
             for(int j=-lMod;j<lMod;j++){
+                RGB x(0,0,0);
                 for (int k = 0; k < numPaths; k++) {
+                    if(i==0 && j==0){
+                        cout << "x";
+                    }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
                     pixel = f + (i - restI) * u + (j + sumJ) * l;
@@ -162,7 +165,7 @@ private:
         Plane planeHit;
         Sphere sphereHit;
         bool hit=false;
-        bool esfera = false;
+        bool hitEsfera = false;
         Plane p;
         Vec point,vp;
         float distance;
@@ -186,7 +189,6 @@ private:
         }
         for(int i=0;i<numSpheres;i++){
             Sphere s = spheres[i];
-            point;
             if(s.intercepts(pixel,v,point)){
                 hit=true;
                 //cout<<"Intercepta esferita papa" <<endl;
@@ -197,11 +199,11 @@ private:
                     color = s.getProps();
                     sphereHit = s;
                     ptoHit = point;
-                    esfera = true;
+                    hitEsfera = true;
                 }
             }
         }
-        if(esfera){
+        if(hitEsfera){
             Vec normal = ptoHit - sphereHit.getCenter();
             normal.getUnitVector();
             planeHit = Plane(ptoHit,normal,sphereHit.getProps());
@@ -303,8 +305,7 @@ private:
                 for(int i=0;i<numLights;++i){
                     wiDirecta = lights[i].getPosition()-local.getOrigin();
                     wiDirecta.getUnitVector();
-                    color = color + phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo,
-                            wiDirecta) * directLight(local, p,lights[i]);
+                    color = color + acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wiDirecta) * directLight(local, p,lights[i]);
 
                 }
                 // TODO phong
@@ -345,8 +346,11 @@ private:
         bool hit=false;
         Vec point;
         Vec vp;
+        Plane p;
+        Sphere s,aux;
+        bool hitSphere = false;
         for(int i=0;i<numPlanos;++i){
-            Plane p = ps[i];
+            p = ps[i];
             if (p != myPlane){
                 if(p.intercepts(x,v,point)){
                     hit=true;
@@ -358,7 +362,29 @@ private:
                     }
                 }
             }
-
+        }
+        for(int i=0;i<numSpheres;++i){
+            s = spheres[i];
+            if (!s.contains(p.getOrigin())){
+                if(s.intercepts(x,v,point)){
+                    hit=true;
+                    vp = point - x;
+                    if(minMod==-1||minMod>vp.modulus()){
+                        minMod=vp.modulus();
+                        ptoHit = point;
+                        aux = s;
+                        hitSphere = true;
+                    }
+                }
+            }
+        }
+        if(hitSphere){
+            Vec normal = ptoHit - aux.getCenter();
+            normal.getUnitVector();
+            planeHit = Plane(ptoHit,normal,aux.getProps());
+            planeHit.setKs(aux.getKs());
+            planeHit.setKd(aux.getKd());
+            planeHit.setAlpha(aux.getAlpha());
         }
         return hit;
     }
@@ -366,7 +392,42 @@ private:
     RGB directLight(ReferenceSystem local, Plane p,Light l) {
         RGB color(1.0, 1.0, 1.0);
         Vec distance = l.getPosition() - local.getOrigin();
-        color = color + (l.getPower() / pow(distance.modulus(),2));
+        Plane pAux;
+        Sphere s;
+        bool hit;
+        Vec vp,point;
+        Vec x = l.getPosition();
+        for(int i=0;i<numPlanos;++i){
+            pAux = ps[i];
+            if (pAux != p){
+                if(p.intercepts(x,distance,point)){
+                    vp = point - x;
+                    if(vp.modulus()<distance.modulus()){
+                        hit = true;
+                    }
+                }
+            }
+        }
+        if(!hit){
+            for(int i=0;i<numSpheres;++i) {
+                s = spheres[i];
+                if (!s.contains(p.getOrigin())) {
+                    if (s.intercepts(x, distance, point)) {
+                        hit = true;
+                        vp = point - x;
+                        if (vp.modulus()<distance.modulus()) {
+                            hit = true;
+                        }
+                    }
+                }
+            }
+        }
+        if(!hit) {
+            color = color + (l.getPower() / pow(distance.modulus(), 2));
+        }
+        else{
+            color = RGB(0.5,0.5,0.5);
+        }
         return color;
     }
 
