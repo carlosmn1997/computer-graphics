@@ -203,8 +203,8 @@ public:
             std::exit(1);
         }
         Vec rad = p - center;
-        float diff = rad.modulus() - getRadio();
-        if(diff < 0.001 && diff > -0.001){
+        float diff = abs(rad.modulus() - getRadio());
+        if(diff < 0.1){
             return true;
         }
         else{

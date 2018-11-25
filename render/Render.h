@@ -305,12 +305,13 @@ private:
                 for(int i=0;i<numLights;++i){
                     wiDirecta = lights[i].getPosition()-local.getOrigin();
                     wiDirecta.getUnitVector();
-                    color = color + acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wiDirecta) * directLight(local, p,lights[i]);
-
+                    RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wiDirecta);
+                    RGB directLightVal = directLight(local, p,lights[i]);
+                    color = color + acumulado * phong * directLightVal / (2 * M_PI); // Se divide para la pdf
                 }
                 // TODO phong
                 // TODO acumular angulo de incidencia
-                acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi);
+                acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
                 // acumulado = acumulado / ((kd + ks)*)
 
@@ -319,7 +320,6 @@ private:
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
 
                 wo = x - xViejo;
-
             }
             else{ // rr indica absorcion
                 absorcion = true;
@@ -367,13 +367,15 @@ private:
             s = spheres[i];
             if (!s.contains(p.getOrigin())){
                 if(s.intercepts(x,v,point)){
-                    hit=true;
                     vp = point - x;
-                    if(minMod==-1||minMod>vp.modulus()){
-                        minMod=vp.modulus();
-                        ptoHit = point;
-                        aux = s;
-                        hitSphere = true;
+                    if(!abs(vp.modulus())<0.1){
+                        hit = true;
+                        if (minMod == -1 || minMod > vp.modulus()) {
+                            minMod = vp.modulus();
+                            ptoHit = point;
+                            aux = s;
+                            hitSphere = true;
+                        }
                     }
                 }
             }

@@ -102,7 +102,7 @@ void pathTracer2(){
 void pathTracer3(){
    Vec l(-128,0,0,0);
    Vec u(0,72,0,0);
-   Vec f(0,0,100,0);
+   Vec f(0,0,75,0);
    Vec o(0,0,0,1);
    Render r(u,l,f,o);
    Vec origin1(0,0,250,1);
@@ -145,9 +145,10 @@ void pathTracer3(){
     w.setKs(RGB(0.2,0.2,0.2));
     w.setAlpha(0.2);
    r.addPlane(w);
-   Vec center(0,-60,175,1);
+   // Pelota
+   Vec center(100,0,175,1);
    Vec normal6(0,80,0,0);
-   Vec refCity(0,-60,135,1);
+   Vec refCity(100,0,135,1);
    Sphere s(center,normal6,refCity);
    s.setKd(RGB(0.1,0.8,0.1));
    s.setKs(RGB(0.2,0.2,0.2));
@@ -155,7 +156,7 @@ void pathTracer3(){
     r.addSphere(s);
 
     // Luz
-   Light luz(1000000000, Vec(0, 0, 150, POINT));
+   Light luz(100000000, Vec(0, 0, 100, POINT));
    r.addLight(luz);
 
    r.trazar();
@@ -163,10 +164,73 @@ void pathTracer3(){
    r.escribirImagen("nombre.ppm");
 }
 
+void pathTracer4(){
+    Vec l(-128,0,0,0);
+    Vec u(0,72,0,0);
+    Vec f(0,0,75,0);
+    Vec o(0,0,0,1);
+    Render r(u,l,f,o);
+    // Plano derecha
+    Vec origin4(-150,0,0,1);
+    Vec normal4(-1,0,0,0);
+    Plane v(origin4,normal4,RGB(0, 0,0));
+    v.setKd(RGB(0.8,0.8,0.8));
+    v.setKs(RGB(0.2,0.2,0.2));
+    v.setAlpha(0.2);
+    r.addPlane(v);
+    // Pelota
+    Vec center(-100,0,175,1);
+    Vec normal6(0,80,0,0);
+    Vec refCity(-100,0,135,1);
+    Sphere s(center,normal6,refCity);
+    s.setKd(RGB(0.1,0.8,0.1));
+    s.setKs(RGB(0.2,0.2,0.2));
+    s.setAlpha(0.2);
+    r.addSphere(s);
+
+    // Pelota
+    Vec center2(30,0,160,1);
+    Vec normal2(0,60,0,0);
+    Vec refCity2(30,0,130,1);
+    Sphere s2(center2,normal2,refCity2);
+    s2.setProps(RGB(1000000, 1000000, 1000000));
+    //s2.setKd(RGB(0.1,0.8,0.1));
+    //s2.setKs(RGB(0.2,0.2,0.2));
+    //s2.setAlpha(0.2);
+    //r.addSphere(s2);
+
+    Vec origin1(0,0,250,1);
+    Vec normal(0,0,-1,0);
+    // Fondo
+    Plane p(origin1,normal,RGB(0,0,0));
+    p.setKd(RGB(0.8,0.1,0.1));
+    p.setKs(RGB(0.2,0.2,0.2));
+    p.setAlpha(0.2);
+    r.addPlane(p);
+
+    // Plano izquierda
+    Vec origin5(150,0,0,1);
+    Vec normal5(1,0,0,0);
+    Plane w(origin5,normal5,RGB(0, 0,0));
+    w.setKd(RGB(0.1,0.8,0.1));
+    w.setKs(RGB(0.2,0.2,0.2));
+    w.setAlpha(0.2);
+    r.addPlane(w);
+
+    // Luz
+    Light luz(1000000000, Vec(30,50,160,1));
+    r.addLight(luz);
+
+    r.trazar();
+    cout<<"acabo y escribo"<<endl;
+    r.escribirImagen("nombre.ppm");
+}
+
 
 int main( int argc, char * argv[] )
 {
    //rayTracingExample();
-   pathTracer3();
+   //pathTracer3();
+   pathTracer4();
    return 0;
 }
