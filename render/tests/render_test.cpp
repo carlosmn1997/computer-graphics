@@ -110,30 +110,40 @@ void pathTracer3(){
    // Fondo
    Plane p(origin1,normal,RGB(0,0,0));
    p.setKd(RGB(0.8,0.1,0.1));
+   p.setKs(RGB(0.2,0.2,0.2));
+   p.setAlpha(0.2);
    r.addPlane(p);
    Vec origin2(0,-100,0,1);
    Vec normal2(0,1,0,0);
    // Suelo
    Plane q(origin2,normal2,RGB(0,0,0));
    q.setKd(RGB(0.8,0.8,0.8));
+   q.setKs(RGB(0.2,0.2,0.2));
+   q.setAlpha(0.2);
    r.addPlane(q);
    Vec origin3(0,100,0,1);
    Vec normal3(0,-1,0,0);
    // Techo
    Plane t(origin3,normal3,RGB(0, 0,0));
    t.setKd(RGB(0.1,0.1,0.8));
+   t.setKs(RGB(0.2,0.2,0.2));
+   t.setAlpha(0.2);
    r.addPlane(t);
    // Plano derecha
    Vec origin4(150,0,0,1);
    Vec normal4(-1,0,0,0);
    Plane v(origin4,normal4,RGB(0, 0,0));
    v.setKd(RGB(0.1,0.8,0.1));
+   v.setKs(RGB(0.2,0.2,0.2));
+   v.setAlpha(0.2);
    r.addPlane(v);
    // Plano izquierda
     Vec origin5(-150,0,0,1);
     Vec normal5(1,0,0,0);
     Plane w(origin5,normal5,RGB(0, 0,0));
     w.setKd(RGB(0.1,0.8,0.1));
+    w.setKs(RGB(0.2,0.2,0.2));
+    w.setAlpha(0.2);
    r.addPlane(w);
 
    // Luz

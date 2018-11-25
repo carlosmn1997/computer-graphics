@@ -34,7 +34,6 @@ public:
     // r -> respecto de qué sistema nos estan mirando
     bool intercepts(Vec p, Vec v, Vec &point) {
         // Cambiando el sistema de referencia
-        Matrix m = r.getMatrix().inverse();
         //Vec origin = m * this->origin;
         //Vec normal = m * this->normal;
         float b = v.getX() * normal.getX() + v.getY() * normal.getY() + v.getZ() * normal.getZ(); // denominador
@@ -189,7 +188,8 @@ private:
     // alpha -> shininess
     // ksp -> perfect specular reflection
     // kr -> perfect specular refraction
-    RGB kd, ks, alpha, ksp, kr;
+    RGB kd, ks, ksp, kr;
+    float alpha;
 public:
     const RGB &getKd() const {
         return kd;
@@ -207,11 +207,11 @@ public:
         Plane::ks = ks;
     }
 
-    const RGB &getAlpha() const {
+    const float &getAlpha() const {
         return alpha;
     }
 
-    void setAlpha(const RGB &alpha) {
+    void setAlpha(const float &alpha) {
         Plane::alpha = alpha;
     }
 

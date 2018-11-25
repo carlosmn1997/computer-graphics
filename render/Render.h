@@ -61,14 +61,21 @@ public:
         int lMod = l.modulus();
         u.getUnitVector();
         l.getUnitVector();
+        RandomNumber rn(0.01,0.99);
+        Vec pixel;
+        double restI,sumJ;
+        RGB x(0,0,0);
+        int numPaths = 100; // NUMBER OF RAYS PER PIXEL
         for(int i=uMod;i>-uMod;i--){
             for(int j=-lMod;j<lMod;j++){
-                Vec pixel = f + (i-0.5)*u + (j+0.5) * l;
-                pixel.setType(1);
-                if (i==17 && (lMod+j) == 0){
-                    cout << "debug" << endl;
+                for (int k = 0; k < numPaths; k++) {
+                    restI = rn.giveNumber();
+                    sumJ = rn.giveNumber();
+                    pixel = f + (i - restI) * u + (j + sumJ) * l;
+                    pixel.setType(1);
+                    x = x + pixelColor(pixel);
                 }
-                RGB x = pixelColor(pixel);
+                x = x / numPaths;
                 img[uMod-i][lMod+j]= x;
             }
             cout << "Llevo " << i << " de " << -uMod<<endl;
@@ -153,19 +160,19 @@ private:
         RGB color(0,0,0);
         Vec ptoHit;
         Plane planeHit;
+        Sphere sphereHit;
         bool hit=false;
-        // Debug
-        if(pixel.getY() > -50 && pixel.getY() < -52 ){
-            //cout << "Debug pixel" << endl;
-        }
+        bool esfera = false;
+        Plane p;
+        Vec point,vp;
+        float distance;
         for(int i=0;i<numPlanos;++i){
-            Plane p = ps[i];
-            Vec point;
+            p = ps[i];
             if(p.intercepts(pixel,v,point)){
                 hit=true;
                 //cout<<"Intercepta  -->  " << i << endl;
-                Vec vp = point - pixel;
-                float distance = vp.modulus();
+                vp = point - pixel;
+                distance = vp.modulus();
                 if(minMod==-1||minMod>distance){
                     minMod=vp.modulus();
                     planeHit = p;
@@ -177,24 +184,33 @@ private:
                 }
             }
         }
-        int numPaths = 30;
-        for (int j = 0; j < numPaths; j++){
-           color = color + renderEquation(ptoHit,v,planeHit);
-        }
-        color = color / numPaths;
         for(int i=0;i<numSpheres;i++){
             Sphere s = spheres[i];
-            Vec point;
+            point;
             if(s.intercepts(pixel,v,point)){
                 hit=true;
                 //cout<<"Intercepta esferita papa" <<endl;
                 //cout << point.getX() << "-" << point.getY() << "-" << point.getZ() << endl;
-                Vec vp = point - pixel;
+                vp = point - pixel;
                 if(minMod==-1||minMod>vp.modulus()){
                     minMod=vp.modulus();
                     color = s.getProps();
+                    sphereHit = s;
+                    ptoHit = point;
+                    esfera = true;
                 }
             }
+        }
+        if(esfera){
+            Vec normal = ptoHit - sphereHit.getCenter();
+            normal.getUnitVector();
+            planeHit = Plane(ptoHit,normal,sphereHit.getProps());
+            planeHit.setKs(sphereHit.getKs());
+            planeHit.setKd(sphereHit.getKd());
+            planeHit.setAlpha(sphereHit.getAlpha());
+        }
+        if(hit) {
+            color = renderEquation(ptoHit, v, planeHit);
         }
         return color;
     }
@@ -228,15 +244,23 @@ private:
         else if(p.getProps().getB() > 0){
         //    cout << "choco emisor" << endl;
         }
+        ReferenceSystem local;
+        Matrix referenceSystem;
+        float rr;
+        float kd, ks, ksp, kr;
+        float randNum,theta,phi,i,j,k;
+        Vec wi;
+        Vec wiDirecta;
+        Vec xViejo;
         while (!absorcion && interseccion && !emitter){
             // Sistema de coordenadas local respecto del punto x en el objeto o
-            ReferenceSystem local = p.createReferenceSystemLocal(x);
-            Matrix referenceSystem = local.getMatrix().inverse();
+            local = p.createReferenceSystemLocal(x);
+            referenceSystem = local.getMatrix().inverse();
             x = referenceSystem*x;
 
             // Tiro ruleta rusa
             // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
-            float rr = randZeroToOne();//dist(mt);
+            rr = randZeroToOne();//dist(mt);
 
             if(p.isEmitter()){
                 color = color + acumulado * p.getProps();
@@ -244,7 +268,6 @@ private:
             }
 
             // TODO sacar los valores
-            float kd, ks, ksp, kr;
             kd = 0.3;
             ks = 0.5;
 
@@ -252,40 +275,49 @@ private:
 
             if (rr < kd + ks){
 
-                // Luz directa
-                color = color + (p.getKd() / M_PI)*directLight(local, p);
-                // TODO phong
-                // TODO acumular angulo de incidencia
-                acumulado = acumulado * (p.getKd() / M_PI);
-                // TODO dividir para el anguludo de incidencia con la probabilidad esa
-                // acumulado = acumulado / ((kd + ks)*)
-
-
                 // Muestrear rayo uniform cosine sampling
-                float randNum = randZeroToOne();//dist(mt);
-                float theta = acos(sqrt(1-randNum));
+                randNum = randZeroToOne();//dist(mt);
+                theta = acos(sqrt(1-randNum));
                 randNum = randZeroToOne();
-                float phi = 2 * M_PI * randNum;
+                phi = 2 * M_PI * randNum;
 
                 // Sphere coordenates -> cartesian
-                float i = sin(theta)*cos(phi);
-                float j = sin(theta)*sin(phi);
-                float k = cos(theta);
+                i = sin(theta)*cos(phi);
+                j = sin(theta)*sin(phi);
+                k = cos(theta);
 
                 Vec randPoint(i,j,k,POINT);
                 // To local coordinates
                 //randPoint = referenceSystem*randPoint;
-                wo = randPoint - Vec(0, 0, 0, POINT);
+                wi = randPoint - Vec(0, 0, 0, POINT);
+                wi.getUnitVector();
                 wo.getUnitVector();
 
                 // To global coordinates
                 // TODO no estoy seguro de wo
-                wo = local.getMatrix()*wo;
+                wi = local.getMatrix()*wi;
                 x = local.getMatrix()*x;
 
-                //wo = Vec(1, -1, -1, DIRECTION);
-                interseccion = nearestIntersection(wo, x, p, wo, p, local);
+                // Luz directa
+                //color = color + (p.getKd() / M_PI)*directLight(local, p);
+                for(int i=0;i<numLights;++i){
+                    wiDirecta = lights[i].getPosition()-local.getOrigin();
+                    wiDirecta.getUnitVector();
+                    color = color + phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo,
+                            wiDirecta) * directLight(local, p,lights[i]);
 
+                }
+                // TODO phong
+                // TODO acumular angulo de incidencia
+                acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi);
+                // TODO dividir para el anguludo de incidencia con la probabilidad esa
+                // acumulado = acumulado / ((kd + ks)*)
+
+                //wo = Vec(1, -1, -1, DIRECTION);
+                xViejo = x;
+                interseccion = nearestIntersection(wi, x, p, x, p, local);
+
+                wo = x - xViejo;
 
             }
             else{ // rr indica absorcion
@@ -299,19 +331,26 @@ private:
 
     }
 
+    RGB phongBRDF(RGB kd, RGB ks,float alpha, Vec wo, Vec wi){
+        float aux = pow(abs(wo*wi),alpha);
+        RGB part1 = kd / M_PI + ks * (alpha + 2)/(2*M_PI) * RGB(aux,aux,aux);
+        return part1;
+    }
+
     // v -> rayo
     // x -> origen del rayo
     bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r){
         float minMod=-1;
         RGB color(0,0,0);
         bool hit=false;
+        Vec point;
+        Vec vp;
         for(int i=0;i<numPlanos;++i){
             Plane p = ps[i];
             if (p != myPlane){
-                Vec point;
                 if(p.intercepts(x,v,point)){
                     hit=true;
-                    Vec vp = point - x;
+                    vp = point - x;
                     if(minMod==-1||minMod>vp.modulus()){
                         minMod=vp.modulus();
                         ptoHit = point;
@@ -324,14 +363,10 @@ private:
         return hit;
     }
 
-    RGB directLight(ReferenceSystem local, Plane p) {
-        Light l;
+    RGB directLight(ReferenceSystem local, Plane p,Light l) {
         RGB color(1.0, 1.0, 1.0);
-        for (int i = 0; i < numLights; i++) {
-            l = lights[i];
-            Vec distance = l.getPosition() - local.getOrigin();
-            color = color + (l.getPower() / pow(distance.modulus(),2));
-        }
+        Vec distance = l.getPosition() - local.getOrigin();
+        color = color + (l.getPower() / pow(distance.modulus(),2));
         return color;
     }
 
@@ -367,12 +402,6 @@ private:
 
     RGB lambertian(RGB kd){
         return kd / M_PI;
-    }
-
-    RGB phong(Vec x, Vec wi, Vec w0, Plane p){
-        RGB alpha = p.getAlpha();
-        // return ((alpha + 2) / (2 * M_PI))*;
-        return alpha;
     }
 
     float randZeroToOne()

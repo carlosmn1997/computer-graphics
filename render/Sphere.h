@@ -65,7 +65,49 @@ private:
     Vec center, axis, referenceCity;
     ReferenceSystem r;
     RGB props;
+    RGB kd, ks, ksp, kr;
+    float alpha;
 public:
+
+    const RGB &getKd() const {
+        return kd;
+    }
+
+    void setKd(const RGB &kd) {
+        Sphere::kd = kd;
+    }
+
+    const RGB &getKs() const {
+        return ks;
+    }
+
+    void setKs(const RGB &ks) {
+        Sphere::ks = ks;
+    }
+
+    const RGB &getKsp() const {
+        return ksp;
+    }
+
+    void setKsp(const RGB &ksp) {
+        Sphere::ksp = ksp;
+    }
+
+    const RGB &getKr() const {
+        return kr;
+    }
+
+    void setKr(const RGB &kr) {
+        Sphere::kr = kr;
+    }
+
+    float getAlpha() const {
+        return alpha;
+    }
+
+    void setAlpha(float alpha) {
+        Sphere::alpha = alpha;
+    }
 
     const RGB &getProps() const {
         return props;

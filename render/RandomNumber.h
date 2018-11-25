@@ -14,6 +14,10 @@ public:
         unif = std::uniform_real_distribution<double>(lower_bound,upper_bound);
     }
 
+    RandomNumber(double lower,double upper){
+        unif = std::uniform_real_distribution<double>(lower,upper);
+    }
+
     float giveNumber(){
         return unif(re);
     }
