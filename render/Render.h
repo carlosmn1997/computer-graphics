@@ -433,38 +433,21 @@ private:
         return color;
     }
 
-    // El centro de local es el punto de intersección
-    float calculateDirectLight2(ReferenceSystem local){
-        Matrix referenceSystem = local.getMatrix().inverse();
-        //referenceSystem = local.getMatrix();
-        Vec x = referenceSystem*local.getOrigin();
-        //x = local.getOrigin();
-        float totalLight = 0;
-        Vec light(1, 1, 1, 1);
-        Vec lightLocal = referenceSystem*light;
-        //lightLocal = light;
-        for (int i = 0; i < 1; i++){
-            //TODO  Por cada geometría comprobar si intercepta o no, sino es sombra
 
-            Vec rayo = lightLocal - x;
-            // ¿Luz me viene de espaldas?
-            if (rayo.getZ()>=0) {
-                // p / |c-x|^2
-                totalLight += 1000000 / (pow((rayo).modulus(),2));
-            }
-            //else{
-          //      cout<<"kk"<<endl;
-            //}
-        }
-        return totalLight;
-    }
+    // Normalizar los valores de la ruleta rusa para asegurar absorción
+    void normalizeRR(RGB& kd, RGB& ks, RGB& ksp, RGB& kr){
+        float maxKd = kd.getMax();
+        float maxKs = ks.getMax();
+        float phong = maxKs + maxKd;
+        float maxKsp = ksp.getMax();
+        float maxKr = kr.getMax();
 
-   // RGB brdf(Vec x, Vec wi, Vec w0, Plane p){
-    //    return lambertian(p.getProps()) + phong(x, wi, w0);
-    //}
+        float denominador = (phong + maxKsp + maxKr) * 1.1; // Para asegurarnos un 10% de absorción
+        kd = kd / denominador;
+        ks = ks / denominador;
+        ksp = ksp / denominador;
+        kr = kr / denominador;
 
-    RGB lambertian(RGB kd){
-        return kd / M_PI;
     }
 
     float randZeroToOne()
