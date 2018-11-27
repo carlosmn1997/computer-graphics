@@ -4,6 +4,7 @@
 
 #ifndef COMPUTER_GRAPHICS_RGB_H
 #define COMPUTER_GRAPHICS_RGB_H
+#include <iostream>
 
 class RGB{
 private:
@@ -48,6 +49,10 @@ public:
 
     void setB(float B) {
         this->B = B;
+    }
+
+    float getMax(){
+        return std::max(R, G, B);
     }
 
     RGB operator* (const float& first) const {
