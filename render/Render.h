@@ -24,14 +24,17 @@ class Render{
 
 public:
 
-    Render(const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {
+    Render(const int x, const int y, const Vec &u, const Vec &l, const Vec &f, const Vec &o) : u(u), l(l), f(f), o(o) {
         this->numSpheres = 0;
         this->numPlanos = 0;
         this->numLights = 0;
+        this->x=x;
+        this->y=y;
         RGB negro(0,0,0);
-        for (int i = 0; i < 144; i++){
-            for (int j = 0; j < 256; j++){
-                img[i][j] = negro;
+        img = new RGB[x*y];
+        for (int i = 0; i < x; i++){
+            for (int j = 0; j < y; j++){
+                this->setPixel(i,j,negro);
             }
         }
         ReferenceSystem UCS(u,l,f,o);
@@ -61,15 +64,16 @@ public:
         int lMod = l.modulus();
         u.getUnitVector();
         l.getUnitVector();
-        RandomNumber rn(0.01,0.99);
+        RandomNumber rn(0.001,0.199);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 20; // NUMBER OF RAYS PER PIXEL
-        for(int i=uMod;i>-uMod;i--){
-            for(int j=-lMod;j<lMod;j++){
+        int numPaths = 8; // NUMBER OF RAYS PER PIXEL
+        for(double i=uMod;i>-uMod;i=i-0.2){
+            for(double j=-lMod;j<lMod;j=j+0.2){
                 RGB x(0,0,0);
+               // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if(i==0 && j==0){
+                    if(i==-3 && j==-4){
                         cout << "x";
                     }
                     restI = rn.giveNumber();
@@ -79,9 +83,9 @@ public:
                     x = x + pixelColor(pixel);
                 }
                 x = x / numPaths;
-                img[uMod-i][lMod+j]= x;
+                this->setPixel((uMod-i)*5,(lMod+j)*5,x);
             }
-            cout << "Llevo " << i << " de " << -uMod<<endl;
+            cout << "Escribo " << (uMod-i)*5 << " de " << uMod * 10 <<endl;
         }
         cout << "ACABO" << endl;
         u=u*uMod;
@@ -94,19 +98,20 @@ public:
         file << "P3" << endl;
         file << "#MAX=1000000" << endl;
         file << "# mpi_atrium_3.ppm" << endl;
-        file << "256 144" << endl;
+        file << "1280 720" << endl;
         file << "10000000" << endl;
 
         float coefficient = 1;//65535/255;
-        for (int i = 0; i < 144; i++){
-            for (int j = 0; j < 256; j++){
+        for (int i = 0; i < x; i++){
+            for (int j = 0; j < y; j++){
                 int R, G, B;
                 if(i==73&&j==54){
                     cout<<"PASA"<<endl;
                 }
-                R = max(img[i][j].getR() * coefficient,0);
-                G = max(img[i][j].getG() * coefficient,0);
-                B = max(img[i][j].getB() * coefficient,0);
+                RGB aux = this->getPixel(i,j);
+                R = max(aux.getR() * coefficient,0);
+                G = max(aux.getG() * coefficient,0);
+                B = max(aux.getB() * coefficient,0);
                 file << R << " " << G << " " << B << "   ";
             }
             file << '\n';
@@ -117,8 +122,8 @@ public:
         cout<<"final"<<endl;
         file.close();
         Image image(path);
-        //image.gammaCurve(2.2);
-        image.equalization();
+        image.gammaCurve(2.2);
+        //image.equalization();
         image.writeImage();
     }
 
@@ -259,14 +264,19 @@ private:
             local = p.createReferenceSystemLocal(x);
             referenceSystem = local.getMatrix().inverse();
             x = referenceSystem*x;
-
-            // Tiro ruleta rusa
-            // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
-            rr = randZeroToOne();//dist(mt);
+            wo.getUnitVector();
 
             if(p.isEmitter()){
                 color = color + acumulado * p.getProps();
                 emitter = true;
+            }
+
+            for(int i=0;i<numLights;++i){
+                wiDirecta = lights[i].getPosition()-local.getOrigin();
+                wiDirecta.getUnitVector();
+                RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wiDirecta, local.getK());
+                RGB directLightVal = directLight(local, p,lights[i]);
+                color = color + acumulado * phong * directLightVal;
             }
 
             // TODO sacar los valores
@@ -274,6 +284,11 @@ private:
             ks = 0.5;
 
             // TODO normalizar entre 0 y 0.9
+
+
+            // Tiro ruleta rusa
+            // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
+            rr = randZeroToOne();//dist(mt);
 
             if (rr < kd + ks){
 
@@ -293,7 +308,6 @@ private:
                 //randPoint = referenceSystem*randPoint;
                 wi = randPoint - Vec(0, 0, 0, POINT);
                 wi.getUnitVector();
-                wo.getUnitVector();
 
                 // To global coordinates
                 // TODO no estoy seguro de wo
@@ -302,13 +316,6 @@ private:
 
                 // Luz directa
                 //color = color + (p.getKd() / M_PI)*directLight(local, p);
-                for(int i=0;i<numLights;++i){
-                    wiDirecta = lights[i].getPosition()-local.getOrigin();
-                    wiDirecta.getUnitVector();
-                    RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wiDirecta);
-                    RGB directLightVal = directLight(local, p,lights[i]);
-                    color = color + acumulado * phong * directLightVal / (2 * M_PI); // Se divide para la pdf
-                }
                 // TODO phong
                 // TODO acumular angulo de incidencia
                 acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
@@ -394,41 +401,46 @@ private:
     RGB directLight(ReferenceSystem local, Plane p,Light l) {
         RGB color(1.0, 1.0, 1.0);
         Vec distance = l.getPosition() - local.getOrigin();
-        Plane pAux;
-        Sphere s;
-        bool hit;
-        Vec vp,point;
-        Vec x = l.getPosition();
-        for(int i=0;i<numPlanos;++i){
-            pAux = ps[i];
-            if (pAux != p){
-                if(p.intercepts(x,distance,point)){
-                    vp = point - x;
-                    if(vp.modulus()<distance.modulus()){
-                        hit = true;
-                    }
-                }
-            }
-        }
-        if(!hit){
-            for(int i=0;i<numSpheres;++i) {
-                s = spheres[i];
-                if (!s.contains(p.getOrigin())) {
-                    if (s.intercepts(x, distance, point)) {
-                        hit = true;
+        Matrix localInv = local.getMatrix().inverse();
+        Vec distanceLocal = localInv * distance;
+        if(distanceLocal.getZ()>0) {
+            Plane pAux;
+            Sphere s;
+            bool hit = false;
+            Vec vp, point;
+            Vec x = l.getPosition();
+            for (int i = 0; i < numPlanos; ++i) {
+                pAux = ps[i];
+                if (pAux != p) {
+                    if (p.intercepts(x, distance, point)) {
                         vp = point - x;
-                        if (vp.modulus()<distance.modulus()) {
+                        if (vp.modulus() < distance.modulus()) {
                             hit = true;
                         }
                     }
                 }
             }
-        }
-        if(!hit) {
-            color = color + (l.getPower() / pow(distance.modulus(), 2));
+            if (!hit) {
+                for (int i = 0; i < numSpheres; ++i) {
+                    s = spheres[i];
+                    if (s.intercepts(x, distance, point)) {
+                        vp = point - x;
+                        if (vp.modulus() < distance.modulus()) {
+                            if(vp.modulus()>0.001){
+                                hit = true;
+                            }
+                        }
+                    }
+                }
+            }
+            if (!hit) {
+                color = color + (l.getPower() / pow(distance.modulus(), 2));
+            } else {
+                color = RGB(0.5, 0.5, 0.5);
+            }
         }
         else{
-            color = RGB(0.5,0.5,0.5);
+            color = RGB(0.1,0.1,0.1);
         }
         return color;
     }
@@ -478,13 +490,23 @@ private:
         return r.giveNumber();
     }
 
+    RGB getPixel(int i, int j){
+        //cout<<x*this->y + y<<endl;
+        return img[i*this->y + j];
+    }
+
+    void setPixel(int i, int j, RGB newPixel){
+        img[i*this->y + j] = newPixel;
+    }
+
     Vec u,l,f;
     Vec o;
     ReferenceSystem UCS;
     Plane ps[200];
     Sphere spheres[200];
     Light lights[10];
-    RGB img[144][256];
+    RGB * img;
+    int x,y;
     int numPlanos;
     int numSpheres;
     int numLights;

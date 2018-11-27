@@ -212,6 +212,22 @@ public:
         }
     }
 
+    bool operator==(const Sphere &rhs) const {
+        return center == rhs.center &&
+               axis == rhs.axis &&
+               props == rhs.props &&
+               kd == rhs.kd &&
+               ks == rhs.ks &&
+               ksp == rhs.ksp &&
+               kr == rhs.kr &&
+               alpha == rhs.alpha;
+    }
+
+    bool operator!=(const Sphere &rhs) const {
+        return !(rhs == *this);
+    }
+
+
 };
 
 
