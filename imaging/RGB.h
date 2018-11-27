@@ -52,7 +52,7 @@ public:
     }
 
     float getMax(){
-        return std::max(R, G, B);
+        return std::max(R, std::max(G, B));
     }
 
     RGB operator* (const float& first) const {

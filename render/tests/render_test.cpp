@@ -112,9 +112,11 @@ void pathTracer3(){
    Vec normal(0,0,-1,0);
    // Fondo
    Plane p(origin1,normal,RGB(0,0,0));
-   p.setKd(RGB(0.8,0.1,0.1));
+   p.setKd(RGB(0.8,0.8,0.8));
    p.setKs(RGB(0,0,0));
-   p.setAlpha(0.2);
+   p.setKsp(RGB(0,0,0));
+   p.setKr(RGB(0,0,0));
+   p.setAlpha(0);
    r.addPlane(p);
    Vec origin2(0,-100,0,1);
    Vec normal2(0,1,0,0);
@@ -122,14 +124,18 @@ void pathTracer3(){
    Plane q(origin2,normal2,RGB(0,0,0));
    q.setKd(RGB(0.8,0.8,0.8));
    q.setKs(RGB(0,0,0));
+   q.setKsp(RGB(0,0,0));
+   q.setKr(RGB(0,0,0));
    q.setAlpha(0.2);
    r.addPlane(q);
    Vec origin3(0,100,0,1);
    Vec normal3(0,-1,0,0);
    // Techo
    Plane t(origin3,normal3,RGB(0, 0,0));
-   t.setKd(RGB(0.1,0.1,0.8));
+   t.setKd(RGB(0.8,0.8,0.8));
    t.setKs(RGB(0,0,0));
+   t.setKsp(RGB(0,0,0));
+   t.setKr(RGB(0,0,0));
    t.setAlpha(0.2);
    r.addPlane(t);
    // Plano derecha
@@ -138,28 +144,34 @@ void pathTracer3(){
    Plane v(origin4,normal4,RGB(0, 0,0));
    v.setKd(RGB(0.1,0.8,0.1));
    v.setKs(RGB(0,0,0));
+   v.setKsp(RGB(0,0,0));
+   v.setKr(RGB(0,0,0));
    v.setAlpha(0.2);
    r.addPlane(v);
    // Plano izquierda
     Vec origin5(-150,0,0,1);
     Vec normal5(1,0,0,0);
     Plane w(origin5,normal5,RGB(0, 0,0));
-    w.setKd(RGB(0.1,0.8,0.1));
+    w.setKd(RGB(0.8,0.1,0.1));
     w.setKs(RGB(0,0,0));
+   w.setKsp(RGB(0,0,0));
+   w.setKr(RGB(0,0,0));
     w.setAlpha(0.2);
    r.addPlane(w);
    // Pelota
-   Vec center(0,-60,125,1);
+   Vec center(-50,-60,125,1);
    Vec normal6(0,80,0,0);
-   Vec refCity(0,-60,85,1);
+   Vec refCity(-50,-60,85,1);
    Sphere s(center,normal6,refCity);
    s.setKd(RGB(0.8,0.8,0.1));
-   s.setKs(RGB(0,0,0));
-   s.setAlpha(0.2);
+   s.setKs(RGB(0.8,0.8,0.8));
+   s.setKsp(RGB(0,0,0));
+   s.setKr(RGB(0,0,0));
+   s.setAlpha(1);
     r.addSphere(s);
 
     // Luz
-   Light luz(100000000, Vec(0, 0, 100, POINT));
+   Light luz(100000000, Vec(50, 1, 100, POINT));
    r.addLight(luz);
 
    r.trazar();

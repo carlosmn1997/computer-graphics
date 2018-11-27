@@ -67,7 +67,7 @@ public:
         RandomNumber rn(0.001,0.199);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 8; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 4; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.2){
             for(double j=-lMod;j<lMod;j=j+0.2){
                 RGB x(0,0,0);
@@ -280,11 +280,17 @@ private:
             }
 
             // TODO sacar los valores
-            kd = 0.3;
-            ks = 0.5;
+            RGB kdAux = p.getKd();
+            RGB ksAux = p.getKs();
+            RGB kspAux = p.getKsp();
+            RGB krAux = p.getKr();
 
             // TODO normalizar entre 0 y 0.9
-
+            normalizeRR(kdAux, ksAux, kspAux, krAux);
+            kd = kdAux.getMax();
+            ks = ksAux.getMax();
+            ksp = kspAux.getMax();
+            kr = krAux.getMax();
 
             // Tiro ruleta rusa
             // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
@@ -320,7 +326,7 @@ private:
                 // TODO acumular angulo de incidencia
                 acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
-                // acumulado = acumulado / ((kd + ks)*)
+                acumulado = acumulado / (kd + ks); // TODO seguro que esto es asi?
 
                 //wo = Vec(1, -1, -1, DIRECTION);
                 xViejo = x;
@@ -434,7 +440,8 @@ private:
                 }
             }
             if (!hit) {
-                color = color + (l.getPower() / pow(distance.modulus(), 2));
+                //color = color + (l.getPower() / pow(distance.modulus(), 2));
+                color = (l.getPower() / pow(distance.modulus(), 2));
             } else {
                 color = RGB(0.5, 0.5, 0.5);
             }
@@ -461,6 +468,7 @@ private:
         kr = kr / denominador;
 
     }
+
 
     float randZeroToOne()
     {
