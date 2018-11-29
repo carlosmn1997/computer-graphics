@@ -199,6 +199,7 @@ public:
 
     bool contains( Vec p ){
         if(p.getType()!=1){
+            std::cout<<"kk de la mala";
             std::cout<< "Expected point in sphere contains";
             std::exit(1);
         }

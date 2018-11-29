@@ -64,7 +64,7 @@ public:
         float lMod = l.modulus();
         u.getUnitVector();
         l.getUnitVector();
-        RandomNumber rn(0.001,0.199);
+        RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
         int numPaths = 16; // NUMBER OF RAYS PER PIXEL
@@ -296,7 +296,6 @@ private:
             // Tiro ruleta rusa
             // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
             rr = randZeroToOne();//dist(mt);
-
             if (rr < kd + ks){
 
                 // Muestrear rayo uniform cosine sampling
@@ -335,6 +334,13 @@ private:
 
                 wo = x - xViejo;
             }
+            // TODO esto alguna vez true
+            else if (kd+ks < rr && rr < ksp){
+                Vec n = local.getK();
+                wi = wi - 2*n*(wi*n);// rayo saliente
+                acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
+                interseccion = nearestIntersection(wi, x, p, x, p, local);
+            }
             else{ // rr indica absorcion
                 absorcion = true;
             }
@@ -350,6 +356,11 @@ private:
         float aux = pow(abs(wo*wi),alpha);
         RGB part1 = kd / M_PI + ks * (alpha + 2)/(2*M_PI) * RGB(aux,aux,aux);
         return part1;
+    }
+
+    RGB specularReflectionBRDF(RGB ksp, Vec n, Vec wi){
+        RGB reflection = ksp * 1 / (M_PI*(wi*n));
+        return reflection;
     }
 
     // v -> rayo

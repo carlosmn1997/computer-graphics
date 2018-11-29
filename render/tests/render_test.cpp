@@ -41,34 +41,34 @@ void rayTracingExample(){
    r.escribirImagen("nombre.ppm");
 }
 */
- /*
+/*
 void pathTracer1(){
-   Vec l(-128,0,0,0);
-   Vec u(0,72,0,0);
-   Vec f(0,0,100,0);
-   Vec o(0,0,0,1);
-   Render r(u,l,f,o);
-   Vec origin1(0,0,250,1);
-   Vec normal(0,0,-1,0);
-   Plane p(origin1,normal,RGB(0,0,0));
-   p.setKd(RGB(0.8, 0.1, 0.1));
-   //Plane p(origin1,normal,RGB(0.254,0.031,0.031));
-   r.addPlane(p);
+  Vec l(-128,0,0,0);
+  Vec u(0,72,0,0);
+  Vec f(0,0,100,0);
+  Vec o(0,0,0,1);
+  Render r(u,l,f,o);
+  Vec origin1(0,0,250,1);
+  Vec normal(0,0,-1,0);
+  Plane p(origin1,normal,RGB(0,0,0));
+  p.setKd(RGB(0.8, 0.1, 0.1));
+  //Plane p(origin1,normal,RGB(0.254,0.031,0.031));
+  r.addPlane(p);
 
-   Vec origin2(0,-100,0,1);
-   Vec normal2(0,0,1,0);
-   Plane q(origin2,normal2,RGB(0,0,0));
-   q.setKd(RGB(0.1, 0.8, 0.1));
-   r.addPlane(q);
-   Vec origin3(0,100,0,1);
-   Vec normal3(0,0,-1,0);
-   Plane t(origin3,normal3,RGB(1000,1000,1000));
-   t.setKd(RGB(0, 0, 0));
-   r.addPlane(t);
+  Vec origin2(0,-100,0,1);
+  Vec normal2(0,0,1,0);
+  Plane q(origin2,normal2,RGB(0,0,0));
+  q.setKd(RGB(0.1, 0.8, 0.1));
+  r.addPlane(q);
+  Vec origin3(0,100,0,1);
+  Vec normal3(0,0,-1,0);
+  Plane t(origin3,normal3,RGB(1000,1000,1000));
+  t.setKd(RGB(0, 0, 0));
+  r.addPlane(t);
 
-   r.trazar();
-   cout<<"acabo y escribo"<<endl;
-   r.escribirImagen("nombre.ppm");
+  r.trazar();
+  cout<<"acabo y escribo"<<endl;
+  r.escribirImagen("nombre.ppm");
 }
 */
 
@@ -103,80 +103,80 @@ void pathTracer2(){
 }
 */
 void pathTracer3(){
-   Vec l(-12.8,0,0,0);
-   Vec u(0,7.2,0,0);
-   Vec f(0,0,15,0);
-   Vec o(0,0,0,1);
-   Render r(720,1280,u,l,f,o);
-   Vec origin1(0,0,30,1);
-   Vec normal(0,0,-1,0);
-   // Fondo
-   Plane p(origin1,normal,RGB(0,0,0));
-   p.setKd(RGB(0.8,0.8,0.8));
-   p.setKs(RGB(0,0,0));
-   p.setKsp(RGB(0,0,0));
-   p.setKr(RGB(0,0,0));
-   p.setAlpha(0);
-   r.addPlane(p);
-   Vec origin2(0,-10,0,1);
-   Vec normal2(0,1,0,0);
-   // Suelo
-   Plane q(origin2,normal2,RGB(0,0,0));
-   q.setKd(RGB(0.8,0.8,0.8));
-   q.setKs(RGB(0,0,0));
-   q.setKsp(RGB(0,0,0));
-   q.setKr(RGB(0,0,0));
-   q.setAlpha(0.2);
-   r.addPlane(q);
-   Vec origin3(0,10,0,1);
-   Vec normal3(0,-1,0,0);
-   // Techo
-   Plane t(origin3,normal3,RGB(0, 0,0));
-   t.setKd(RGB(0.8,0.8,0.8));
-   t.setKs(RGB(0,0,0));
-   t.setKsp(RGB(0,0,0));
-   t.setKr(RGB(0,0,0));
-   t.setAlpha(0.2);
-   r.addPlane(t);
-   // Plano derecha
-   Vec origin4(15,0,0,1);
-   Vec normal4(-1,0,0,0);
-   Plane v(origin4,normal4,RGB(0, 0,0));
-   v.setKd(RGB(0.1,0.8,0.1));
-   v.setKs(RGB(0,0,0));
-   v.setKsp(RGB(0,0,0));
-   v.setKr(RGB(0,0,0));
-   v.setAlpha(0.2);
-   r.addPlane(v);
-   // Plano izquierda
+    Vec l(-12.8,0,0,0);
+    Vec u(0,7.2,0,0);
+    Vec f(0,0,15,0);
+    Vec o(0,0,0,1);
+    Render r(720,1280,u,l,f,o);
+    Vec origin1(0,0,30,1);
+    Vec normal(0,0,-1,0);
+    // Fondo
+    Plane p(origin1,normal,RGB(0,0,0));
+    p.setKd(RGB(0.8,0.8,0.8));
+    p.setKs(RGB(0,0,0));
+    p.setKsp(RGB(0,0,0));
+    p.setKr(RGB(0,0,0));
+    p.setAlpha(0);
+    r.addPlane(p);
+    Vec origin2(0,-10,0,1);
+    Vec normal2(0,1,0,0);
+    // Suelo
+    Plane q(origin2,normal2,RGB(0,0,0));
+    q.setKd(RGB(0.8,0.8,0.8));
+    q.setKs(RGB(0,0,0));
+    q.setKsp(RGB(0,0,0));
+    q.setKr(RGB(0,0,0));
+    q.setAlpha(0.2);
+    //r.addPlane(q);
+    Vec origin3(0,10,0,1);
+    Vec normal3(0,-1,0,0);
+    // Techo
+    Plane t(origin3,normal3,RGB(0, 0,0));
+    t.setKd(RGB(0.8,0.8,0.8));
+    t.setKs(RGB(0,0,0));
+    t.setKsp(RGB(0,0,0));
+    t.setKr(RGB(0,0,0));
+    t.setAlpha(0.2);
+    //r.addPlane(t);
+    // Plano derecha
+    Vec origin4(15,0,0,1);
+    Vec normal4(-1,0,0,0);
+    Plane v(origin4,normal4,RGB(0, 0,0));
+    v.setKd(RGB(0.1,0.8,0.1));
+    v.setKs(RGB(0,0,0));
+    v.setKsp(RGB(0,0,0));
+    v.setKr(RGB(0,0,0));
+    v.setAlpha(0.2);
+    r.addPlane(v);
+    // Plano izquierda
     Vec origin5(-15,0,0,1);
     Vec normal5(1,0,0,0);
     Plane w(origin5,normal5,RGB(0, 0,0));
     w.setKd(RGB(0.8,0.1,0.1));
     w.setKs(RGB(0,0,0));
-   w.setKsp(RGB(0,0,0));
-   w.setKr(RGB(0,0,0));
+    w.setKsp(RGB(0,0,0));
+    w.setKr(RGB(0,0,0));
     w.setAlpha(0.2);
-   r.addPlane(w);
-   // Pelota
-   Vec center(0,-6,25,1);
-   Vec normal6(0,6,0,0);
-   Vec refCity(0,-6,22,1);
-   Sphere s(center,normal6,refCity);
-   s.setKd(RGB(0.8,0.8,0.1));
-   s.setKs(RGB(0.8,0.8,0.8));
-   s.setKsp(RGB(0,0,0));
-   s.setKr(RGB(0,0,0));
-   s.setAlpha(1);
+    //r.addPlane(w);
+    // Pelota
+    Vec center(0,-6,25,1);
+    Vec normal6(0,6,0,0);
+    Vec refCity(0,-6,22,1);
+    Sphere s(center,normal6,refCity);
+    s.setKd(RGB(0.8,0.8,0.1));
+    s.setKs(RGB(0.8,0.8,0.8));
+    s.setKsp(RGB(0,0,0));
+    s.setKr(RGB(0,0,0));
+    s.setAlpha(1);
     r.addSphere(s);
 
     // Luz
-   Light luz(100000, Vec(-3, 1, 15, POINT));
-   r.addLight(luz);
+    Light luz(100000, Vec(-3, 1, 15, POINT));
+    r.addLight(luz);
 
-   r.trazar();
-   cout<<"acabo y escribo"<<endl;
-   r.escribirImagen("nombre.ppm");
+    r.trazar();
+    cout<<"acabo y escribo"<<endl;
+    r.escribirImagen("nombre.ppm");
 }
 /*
 void pathTracer4(){
@@ -244,8 +244,8 @@ void pathTracer4(){
 
 int main( int argc, char * argv[] )
 {
-   //rayTracingExample();
-   pathTracer3();
-   //pathTracer4();
-   return 0;
+    //rayTracingExample();
+    pathTracer3();
+    //pathTracer4();
+    return 0;
 }
