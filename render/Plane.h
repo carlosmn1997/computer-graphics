@@ -43,13 +43,14 @@ public:
             return false;
         } else {
             float t = a / b;
-            point.setX(p.getX() + t * v.getX());
-            point.setY(p.getY() + t * v.getY());
-            point.setZ(p.getZ() + t * v.getZ());
-            point.setType(1);
-            if (t < -0.001) {
+            if (t <= 0) {
                 return false;
-            } else {
+            }
+            else{
+                point.setX(p.getX() + t * v.getX());
+                point.setY(p.getY() + t * v.getY());
+                point.setZ(p.getZ() + t * v.getZ());
+                point.setType(1);
                 return true;
             }
         }

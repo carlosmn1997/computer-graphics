@@ -60,20 +60,21 @@ public:
     }
 
     void trazar(){
-        int uMod = u.modulus();
-        int lMod = l.modulus();
+        float uMod = u.modulus();
+        float lMod = l.modulus();
         u.getUnitVector();
         l.getUnitVector();
         RandomNumber rn(0.001,0.199);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 4; // NUMBER OF RAYS PER PIXEL
-        for(double i=uMod;i>-uMod;i=i-0.2){
-            for(double j=-lMod;j<lMod;j=j+0.2){
+        int numPaths = 16; // NUMBER OF RAYS PER PIXEL
+        for(double i=uMod;i>-uMod;i=i-0.02){
+            for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if(i==-3 && j==-4){
+                    if((uMod-i)*5 > 20 && (uMod-i)*5 < 21 && (lMod+j)*5 > 12 && (lMod+j)*5 < 13)
+                    {
                         cout << "x";
                     }
                     restI = rn.giveNumber();
@@ -83,9 +84,9 @@ public:
                     x = x + pixelColor(pixel);
                 }
                 x = x / numPaths;
-                this->setPixel((uMod-i)*5,(lMod+j)*5,x);
+                this->setPixel((uMod-i)*50,(lMod+j)*50,x);
             }
-            cout << "Escribo " << (uMod-i)*5 << " de " << uMod * 10 <<endl;
+            cout << "Escribo i=" << (uMod-i)*50 << " de " << uMod * 100 <<endl;
         }
         cout << "ACABO" << endl;
         u=u*uMod;
@@ -414,7 +415,7 @@ private:
             Sphere s;
             bool hit = false;
             Vec vp, point;
-            Vec x = l.getPosition();
+            Vec x = local.getOrigin();
             for (int i = 0; i < numPlanos; ++i) {
                 pAux = ps[i];
                 if (pAux != p) {
