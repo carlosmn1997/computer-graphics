@@ -73,7 +73,7 @@ public:
                 RGB x(0,0,0);
                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if((uMod-i)*5 > 20 && (uMod-i)*5 < 21 && (lMod+j)*5 > 12 && (lMod+j)*5 < 13)
+                    if((uMod-i)*50 > 530 && (uMod-i)*50 < 531 && (lMod+j)*50 > 700 && (lMod+j)*5 < 701)
                     {
                         cout << "x";
                     }
@@ -216,6 +216,8 @@ private:
             planeHit.setKs(sphereHit.getKs());
             planeHit.setKd(sphereHit.getKd());
             planeHit.setAlpha(sphereHit.getAlpha());
+            planeHit.setKsp(sphereHit.getKsp());
+            planeHit.setKr(sphereHit.getKr());
         }
         if(hit) {
             color = renderEquation(ptoHit, v, planeHit);
@@ -335,11 +337,13 @@ private:
                 wo = x - xViejo;
             }
             // TODO esto alguna vez true
-            else if (kd+ks < rr && rr < ksp){
+            else if (kd+ks < rr && rr < ksp + kd + ks){
                 Vec n = local.getK();
-                wi = wi - 2*n*(wi*n);// rayo saliente
+                wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
+                wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
+                wo = wi;
             }
             else{ // rr indica absorcion
                 absorcion = true;
@@ -359,7 +363,7 @@ private:
     }
 
     RGB specularReflectionBRDF(RGB ksp, Vec n, Vec wi){
-        RGB reflection = ksp * 1 / (M_PI*(wi*n));
+        RGB reflection = ksp * 1 / (M_PI*abs(wi*n));
         return reflection;
     }
 
@@ -412,6 +416,8 @@ private:
             planeHit.setKs(aux.getKs());
             planeHit.setKd(aux.getKd());
             planeHit.setAlpha(aux.getAlpha());
+            planeHit.setKsp(aux.getKsp());
+            planeHit.setKr(aux.getKr());
         }
         return hit;
     }

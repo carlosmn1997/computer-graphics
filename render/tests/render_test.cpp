@@ -127,7 +127,7 @@ void pathTracer3(){
     q.setKsp(RGB(0,0,0));
     q.setKr(RGB(0,0,0));
     q.setAlpha(0.2);
-    //r.addPlane(q);
+    r.addPlane(q);
     Vec origin3(0,10,0,1);
     Vec normal3(0,-1,0,0);
     // Techo
@@ -137,8 +137,8 @@ void pathTracer3(){
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
     t.setAlpha(0.2);
-    //r.addPlane(t);
-    // Plano derecha
+    r.addPlane(t);
+    // Plano izquierda
     Vec origin4(15,0,0,1);
     Vec normal4(-1,0,0,0);
     Plane v(origin4,normal4,RGB(0, 0,0));
@@ -148,8 +148,8 @@ void pathTracer3(){
     v.setKr(RGB(0,0,0));
     v.setAlpha(0.2);
     r.addPlane(v);
-    // Plano izquierda
-    Vec origin5(-15,0,0,1);
+    // Plano derecha
+    Vec origin5(-10,0,0,1);
     Vec normal5(1,0,0,0);
     Plane w(origin5,normal5,RGB(0, 0,0));
     w.setKd(RGB(0.8,0.1,0.1));
@@ -157,7 +157,7 @@ void pathTracer3(){
     w.setKsp(RGB(0,0,0));
     w.setKr(RGB(0,0,0));
     w.setAlpha(0.2);
-    //r.addPlane(w);
+    r.addPlane(w);
     // Pelota
     Vec center(0,-6,25,1);
     Vec normal6(0,6,0,0);
@@ -168,7 +168,19 @@ void pathTracer3(){
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
     s.setAlpha(1);
-    r.addSphere(s);
+    //r.addSphere(s);
+
+    // Espejito magico
+    Vec center2(0,-6,25,1);
+    Vec normal7(0,6,0,0);
+    Vec refCity2(0,-6,22,1);
+    Sphere s2(center2,normal7,refCity2);
+    s2.setKd(RGB(0,0,0));
+    s2.setKs(RGB(0,0,0));
+    s2.setKsp(RGB(1,1,1));
+    s2.setKr(RGB(0,0,0));
+    s2.setAlpha(0);
+    r.addSphere(s2);
 
     // Luz
     Light luz(100000, Vec(-3, 1, 15, POINT));
