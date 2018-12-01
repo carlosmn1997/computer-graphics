@@ -180,7 +180,19 @@ void pathTracer3(){
     s2.setKsp(RGB(1,1,1));
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(0);
-    r.addSphere(s2);
+    //r.addSphere(s2);
+
+    // Espejito magico
+    Vec center3(0,-6,25,1);
+    Vec normal8(0,6,0,0);
+    Vec refCity3(0,-6,22,1);
+    Sphere s3(center3,normal8,refCity3);
+    s3.setKd(RGB(0,0,0));
+    s3.setKs(RGB(0,0,0));
+    s3.setKsp(RGB(0,0,0));
+    s3.setKr(RGB(1,1,1));
+    s3.setAlpha(0);
+    r.addSphere(s3);
 
     // Luz
     Light luz(100000, Vec(-3, 1, 15, POINT));

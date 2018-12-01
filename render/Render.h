@@ -345,6 +345,25 @@ private:
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
                 wo = wi;
             }
+            else if(kd+ks+ksp < rr && rr < kr + kd + ks + ksp){
+                float coeff = 1/1.5; //refraction coefficient between air and cristal
+                float cosWo = p.getNormal() * wo;
+                float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
+                if(cosWo<0){
+                    cosWo = -cosWo;
+                }
+                if(sqr>=0) {
+                    wi = coeff * wo + (coeff * cosWo - sqrt(sqr)) * p.getNormal();
+                    p.setNormal(p.getNormal() * -1);
+                    local.setK(local.getK() * -1);
+                    interseccion = nearestIntersection(wi, x, p, x, p, local);
+                }
+                else{
+                    acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                    interseccion = nearestIntersection(wi, x, p, x, p, local,true);
+                }
+                wo = wi;
+            }
             else{ // rr indica absorcion
                 absorcion = true;
             }
@@ -369,7 +388,7 @@ private:
 
     // v -> rayo
     // x -> origen del rayo
-    bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r){
+    bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r,bool refraction){
         float minMod=-1;
         RGB color(0,0,0);
         bool hit=false;
@@ -394,7 +413,7 @@ private:
         }
         for(int i=0;i<numSpheres;++i){
             s = spheres[i];
-            if (!s.contains(p.getOrigin())){
+            if (!s.contains(p.getOrigin())||refraction){
                 if(s.intercepts(x,v,point)){
                     vp = point - x;
                     if(!abs(vp.modulus())<0.1){
