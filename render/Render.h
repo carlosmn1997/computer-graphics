@@ -341,13 +341,13 @@ private:
             }
             // TODO esto alguna vez true
             else if (kd+ks < rr && rr < ksp + kd + ks){
-                //wo = referenceSystem*wo;
+                wo = referenceSystem*wo;
                 Vec n = local.getK();
+                n = referenceSystem*n;
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
                 wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
-                //wi = local.getMatrix() * wi;
-                //x = local.getMatrix() * x;
+                wi = local.getMatrix() * wi;
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
                 wo = wi;
             }
