@@ -67,13 +67,13 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 16; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 1; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if((uMod-i)*50 > 530 && (uMod-i)*50 < 531 && (lMod+j)*50 > 700 && (lMod+j)*5 < 701)
+                    if((uMod-i)*50 > 470 && (uMod-i)*50 < 470 && (lMod+j)*50 > 610 && (lMod+j)*5 < 610)
                     {
                         cout << "x";
                     }
@@ -123,7 +123,8 @@ public:
         cout<<"final"<<endl;
         file.close();
         Image image(path);
-        image.gammaCurve(2.2);
+        image.gammaCurve(2.5);
+        //image.clamping();
         //image.equalization();
         image.writeImage();
     }
@@ -270,7 +271,7 @@ private:
             wo.getUnitVector();
 
             if(p.isEmitter()){
-                color = color + acumulado * p.getProps();
+                color = color + acumulado * p.getProps(); // TODO si es emisor divido por la distancia?
                 emitter = true;
             }
 
@@ -280,6 +281,7 @@ private:
                 RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wiDirecta, local.getK());
                 RGB directLightVal = directLight(local, p,lights[i]);
                 color = color + acumulado * phong * directLightVal;
+                //emitter = true;
             }
 
             // TODO sacar los valores
@@ -326,7 +328,8 @@ private:
                 //color = color + (p.getKd() / M_PI)*directLight(local, p);
                 // TODO phong
                 // TODO acumular angulo de incidencia
-                acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
+                acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi);
+                //acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
                 acumulado = acumulado / (kd + ks); // TODO seguro que esto es asi?
 
@@ -338,10 +341,13 @@ private:
             }
             // TODO esto alguna vez true
             else if (kd+ks < rr && rr < ksp + kd + ks){
+                //wo = referenceSystem*wo;
                 Vec n = local.getK();
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
                 wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
+                //wi = local.getMatrix() * wi;
+                //x = local.getMatrix() * x;
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
                 wo = wi;
             }
@@ -394,7 +400,7 @@ private:
         }
         for(int i=0;i<numSpheres;++i){
             s = spheres[i];
-            if (!s.contains(p.getOrigin())){
+            if (!s.contains(myPlane.getOrigin())){
                 if(s.intercepts(x,v,point)){
                     vp = point - x;
                     if(!abs(vp.modulus())<0.1){

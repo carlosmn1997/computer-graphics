@@ -209,7 +209,7 @@ public:
 
 
                 // Clamping
-                Y = min(Y, 0.7);
+                Y = min(Y, 0.5);
 
                 X = (Y / y)*x;
                 Z = (Y / y) * (1 - x - y);
