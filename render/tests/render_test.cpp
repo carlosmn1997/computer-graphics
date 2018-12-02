@@ -182,10 +182,10 @@ void pathTracer3(){
     s2.setAlpha(0);
     //r.addSphere(s2);
 
-    // Espejito magico
-    Vec center3(0,-6,25,1);
+    // cristalito magico
+    Vec center3(0,-6,20,1);
     Vec normal8(0,6,0,0);
-    Vec refCity3(0,-6,22,1);
+    Vec refCity3(0,-6,17,1);
     Sphere s3(center3,normal8,refCity3);
     s3.setKd(RGB(0,0,0));
     s3.setKs(RGB(0,0,0));
@@ -266,10 +266,26 @@ void pathTracer4(){
 }
 */
 
+void pruebaRefraction(){
+    Vec origin(0,0,0,1);
+    Vec normal(0,1,0,0);
+    Plane p(origin,normal,RGB(0,0,0));
+    Vec wo(1,-1,0,0);
+    wo.getUnitVector();
+    Vec l(-12.8,0,0,0);
+    Vec u(0,7.2,0,0);
+    Vec f(0,0,15,0);
+    Vec o(0,0,0,1);
+    Render r(720,1280,u,l,f,o);
+    Vec wi;
+    r.refraction(p,wo,wi);
+}
+
 int main( int argc, char * argv[] )
 {
     //rayTracingExample();
     pathTracer3();
     //pathTracer4();
+    //pruebaRefraction();
     return 0;
 }

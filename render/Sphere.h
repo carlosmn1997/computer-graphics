@@ -145,7 +145,7 @@ public:
         return axis.modulus()/2;
     }
 
-    bool intercepts(Vec p, Vec v, Vec &point){
+    bool intercepts(Vec p, Vec v, Vec &point,bool refraction){
         float A,B,C;
         float vX,vY,vZ,pX,pY,pZ;
         float cX,cY,cZ;
@@ -187,10 +187,20 @@ public:
                 Vec dis_A = point_A-p;
                 Vec dis_B = point_B-p;
                 if(dis_A.modulus()<dis_B.modulus()){
-                    point=point_A;
+                    if(!refraction) {
+                        point = point_A;
+                    }
+                    else{
+                        point=point_B;
+                    }
                 }
                 else{
-                    point=point_B;
+                    if(refraction) {
+                        point = point_A;
+                    }
+                    else{
+                        point=point_B;
+                    }
                 }
             }
         }

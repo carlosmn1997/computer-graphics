@@ -67,13 +67,13 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 16; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 8; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if((uMod-i)*50 > 530 && (uMod-i)*50 < 531 && (lMod+j)*50 > 700 && (lMod+j)*5 < 701)
+                    if((uMod-i)*50 > 502 && (uMod-i)*50 < 503 && (lMod+j)*50 > 590 && (lMod+j)*5 < 591)
                     {
                         cout << "x";
                     }
@@ -195,7 +195,7 @@ private:
         }
         for(int i=0;i<numSpheres;i++){
             Sphere s = spheres[i];
-            if(s.intercepts(pixel,v,point)){
+            if(s.intercepts(pixel,v,point,false)){
                 hit=true;
                 //cout<<"Intercepta esferita papa" <<endl;
                 //cout << point.getX() << "-" << point.getY() << "-" << point.getZ() << endl;
@@ -332,35 +332,38 @@ private:
 
                 //wo = Vec(1, -1, -1, DIRECTION);
                 xViejo = x;
-                interseccion = nearestIntersection(wi, x, p, x, p, local);
+                interseccion = nearestIntersection(wi, x, p, x, p, local,false);
 
                 wo = x - xViejo;
             }
             // TODO esto alguna vez true
-            else if (kd+ks < rr && rr < ksp + kd + ks){
+            else if (kd+ks < rr && rr < ksp + kd + ks){ // CUIDADO X en locales
                 Vec n = local.getK();
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
                 wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
-                interseccion = nearestIntersection(wi, x, p, x, p, local);
+                interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 wo = wi;
             }
             else if(kd+ks+ksp < rr && rr < kr + kd + ks + ksp){
-                float coeff = 1/1.5; //refraction coefficient between air and cristal
-                float cosWo = p.getNormal() * wo;
-                float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
-                if(cosWo<0){
-                    cosWo = -cosWo;
-                }
-                if(sqr>=0) {
-                    wi = coeff * wo + (coeff * cosWo - sqrt(sqr)) * p.getNormal();
+                if(refraction(p, wo, wi)) {
+                    x = local.getMatrix()*x;
                     p.setNormal(p.getNormal() * -1);
                     local.setK(local.getK() * -1);
-                    interseccion = nearestIntersection(wi, x, p, x, p, local);
+                    nearestIntersection(wi, x, p, x, p, local,true);
+                    wo = wi;
+                    if(refraction(p, wo, wi)){
+                        acumulado = acumulado * glassRefractionBTDF(p.getKr(),local.getK(),wi);
+                        interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                    }
+                    else{
+                        acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                        interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                    }
                 }
                 else{
                     acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
-                    interseccion = nearestIntersection(wi, x, p, x, p, local,true);
+                    interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 }
                 wo = wi;
             }
@@ -386,6 +389,32 @@ private:
         return reflection;
     }
 
+    RGB glassRefractionBTDF(RGB kr, Vec n, Vec wi){
+        RGB reflection = kr * 1 / (M_PI*abs(wi*n));
+        return reflection;
+    }
+
+public:
+    bool refraction(Plane p, Vec wo, Vec& wi){
+        float coeff = 1;///1.5; //refraction coefficient between air and cristal
+        float cosWo = p.getNormal() * wo;
+        float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
+        if(cosWo<0){ // Ray going into the ball
+            cosWo = -cosWo;
+        }
+        else{ // Ray going outside the ball
+            p.setNormal((p.getNormal()*-1));
+            coeff = 1;//1.5;
+        }
+        if(sqr>=0) {
+            wi = coeff * wo + (coeff * cosWo - sqrtf(sqr)) * p.getNormal();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+private:
     // v -> rayo
     // x -> origen del rayo
     bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r,bool refraction){
@@ -413,8 +442,8 @@ private:
         }
         for(int i=0;i<numSpheres;++i){
             s = spheres[i];
-            if (!s.contains(p.getOrigin())||refraction){
-                if(s.intercepts(x,v,point)){
+            if (!s.contains(myPlane.getOrigin())||refraction){
+                if(s.intercepts(x,v,point,refraction)){
                     vp = point - x;
                     if(!abs(vp.modulus())<0.1){
                         hit = true;
@@ -466,7 +495,7 @@ private:
             if (!hit) {
                 for (int i = 0; i < numSpheres; ++i) {
                     s = spheres[i];
-                    if (s.intercepts(x, distance, point)) {
+                    if (s.intercepts(x, distance, point,false)) {
                         vp = point - x;
                         if (vp.modulus() < distance.modulus()) {
                             if(vp.modulus()>0.001){
