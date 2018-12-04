@@ -402,7 +402,7 @@ private:
 
 public:
     bool refraction(Plane p, Vec wo, Vec& wi){
-        float coeff = 1/1.5; //refraction coefficient between air and cristal
+        float coeff = 1/1.6; //refraction coefficient between air and cristal
         float cosWo = p.getNormal() * wo;
         float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
         if(cosWo<0){ // Ray going into the ball

@@ -132,10 +132,10 @@ void pathTracer3(){
     Vec normal3(0,-1,0,0);
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
-    Plane t(origin3,normal3,RGB(0, 0, 0));
-    //Plane t(origin3,normal3,RGB(255, 255, 255));
-    t.setKd(RGB(0.5,0.5,0.5));
-    //t.setKd(RGB(0,0,0));
+    //Plane t(origin3,normal3,RGB(0, 0, 0));
+    Plane t(origin3,normal3,RGB(255, 255, 255));
+    //t.setKd(RGB(0.5,0.5,0.5));
+    t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
@@ -170,7 +170,7 @@ void pathTracer3(){
     s.setKs(RGB(0.7,0.7,0.6));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
-    s.setAlpha(32);
+    s.setAlpha(0.02);
     r.addSphere(s);
 
     // Espejito magico
@@ -188,7 +188,7 @@ void pathTracer3(){
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(10, 5, 15, POINT));
-    r.addLight(luz);
+    //r.addLight(luz);
 
     r.trazar();
     cout<<"acabo y escribo"<<endl;
@@ -225,10 +225,10 @@ void pathTracerCornellBox1(){
     Vec normal3(0,-1,0,0);
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
-    Plane t(origin3,normal3,RGB(0, 0, 0));
-    //Plane t(origin3,normal3,RGB(255, 255, 255));
-    t.setKd(RGB(0.1,0.1,0.5));
-    //t.setKd(RGB(0,0,0));
+    //Plane t(origin3,normal3,RGB(0, 0, 0));
+    Plane t(origin3,normal3,RGB(254, 254, 254));
+    //t.setKd(RGB(0.5,0.5,0.5));
+    t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
@@ -261,30 +261,40 @@ void pathTracerCornellBox1(){
     Vec refCity(5,-5,22,1);
     Sphere s(center,normal6,refCity);
     s.setKd(RGB(0.5,0.5,0));
-    s.setKs(RGB(0.7,0.7,0.6));
+    s.setKs(RGB(0.4,0.4,0.9));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
-    s.setAlpha(32);
-    r.addSphere(s);
+    s.setAlpha(0.02);
+    //r.addSphere(s);
 
     // Pelota espejo
-    Vec center2(0,-5,30,1);
+    Vec center2(-5,-5,35,1);
     Vec normal7(0,6,0,0);
-    Vec refCity2(0,-5,27,1);
+    Vec refCity2(-5,-5,32,1);
     Sphere s2(center2,normal7,refCity2);
     s2.setKd(RGB(0,0,0));
     s2.setKs(RGB(0,0,0));
-    s2.setKsp(RGB(1,1,1));
+    s2.setKsp(RGB(0.8,0.8,0.8));
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(0);
     r.addSphere(s2);
 
     // Pelota cristal
+    Vec center3(10,0,25,1);
+    Vec normal8(0,4,0,0);
+    Vec refCity3(10,0,23,1);
+    Sphere s3(center3,normal8,refCity3);
+    s3.setKd(RGB(0,0,0));
+    s3.setKs(RGB(0,0,0));
+    s3.setKsp(RGB(0,0,0));
+    s3.setKr(RGB(1,1,1));
+    s3.setAlpha(0);
+    //r.addSphere(s3);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(10, 5, 15, POINT));
-    r.addLight(luz);
+    //r.addLight(luz);
 
     r.trazar();
     cout<<"acabo y escribo"<<endl;
