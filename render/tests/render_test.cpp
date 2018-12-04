@@ -139,7 +139,7 @@ void pathTracer3(){
     t.setAlpha(0.2);
     r.addPlane(t);
     // Plano izquierda
-    Vec origin4(15,0,0,1);
+    Vec origin4(10,0,0,1);
     Vec normal4(-1,0,0,0);
     Plane v(origin4,normal4,RGB(0, 0,0));
     v.setKd(RGB(0.1,0.8,0.1));
@@ -183,9 +183,9 @@ void pathTracer3(){
     //r.addSphere(s2);
 
     // cristalito magico
-    Vec center3(0,-6,20,1);
+    Vec center3(5,-6,20,1);
     Vec normal8(0,6,0,0);
-    Vec refCity3(0,-6,17,1);
+    Vec refCity3(5,-6,17,1);
     Sphere s3(center3,normal8,refCity3);
     s3.setKd(RGB(0,0,0));
     s3.setKs(RGB(0,0,0));

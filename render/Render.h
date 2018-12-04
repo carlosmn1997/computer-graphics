@@ -67,7 +67,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 8; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 12; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -396,7 +396,7 @@ private:
 
 public:
     bool refraction(Plane p, Vec wo, Vec& wi){
-        float coeff = 1;///1.5; //refraction coefficient between air and cristal
+        float coeff = 1/1.5; //refraction coefficient between air and cristal
         float cosWo = p.getNormal() * wo;
         float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
         if(cosWo<0){ // Ray going into the ball
@@ -404,7 +404,7 @@ public:
         }
         else{ // Ray going outside the ball
             p.setNormal((p.getNormal()*-1));
-            coeff = 1;//1.5;
+            coeff = 1.5;
         }
         if(sqr>=0) {
             wi = coeff * wo + (coeff * cosWo - sqrtf(sqr)) * p.getNormal();
