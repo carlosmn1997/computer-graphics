@@ -75,7 +75,7 @@ public:
                 for (int k = 0; k < numPaths; k++) {
                     double llevoX = (uMod-i)*50;
                     double llevoY = (lMod+j)*50;
-                    if(llevoX > 500 && llevoX< 505 && llevoY > 430 && llevoY < 435)
+                    if(llevoX > 430 && llevoX< 435 && llevoY > 500 && llevoY < 505)
                     {
                         cout << "x";
                     }
@@ -352,7 +352,6 @@ private:
                 wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
                 wi = local.getMatrix() * wi;
-                interseccion = nearestIntersection(wi, x, p, x, p, local);
                 interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 wo = wi;
             }
