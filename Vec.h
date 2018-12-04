@@ -81,6 +81,10 @@ public:
         return x*first.getX()+y*first.getY()+z*first.getZ();
     }
     /*
+    friend Vec operator- (const float& first, const Vec& second){
+        return Vec(second.x-first, second.y-first, second.z-first, second.type);
+    }
+
     friend float operator* (const Vec& first, const Vec& second){
         return first.getX()*second.getX()+first.getY()*second.getY()+first.getZ()*second.getZ();
     }

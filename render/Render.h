@@ -73,7 +73,9 @@ public:
                 RGB x(0,0,0);
                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    if((uMod-i)*50 > 470 && (uMod-i)*50 < 470 && (lMod+j)*50 > 610 && (lMod+j)*5 < 610)
+                    double llevoX = (uMod-i)*50;
+                    double llevoY = (lMod+j)*50;
+                    if(llevoX > 500 && llevoX< 505 && llevoY > 430 && llevoY < 435)
                     {
                         cout << "x";
                     }
@@ -339,12 +341,14 @@ private:
 
                 wo = x - xViejo;
             }
-            // TODO esto alguna vez true
+            // Perfect specular
             else if (kd+ks < rr && rr < ksp + kd + ks){
                 wo = referenceSystem*wo;
                 Vec n = local.getK();
                 n = referenceSystem*n;
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
+                //wi = (wo + 2*n*n)/(1-2*n);
+                //wi = (wo/(1-2*n)) + (2*n*n)/(1-2*n);
                 wi.getUnitVector();
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
                 wi = local.getMatrix() * wi;
