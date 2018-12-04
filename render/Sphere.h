@@ -174,6 +174,9 @@ public:
             else{
                 float t_pos = (-B + sqrt(root))/(2*A);
                 float t_neg = (-B - sqrt(root))/(2*A);
+                if(t_neg<0.001 && t_pos<0.001){
+                    return false;
+                }
                 //cout << p.getType() << "-" << v.getType() << endl;
                 Vec point_A,point_B;
                 point_A.setX(p.getX()+t_pos*v.getX());
@@ -188,18 +191,38 @@ public:
                 Vec dis_B = point_B-p;
                 if(dis_A.modulus()<dis_B.modulus()){
                     if(!refraction) {
-                        point = point_A;
+                        if(t_pos<0.001) {
+                            return false;
+                        }
+                        else{
+                            point = point_A;
+                        }
                     }
                     else{
-                        point=point_B;
+                        if(t_neg<0.001) {
+                            return false;
+                        }
+                        else {
+                            point = point_B;
+                        }
                     }
                 }
                 else{
                     if(refraction) {
-                        point = point_A;
+                        if(t_pos<0.001) {
+                            return false;
+                        }
+                        else {
+                            point = point_A;
+                        }
                     }
                     else{
-                        point=point_B;
+                        if(t_neg<0.001) {
+                            return false;
+                        }
+                        else{
+                            point = point_B;
+                        }
                     }
                 }
             }
