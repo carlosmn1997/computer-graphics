@@ -67,7 +67,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 1; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 32; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -347,7 +347,7 @@ private:
                 Vec n = local.getK();//referenceSystem*n;
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
                 wi.getUnitVector();
-                acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
+                acumulado = acumulado * (specularReflectionBRDF(p.getKsp(), n, wi) * abs(n*wi) / ksp);
                 interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 wo = wi;
             }
@@ -391,6 +391,9 @@ private:
     }
 
     RGB specularReflectionBRDF(RGB ksp, Vec n, Vec wi){
+        //float aux2 = abs(wi*n);
+        //float aux3 = wi*n;
+        //float aux = (M_PI*abs(wi*n));
         RGB reflection = ksp * 1 / (M_PI*abs(wi*n));
         return reflection;
     }

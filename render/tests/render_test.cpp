@@ -261,11 +261,11 @@ void pathTracerCornellBox1(){
     Vec refCity(5,-5,22,1);
     Sphere s(center,normal6,refCity);
     s.setKd(RGB(0.5,0.5,0));
-    s.setKs(RGB(0.4,0.4,0.9));
+    s.setKs(RGB(0.4,0.4,0));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
     s.setAlpha(0.02);
-    //r.addSphere(s);
+    r.addSphere(s);
 
     // Pelota espejo
     Vec center2(-5,-5,35,1);
@@ -274,7 +274,7 @@ void pathTracerCornellBox1(){
     Sphere s2(center2,normal7,refCity2);
     s2.setKd(RGB(0,0,0));
     s2.setKs(RGB(0,0,0));
-    s2.setKsp(RGB(0.8,0.8,0.8));
+    s2.setKsp(RGB(1,1,1));
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(0);
     r.addSphere(s2);
@@ -289,7 +289,7 @@ void pathTracerCornellBox1(){
     s3.setKsp(RGB(0,0,0));
     s3.setKr(RGB(1,1,1));
     s3.setAlpha(0);
-    //r.addSphere(s3);
+    r.addSphere(s3);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
