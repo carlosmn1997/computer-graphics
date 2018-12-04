@@ -198,7 +198,7 @@ private:
         }
         for(int i=0;i<numSpheres;i++){
             Sphere s = spheres[i];
-            if(s.intercepts(pixel,v,point)){
+            if(s.intercepts(pixel,v,point,false)){
                 hit=true;
                 //cout<<"Intercepta esferita papa" <<endl;
                 //cout << point.getX() << "-" << point.getY() << "-" << point.getZ() << endl;
@@ -273,7 +273,7 @@ private:
             wo.getUnitVector();
 
             if(p.isEmitter()){
-                color = color + acumulado * p.getProps(); // TODO si es emisor divido por la distancia?
+                color = color + acumulado * p.getProps();
                 emitter = true;
             }
 
@@ -337,7 +337,7 @@ private:
 
                 //wo = Vec(1, -1, -1, DIRECTION);
                 xViejo = x;
-                interseccion = nearestIntersection(wi, x, p, x, p, local);
+                interseccion = nearestIntersection(wi, x, p, x, p, local,false);
 
                 wo = x - xViejo;
             }
@@ -353,6 +353,29 @@ private:
                 acumulado = acumulado * specularReflectionBRDF(p.getKsp(), n, wi);
                 wi = local.getMatrix() * wi;
                 interseccion = nearestIntersection(wi, x, p, x, p, local);
+                interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                wo = wi;
+            }
+            else if(kd+ks+ksp < rr && rr < kr + kd + ks + ksp){
+                if(refraction(p, wo, wi)) {
+                    x = local.getMatrix()*x;
+                    p.setNormal(p.getNormal() * -1);
+                    local.setK(local.getK() * -1);
+                    nearestIntersection(wi, x, p, x, p, local,true);
+                    wo = wi;
+                    if(refraction(p, wo, wi)){
+                        acumulado = acumulado * glassRefractionBTDF(p.getKr(),local.getK(),wi);
+                        interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                    }
+                    else{
+                        acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                        interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                    }
+                }
+                else{
+                    acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                    interseccion = nearestIntersection(wi, x, p, x, p, local,false);
+                }
                 wo = wi;
             }
             else{ // rr indica absorcion
@@ -377,9 +400,35 @@ private:
         return reflection;
     }
 
+    RGB glassRefractionBTDF(RGB kr, Vec n, Vec wi){
+        RGB reflection = kr * 1 / (M_PI*abs(wi*n));
+        return reflection;
+    }
+
+public:
+    bool refraction(Plane p, Vec wo, Vec& wi){
+        float coeff = 1/1.5; //refraction coefficient between air and cristal
+        float cosWo = p.getNormal() * wo;
+        float sqr = 1 - coeff * coeff * ( 1 - cosWo * cosWo);
+        if(cosWo<0){ // Ray going into the ball
+            cosWo = -cosWo;
+        }
+        else{ // Ray going outside the ball
+            p.setNormal((p.getNormal()*-1));
+            coeff = 1.5;
+        }
+        if(sqr>=0) {
+            wi = coeff * wo + (coeff * cosWo - sqrtf(sqr)) * p.getNormal();
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+private:
     // v -> rayo
     // x -> origen del rayo
-    bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r){
+    bool nearestIntersection(Vec v, Vec x, Plane myPlane, Vec& ptoHit, Plane& planeHit, ReferenceSystem r,bool refraction){
         float minMod=-1;
         RGB color(0,0,0);
         bool hit=false;
@@ -404,8 +453,8 @@ private:
         }
         for(int i=0;i<numSpheres;++i){
             s = spheres[i];
-            if (!s.contains(myPlane.getOrigin())){
-                if(s.intercepts(x,v,point)){
+            if (!s.contains(myPlane.getOrigin())||refraction){
+                if(s.intercepts(x,v,point,refraction)){
                     vp = point - x;
                     if(!abs(vp.modulus())<0.1){
                         hit = true;
@@ -457,7 +506,7 @@ private:
             if (!hit) {
                 for (int i = 0; i < numSpheres; ++i) {
                     s = spheres[i];
-                    if (s.intercepts(x, distance, point)) {
+                    if (s.intercepts(x, distance, point,false)) {
                         vp = point - x;
                         if (vp.modulus() < distance.modulus()) {
                             if(vp.modulus()>0.001){
