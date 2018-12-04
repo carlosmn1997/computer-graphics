@@ -67,7 +67,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 32; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 1; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -75,7 +75,7 @@ public:
                 for (int k = 0; k < numPaths; k++) {
                     double llevoX = (uMod-i)*50;
                     double llevoY = (lMod+j)*50;
-                    if(llevoX > 498 && llevoX< 499 && llevoY > 605 && llevoY < 606)
+                    if(llevoX > 440 && llevoX< 445 && llevoY > 690 && llevoY < 695)
                     {
                         cout << "x";
                     }
@@ -286,7 +286,7 @@ private:
                 //emitter = true;
             }
 
-            // TODO sacar los valores
+            // TODO sacar los valores, si es un emisor se divide para 0 pero da igual porque es absorcion
             RGB kdAux = p.getKd();
             RGB ksAux = p.getKs();
             RGB kspAux = p.getKsp();

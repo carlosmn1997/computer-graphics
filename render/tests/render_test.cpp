@@ -225,10 +225,10 @@ void pathTracerCornellBox1(){
     Vec normal3(0,-1,0,0);
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
-    //Plane t(origin3,normal3,RGB(0, 0, 0));
-    Plane t(origin3,normal3,RGB(254, 254, 254));
-    //t.setKd(RGB(0.5,0.5,0.5));
-    t.setKd(RGB(0,0,0));
+    Plane t(origin3,normal3,RGB(0, 0, 0));
+    //Plane t(origin3,normal3,RGB(254, 254, 254));
+    t.setKd(RGB(0.5,0.5,0.5));
+    //t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
@@ -294,7 +294,7 @@ void pathTracerCornellBox1(){
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(10, 5, 15, POINT));
-    //r.addLight(luz);
+    r.addLight(luz);
 
     r.trazar();
     cout<<"acabo y escribo"<<endl;
