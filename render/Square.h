@@ -9,6 +9,7 @@
 #include "../imaging/RGB.h"
 #include "../ReferenceSystem.h"
 #include "Plane.h"
+#include "../imaging/Image.h"
 
 class Square{
 
@@ -31,13 +32,11 @@ public:
                 point.setType(1);
                 Vec direction = point - origin;
                 Vec directChanged = r.changeReferenceSystem(direction);
-                if(abs(directChanged.getX()) > wide) {
+                if (directChanged.getX() < 0.00001 || directChanged.getY() < 0.00001) {
                     return false;
-                }
-                else if (abs(directChanged.getY()) > height ) {
+                } else if (directChanged.getX() > wide || directChanged.getY() > height ) {
                     return false;
-                }
-                else{
+                } else {
                     return true;
                 }
             }
@@ -145,6 +144,19 @@ public:
         return p;
     }
 
+    bool isTextura(){
+        return textura;
+    }
+
+    void setTextura(bool &b){
+        Square::textura=b;
+    }
+
+    void addTextura(string filename){
+        Square::img = Image(filename);
+        Square::textura = true;
+    }
+
 private:
     Vec origin;
     Vec normal;
@@ -158,6 +170,8 @@ private:
     RGB kd, ks, ksp, kr;
     float alpha;
     float height, wide;
+    bool textura;
+    Image img;
     ReferenceSystem r;
 };
 #endif //COMPUTER_GRAPHICS_SQUARE_H

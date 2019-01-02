@@ -17,10 +17,15 @@ using namespace std;
 
 class Image{
 public:
+    Image(){}
     // We suppose that the file is correct
     Image(string fileName){
         ifstream file;
         file.open(fileName);
+
+        if(file.is_open()){
+            cout << "bien";
+        }
 
         string word;
 

@@ -313,7 +313,7 @@ void pathTracerSquareTry(){
 
     // Fondo
     Plane p(origin1,normal,RGB(0,0,0));
-    p.setKd(RGB(0,0.3,0.3));
+    p.setKd(RGB(0.9,0.9,0.9));
     p.setKs(RGB(0,0,0));
     p.setKsp(RGB(0,0,0));
     p.setKr(RGB(0,0,0));
@@ -321,15 +321,16 @@ void pathTracerSquareTry(){
     r.addPlane(p);
 
     //Square
-    Vec origin2(-10,0,44.7,1);
+    Vec origin2(-10,0,44.9,1);
     Vec heigh(0,10,0,0);
     Vec wide(10,0,0,0);
     Square sq(origin2,wide,heigh);
-    p.setKd(RGB(0.3,0,0));
-    p.setKs(RGB(0,0,0));
-    p.setKsp(RGB(0,0,0));
-    p.setKr(RGB(0,0,0));
-    p.setAlpha(0);
+    sq.setKd(RGB(0.3,0,0));
+    sq.setKs(RGB(0,0,0));
+    sq.setKsp(RGB(0,0,0));
+    sq.setKr(RGB(0,0,0));
+    sq.setAlpha(0);
+    sq.addTextura("../Ventana.ppm");
     r.addSquare(sq);
 
     // Luz
