@@ -16,6 +16,7 @@
 #include <stdlib.h>
 #include "RandomNumber.h"
 #include "Light.h"
+#include "Square.h"
 
 
 using namespace std;
@@ -52,6 +53,11 @@ public:
     void addSphere(Sphere s){
         this->spheres[numSpheres]=s;
         this->numSpheres++;
+    }
+
+    void addSquare(Square s){
+        this->squares[numSquares]=s;
+        this->numSquares++;
     }
 
     void addLight(Light l){
@@ -568,13 +574,15 @@ private:
     Vec u,l,f;
     Vec o;
     ReferenceSystem UCS;
-    Plane ps[200];
-    Sphere spheres[200];
+    Plane ps[30];
+    Sphere spheres[30];
+    Square squares[30];
     Light lights[10];
     RGB * img;
     int x,y;
     int numPlanos;
     int numSpheres;
+    int numSquares;
     int numLights;
     RandomNumber r;
 };
