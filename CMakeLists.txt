@@ -3,7 +3,7 @@ project(computer_graphics)
 
 set(CMAKE_CXX_STANDARD 14)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
 add_executable(computer_graphics main.cpp Vec.cpp Vec.h ReferenceSystem.h Planet.h Test.h DistanceCalculator.h Matrix.h exception.h imaging/imaging.cpp render/Plane.h render/tests/render_test.cpp render/Render.h render/RandomNumber.h render/Square.h)
 

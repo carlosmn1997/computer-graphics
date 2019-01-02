@@ -301,11 +301,53 @@ void pathTracerCornellBox1(){
     r.escribirImagen("nombre.ppm");
 }
 
+void pathTracerSquareTry(){
+
+    Vec l(-12.8,0,0,0);
+    Vec u(0,7.2,0,0);
+    Vec f(0,0,15,0);
+    Vec o(0,0,0,1);
+    Render r(720,1280,u,l,f,o);
+    Vec origin1(0,0,45,1);
+    Vec normal(0,0,-1,0);
+
+    // Fondo
+    Plane p(origin1,normal,RGB(0,0,0));
+    p.setKd(RGB(0,0.3,0.3));
+    p.setKs(RGB(0,0,0));
+    p.setKsp(RGB(0,0,0));
+    p.setKr(RGB(0,0,0));
+    p.setAlpha(0);
+    r.addPlane(p);
+
+    //Square
+    Vec origin2(-10,0,44.7,1);
+    Vec heigh(0,10,0,0);
+    Vec wide(10,0,0,0);
+    Square sq(origin2,wide,heigh);
+    p.setKd(RGB(0.3,0,0));
+    p.setKs(RGB(0,0,0));
+    p.setKsp(RGB(0,0,0));
+    p.setKr(RGB(0,0,0));
+    p.setAlpha(0);
+    r.addSquare(sq);
+
+    // Luz
+    //Light luz(100000000, Vec(10, 1, 15, POINT));
+    Light luz(1000000, Vec(10, 5, 15, POINT));
+    r.addLight(luz);
+
+    r.trazar();
+    cout<<"acabo y escribo"<<endl;
+    r.escribirImagen("nombre.ppm");
+}
+
 int main( int argc, char * argv[] )
 {
     //rayTracingExample();
     //pathTracer3();
     //pathTracer4();
-    pathTracerCornellBox1();
+    //pathTracerCornellBox1();
+    pathTracerSquareTry();
     return 0;
 }

@@ -8,6 +8,7 @@
 #include "../Vec.h"
 #include "../imaging/RGB.h"
 #include "../ReferenceSystem.h"
+#include "Plane.h"
 
 class Square{
 
@@ -33,7 +34,7 @@ public:
                 if(abs(directChanged.getX()) > wide) {
                     return false;
                 }
-                else if (abs(directChanged.getY()) < height ) {
+                else if (abs(directChanged.getY()) > height ) {
                     return false;
                 }
                 else{
@@ -50,11 +51,12 @@ public:
         Square::normal.getUnitVector();
         Vec i = wide;
         Vec j = height;
-        Square::height = i.modulus();
-        Square::wide = j.modulus();
+        Square::height = j.modulus();
+        Square::wide = i.modulus();
         i.getUnitVector();
         j.getUnitVector();
         Square::r = ReferenceSystem(i,j,normal,origin);
+        Square::p = Plane(origin,normal,props);
     }
 
     Square(const Vec &origin, const Vec wide, const Vec height, const RGB &props, const RGB &kd, const RGB &ks,
@@ -70,6 +72,12 @@ public:
                     i.getUnitVector();
                     j.getUnitVector();
                     Square::r = ReferenceSystem(i,j,normal,origin);
+                    Square::p=Plane(origin,normal,props);
+                    Square::p.setKd(kd);
+                    Square::p.setKs(ks);
+                    Square::p.setKsp(ksp);
+                    Square::p.setKr(kr);
+                    Square::p.setAlpha(alpha);
     }
 
     const Vec &getOrigin() const {
@@ -94,6 +102,7 @@ public:
 
     void setKd(const RGB &kd) {
         Square::kd = kd;
+        p.setKd(kd);
     }
 
     const RGB &getKs() const {
@@ -102,6 +111,7 @@ public:
 
     void setKs(const RGB &ks) {
         Square::ks = ks;
+        p.setKs(ks);
     }
 
     const RGB &getKsp() const {
@@ -110,6 +120,7 @@ public:
 
     void setKsp(const RGB &ksp) {
         Square::ksp = ksp;
+        p.setKsp(ksp);
     }
 
     const RGB &getKr() const {
@@ -118,6 +129,7 @@ public:
 
     void setKr(const RGB &kr) {
         Square::kr = kr;
+        p.setKr(kr);
     }
 
     float getAlpha() const {
@@ -126,6 +138,11 @@ public:
 
     void setAlpha(float alpha) {
         Square::alpha = alpha;
+        p.setAlpha(alpha);
+    }
+
+    const Plane &getPlane(){
+        return p;
     }
 
 private:
@@ -137,6 +154,7 @@ private:
     // alpha -> shininess
     // ksp -> perfect specular reflection
     // kr -> perfect specular refraction
+    Plane p;
     RGB kd, ks, ksp, kr;
     float alpha;
     float height, wide;

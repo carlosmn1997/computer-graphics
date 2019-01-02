@@ -29,6 +29,7 @@ public:
         this->numSpheres = 0;
         this->numPlanos = 0;
         this->numLights = 0;
+        this->numSquares = 0;
         this->x=x;
         this->y=y;
         RGB negro(0,0,0);
@@ -81,9 +82,9 @@ public:
                 for (int k = 0; k < numPaths; k++) {
                     double llevoX = (uMod-i)*50;
                     double llevoY = (lMod+j)*50;
-                    if(llevoX > 440 && llevoX< 445 && llevoY > 690 && llevoY < 695)
+                    if(llevoX == 0 && llevoY > 568)
                     {
-                        cout << "x";
+                        //cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
@@ -94,7 +95,7 @@ public:
                 x = x / numPaths;
                 this->setPixel((uMod-i)*50,(lMod+j)*50,x);
             }
-            cout << "Escribo i=" << (uMod-i)*50 << " de " << uMod * 100 <<endl;
+            cout << "Escribo i=" << (uMod-i)*50 << " de " << (uMod) * 100 <<endl;
         }
         cout << "ACABO" << endl;
         u=u*uMod;
@@ -182,6 +183,7 @@ private:
         bool hit=false;
         bool hitEsfera = false;
         Plane p;
+        Square sq;
         Vec point,vp;
         float distance;
         for(int i=0;i<numPlanos;++i){
@@ -194,6 +196,24 @@ private:
                 if(minMod==-1||minMod>distance){
                     minMod=vp.modulus();
                     planeHit = p;
+                    ptoHit = point;
+                    // vp es el rayo
+                    // pixel es el punto de interseccion
+                    //color = renderEquation(pixel, vp, p);
+                    //color = p.getProps();
+                }
+            }
+        }
+        for(int i=0;i<numSquares;++i){
+            sq = squares[i];
+            if(sq.intercepts(pixel,v,point)){
+                hit=true;
+                //cout<<"Intercepta  -->  " << i << endl;
+                vp = point - pixel;
+                distance = vp.modulus();
+                if(minMod==-1||minMod>distance){
+                    minMod=vp.modulus();
+                    planeHit = sq.getPlane();
                     ptoHit = point;
                     // vp es el rayo
                     // pixel es el punto de interseccion
@@ -439,6 +459,7 @@ private:
         Vec point;
         Vec vp;
         Plane p;
+        Square sq;
         Sphere s,aux;
         bool hitSphere = false;
         for(int i=0;i<numPlanos;++i){
@@ -451,6 +472,20 @@ private:
                         minMod=vp.modulus();
                         ptoHit = point;
                         planeHit = p;
+                    }
+                }
+            }
+        }
+        for(int i=0;i<numSquares;++i){
+            sq = squares[i];
+            if (sq.getPlane() != myPlane){
+                if(sq.intercepts(x,v,point)){
+                    hit=true;
+                    vp = point - x;
+                    if(minMod==-1||minMod>vp.modulus()){
+                        minMod=vp.modulus();
+                        ptoHit = point;
+                        planeHit = sq.getPlane();
                     }
                 }
             }
@@ -493,6 +528,7 @@ private:
         if(distanceLocal.getZ()>0) {
             Plane pAux;
             Sphere s;
+            Square sq;
             bool hit = false;
             Vec vp, point;
             Vec x = local.getOrigin();
@@ -503,6 +539,19 @@ private:
                         vp = point - x;
                         if (vp.modulus() < distance.modulus()) {
                             hit = true;
+                        }
+                    }
+                }
+            }
+            if(!hit){
+                for (int i = 0; i < numSquares; ++i) {
+                    sq = squares[i];
+                    if (sq.getPlane() != p) {
+                        if (sq.intercepts(x, distance, point)) {
+                            vp = point - x;
+                            if (vp.modulus() < distance.modulus()) {
+                                hit = true;
+                            }
                         }
                     }
                 }
