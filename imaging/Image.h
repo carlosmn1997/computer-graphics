@@ -23,10 +23,6 @@ public:
         ifstream file;
         file.open(fileName);
 
-        if(file.is_open()){
-            cout << "bien";
-        }
-
         string word;
 
         // Reading P3
@@ -74,6 +70,14 @@ public:
 
     void setPixel(int i, int j, RGB newPixel){
         image[i*this->x + j] = newPixel;
+    }
+
+    int getX(){
+        return Image::x;
+    }
+
+    int getY(){
+        return Image::y;
     }
 
     void writeImage(){

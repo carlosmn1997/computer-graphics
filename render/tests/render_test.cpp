@@ -291,6 +291,18 @@ void pathTracerCornellBox1(){
     s3.setAlpha(0);
     r.addSphere(s3);
 
+    Vec origin6(-2.5,-10,44.8,1);
+    Vec heigh(0,18,0,0);
+    Vec wide(5,0,0,0);
+    Square sq(origin6,wide,heigh);
+    sq.setKd(RGB(0,0.3,0));
+    sq.setKs(RGB(0,0,0));
+    sq.setKsp(RGB(0,0,0));
+    sq.setKr(RGB(0,0,0));
+    sq.setAlpha(0);
+    sq.addTextura("../negro.ppm");
+    r.addSquare(sq);
+
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(10, 5, 15, POINT));
@@ -313,7 +325,7 @@ void pathTracerSquareTry(){
 
     // Fondo
     Plane p(origin1,normal,RGB(0,0,0));
-    p.setKd(RGB(0.9,0.9,0.9));
+    p.setKd(RGB(0.8,0.8,0.8));
     p.setKs(RGB(0,0,0));
     p.setKsp(RGB(0,0,0));
     p.setKr(RGB(0,0,0));
@@ -321,9 +333,9 @@ void pathTracerSquareTry(){
     r.addPlane(p);
 
     //Square
-    Vec origin2(-10,0,44.9,1);
-    Vec heigh(0,10,0,0);
-    Vec wide(10,0,0,0);
+    Vec origin2(-10,-10,44.95,1);
+    Vec heigh(0,20,0,0);
+    Vec wide(20,0,0,0);
     Square sq(origin2,wide,heigh);
     sq.setKd(RGB(0.3,0,0));
     sq.setKs(RGB(0,0,0));
@@ -348,7 +360,7 @@ int main( int argc, char * argv[] )
     //rayTracingExample();
     //pathTracer3();
     //pathTracer4();
-    //pathTracerCornellBox1();
-    pathTracerSquareTry();
+    pathTracerCornellBox1();
+    //pathTracerSquareTry();
     return 0;
 }

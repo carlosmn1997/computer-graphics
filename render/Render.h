@@ -74,7 +74,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 1; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 5; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -82,9 +82,9 @@ public:
                 for (int k = 0; k < numPaths; k++) {
                     double llevoX = (uMod-i)*50;
                     double llevoY = (lMod+j)*50;
-                    if(llevoX == 0 && llevoY > 568)
+                    if(llevoX > 646 && llevoY > 496)
                     {
-                        //cout << "x";
+                        cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
@@ -94,6 +94,9 @@ public:
                 }
                 x = x / numPaths;
                 this->setPixel((uMod-i)*50,(lMod+j)*50,x);
+                if((uMod - i) * 50 > 192) {
+                    //cout << "Escribo i=" << (uMod - i) * 50 << " j=" << (lMod + j) * 50 << endl;
+                }
             }
             cout << "Escribo i=" << (uMod-i)*50 << " de " << (uMod) * 100 <<endl;
         }
@@ -291,7 +294,10 @@ private:
         Vec wi;
         Vec wiDirecta;
         Vec xViejo;
-        while (!absorcion && interseccion && !emitter){
+        if(p.isTextura()){
+            color = p.getPixelFromImg(x);
+        }
+        while (!absorcion && interseccion && !emitter && !p.isTextura()){
             // Sistema de coordenadas local respecto del punto x en el objeto o
             local = p.createReferenceSystemLocal(x);
             referenceSystem = local.getMatrix().inverse();

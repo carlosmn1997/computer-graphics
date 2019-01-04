@@ -7,6 +7,7 @@
 
 #include "../Vec.h"
 #include "../imaging/RGB.h"
+#include "../imaging/Image.h"
 #include "../ReferenceSystem.h"
 
 class Plane{
@@ -24,6 +25,9 @@ public:
             this->props=props;
             createRefSystem();
         }
+        this->alt=0;
+        this->anch=0;
+        this->textura = false;
     }
 
     Plane() {}
@@ -91,6 +95,38 @@ public:
         local.setJ(r.getJ());
         local.setK(r.getK());
         return local;
+    }
+
+    bool isTextura(){
+        return textura;
+    }
+
+    void setTextura(bool b){
+        Plane::textura=b;
+    }
+
+    void addTextura(string filename){
+        Plane::textura = true;
+        Plane::img = Image(filename);
+
+    }
+
+    RGB getPixelFromImg(Vec point){
+        Vec distance = point - r.getOrigin();
+        Vec disInRef = r.changeReferenceSystem(distance);
+        float pixelWide = (disInRef.getX()/anch);
+        pixelWide =(img.getX()*1.0)*(1-pixelWide);
+        float pixelHeight = (disInRef.getY()/alt);
+        pixelHeight = (img.getY()*1.0)*(1-pixelHeight);
+        return img.getPixel(pixelHeight,pixelWide);
+    }
+
+    void setAlt(float alt){
+        Plane::alt=alt;
+    }
+
+    void setAnch(float anch){
+        Plane::anch=anch;
     }
 
 private:
@@ -190,6 +226,9 @@ private:
     // ksp -> perfect specular reflection
     // kr -> perfect specular refraction
     RGB kd, ks, ksp, kr;
+    bool textura;
+    Image img;
+    float alt,anch;
     float alpha;
 public:
     const RGB &getKd() const {

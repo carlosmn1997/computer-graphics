@@ -56,6 +56,9 @@ public:
         j.getUnitVector();
         Square::r = ReferenceSystem(i,j,normal,origin);
         Square::p = Plane(origin,normal,props);
+        Square::p.setR(Square::r);
+        Square::p.setAlt(Square::height);
+        Square::p.setAnch(Square::wide);
     }
 
     Square(const Vec &origin, const Vec wide, const Vec height, const RGB &props, const RGB &kd, const RGB &ks,
@@ -72,6 +75,7 @@ public:
                     j.getUnitVector();
                     Square::r = ReferenceSystem(i,j,normal,origin);
                     Square::p=Plane(origin,normal,props);
+                    Square::p.setR(Square::r);
                     Square::p.setKd(kd);
                     Square::p.setKs(ks);
                     Square::p.setKsp(ksp);
@@ -153,8 +157,8 @@ public:
     }
 
     void addTextura(string filename){
-        Square::img = Image(filename);
-        Square::textura = true;
+        Square::p.addTextura(filename);
+        Square::p.setTextura(true);
     }
 
 private:
