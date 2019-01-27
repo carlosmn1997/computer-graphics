@@ -74,7 +74,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 10; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 50; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -320,7 +320,8 @@ private:
                 RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
                 //RGB phong = p.getKd();
                 RGB directLightVal = directLight(local, p,lights[i]);
-                color = color + acumulado * phong * directLightVal;
+                // Aqui hay que poner la propiedad geometrica ya que no estamos muestreando
+                color = color + acumulado * phong * directLightVal * abs(local.getK()*wiDirecta);
                 //emitter = true;
             }
 

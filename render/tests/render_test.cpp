@@ -228,7 +228,7 @@ void pathTracerCornellBox1(){
     //Plane t(origin3,normal3,RGB(0, 0, 0));
     Plane t(origin3,normal3,RGB(0, 0, 0));
     t.setKd(RGB(0.5,0.5,0.5));
-    t.setKd(RGB(0,0,0));
+    //t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
