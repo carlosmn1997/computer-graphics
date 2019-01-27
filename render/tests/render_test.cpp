@@ -226,8 +226,8 @@ void pathTracerCornellBox1(){
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
     //Plane t(origin3,normal3,RGB(0, 0, 0));
-    Plane t(origin3,normal3,RGB(254, 254, 254));
-    //t.setKd(RGB(0.5,0.5,0.5));
+    Plane t(origin3,normal3,RGB(0, 0, 0));
+    t.setKd(RGB(0.5,0.5,0.5));
     t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
@@ -260,11 +260,12 @@ void pathTracerCornellBox1(){
     Vec normal6(0,6,0,0);
     Vec refCity(5,-5,22,1);
     Sphere s(center,normal6,refCity);
-    s.setKd(RGB(0.6,0.6,0));
-    s.setKs(RGB(0.4,0.4,0.4));
+    s.setKd(RGB(0.4,0.4,0));
+    s.setKs(RGB(0.6,0.6,0.6));
+    //s.setKs(RGB(0,0,0));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
-    s.setAlpha(20);
+    s.setAlpha(15);
     r.addSphere(s);
 
     // Pelota espejo
