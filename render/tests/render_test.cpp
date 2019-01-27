@@ -205,7 +205,7 @@ void pathTracerCornellBox1(){
     Vec normal(0,0,-1,0);
     // Fondo
     Plane p(origin1,normal,RGB(0,0,0));
-    p.setKd(RGB(0.5,0.5,0.5));
+    p.setKd(RGB(0.1,0.1,0.5));
     p.setKs(RGB(0,0,0));
     p.setKsp(RGB(0,0,0));
     p.setKr(RGB(0,0,0));
@@ -225,10 +225,10 @@ void pathTracerCornellBox1(){
     Vec normal3(0,-1,0,0);
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
-    Plane t(origin3,normal3,RGB(0, 0, 0));
-    //Plane t(origin3,normal3,RGB(254, 254, 254));
-    t.setKd(RGB(0.5,0.5,0.5));
-    //t.setKd(RGB(0,0,0));
+    //Plane t(origin3,normal3,RGB(0, 0, 0));
+    Plane t(origin3,normal3,RGB(254, 254, 254));
+    //t.setKd(RGB(0.5,0.5,0.5));
+    t.setKd(RGB(0,0,0));
     t.setKs(RGB(0,0,0));
     t.setKsp(RGB(0,0,0));
     t.setKr(RGB(0,0,0));
@@ -260,11 +260,11 @@ void pathTracerCornellBox1(){
     Vec normal6(0,6,0,0);
     Vec refCity(5,-5,22,1);
     Sphere s(center,normal6,refCity);
-    s.setKd(RGB(0.5,0.5,0));
-    s.setKs(RGB(0.4,0.4,0));
+    s.setKd(RGB(0.6,0.6,0));
+    s.setKs(RGB(0.4,0.4,0.4));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
-    s.setAlpha(0.02);
+    s.setAlpha(20);
     r.addSphere(s);
 
     // Pelota espejo
@@ -277,7 +277,7 @@ void pathTracerCornellBox1(){
     s2.setKsp(RGB(1,1,1));
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(0);
-    r.addSphere(s2);
+    //r.addSphere(s2);
 
     // Pelota cristal
     Vec center3(10,0,25,1);
@@ -289,7 +289,7 @@ void pathTracerCornellBox1(){
     s3.setKsp(RGB(0,0,0));
     s3.setKr(RGB(1,1,1));
     s3.setAlpha(0);
-    r.addSphere(s3);
+    //r.addSphere(s3);
 
     Vec origin6(-2.5,-10,44.8,1);
     Vec heigh(0,18,0,0);
@@ -301,11 +301,11 @@ void pathTracerCornellBox1(){
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
     sq.addTextura("../negro.ppm");
-    r.addSquare(sq);
+    //r.addSquare(sq);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
-    Light luz(1000000, Vec(10, 5, 15, POINT));
+    Light luz(1000000, Vec(10, 4, 15, POINT));
     r.addLight(luz);
 
     r.trazar();
@@ -348,7 +348,7 @@ void pathTracerSquareTry(){
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(10, 5, 15, POINT));
-    r.addLight(luz);
+    //r.addLight(luz);
 
     r.trazar();
     cout<<"acabo y escribo"<<endl;

@@ -74,7 +74,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 5; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 40; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -84,7 +84,7 @@ public:
                     double llevoY = (lMod+j)*50;
                     if(llevoX > 646 && llevoY > 496)
                     {
-                        cout << "x";
+                     //   cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
@@ -271,6 +271,7 @@ private:
     // o -> objeto con el que ha intersectado
     // HACERLO EN COORDENADAS LOCALES
     RGB renderEquation(Vec x, Vec wo, Plane p){
+        int numRebotes = 0;
         RGB color(1, 1, 1);
         RGB acumulado(1.0, 1.0, 1.0);
         bool absorcion = false;
@@ -297,7 +298,7 @@ private:
         if(p.isTextura()){
             color = p.getPixelFromImg(x);
         }
-        while (!absorcion && interseccion && !emitter && !p.isTextura()){
+        while (!absorcion && interseccion && !emitter && !p.isTextura() && numRebotes < 1){
             // Sistema de coordenadas local respecto del punto x en el objeto o
             local = p.createReferenceSystemLocal(x);
             referenceSystem = local.getMatrix().inverse();
@@ -313,6 +314,7 @@ private:
                 wiDirecta = lights[i].getPosition()-local.getOrigin();
                 wiDirecta.getUnitVector();
                 RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wiDirecta, local.getK());
+                //RGB phong = p.getKd();
                 RGB directLightVal = directLight(local, p,lights[i]);
                 color = color + acumulado * phong * directLightVal;
                 //emitter = true;
@@ -334,6 +336,7 @@ private:
             // Tiro ruleta rusa
             // https://stackoverflow.com/questions/19665818/generate-random-numbers-using-c11-random-library
             rr = randZeroToOne();//dist(mt);
+            //rr = 1.1;
             if (rr < kd + ks){
 
                 // Muestrear rayo uniform cosine sampling
@@ -358,11 +361,15 @@ private:
                 wi = local.getMatrix()*wi;
                 x = local.getMatrix()*x;
 
+                // PHONG BIEN
+                // Reflejado del rayo  saliente
+                Vec reflected = wi - 2 * local.getK() *  (local.getK() * wi);
+
                 // Luz directa
                 //color = color + (p.getKd() / M_PI)*directLight(local, p);
                 // TODO phong
                 // TODO acumular angulo de incidencia
-                acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi);
+                acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
                 //acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
                 acumulado = acumulado / (kd + ks); // TODO seguro que esto es asi?
@@ -408,6 +415,7 @@ private:
             else{ // rr indica absorcion
                 absorcion = true;
             }
+            numRebotes++;
         }
 
         return color;
@@ -541,10 +549,11 @@ private:
             for (int i = 0; i < numPlanos; ++i) {
                 pAux = ps[i];
                 if (pAux != p) {
-                    if (p.intercepts(x, distance, point)) {
+                    if (pAux.intercepts(x, distance, point)) {
                         vp = point - x;
+                        //bool isCero = vp.getX()<0.1 && vp.getY()<0.1 && vp.getZ()<0.1;
                         if (vp.modulus() < distance.modulus()) {
-                            hit = true;
+                            hit = false;
                         }
                     }
                 }
@@ -584,6 +593,9 @@ private:
         }
         else{
             color = RGB(0.1,0.1,0.1);
+        }
+        if(color.getB() < 1){
+            cout<<"aki kk"<< endl;
         }
         return color;
     }
