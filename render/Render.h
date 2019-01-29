@@ -36,7 +36,7 @@ public:
         img = new RGB[x*y];
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
-                this->setPixel(i,j,negro);
+               // this->setPixel(i,j,negro);
             }
         }
         ReferenceSystem UCS(u,l,f,o);
@@ -74,23 +74,27 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 50; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 14; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
                 // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    double llevoX = (uMod-i)*50;
-                    double llevoY = (lMod+j)*50;
-                    if(llevoX > 646 && llevoY > 496)
+                    int llevoX = (uMod-i)*50;
+                    int llevoY = (lMod+j)*50;
+                    if(llevoX == 701 && llevoY == 806)
                     {
-                        //cout << "x";
+                        cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
                     pixel = f + (i - restI) * u + (j + sumJ) * l;
                     pixel.setType(1);
-                    x = x + pixelColor(pixel);
+                    RGB pixelAux = pixelColor(pixel);
+                    if(isnan(pixelAux.getR())||isnan(pixelAux.getG())||isnan(pixelAux.getB())){
+                        cout<<"XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+                    }
+                    x = x + pixelAux;//pixelColor(pixel);
                 }
                 x = x / numPaths;
                 this->setPixel((uMod-i)*50,(lMod+j)*50,x);
@@ -297,9 +301,36 @@ private:
         if(p.isTextura()){
             color = p.getPixelFromImg(x);
         }
+        int iteraciones=0;
         while (!absorcion && interseccion && !emitter && !p.isTextura()){
+            iteraciones++;
             // Sistema de coordenadas local respecto del punto x en el objeto o
+            ReferenceSystem r = p.getR();
+            Vec iref = r.getI();
+            Vec jref = r.getJ();
+            Vec kref = r.getK();
+            if(isnan(iref.getX())||isnan(iref.getY())||isnan(iref.getZ())){
+                   cout << "I" << iref.getX() << iref.getY() << iref.getZ() << " ITERACION " << iteraciones << endl;
+            }
+            if(isnan(jref.getX())||isnan(jref.getY())||isnan(jref.getZ())){
+                cout << "J" << jref.getX() << jref.getY() << jref.getZ() << " ITERACION " << iteraciones << endl;
+            }
+            if(isnan(kref.getX())||isnan(kref.getY())||isnan(kref.getZ())){
+                cout << "Z" << kref.getX() << kref.getY() << kref.getZ() << " ITERACION " << iteraciones << endl;
+            }
             local = p.createReferenceSystemLocal(x);
+            iref=local.getI();
+            jref=local.getJ();
+            kref=local.getK();
+            if(isnan(iref.getX())||isnan(iref.getY())||isnan(iref.getZ())){
+                cout << "I" << iref.getX() << iref.getY() << iref.getZ() << " ITERACION " << iteraciones << endl;
+            }
+            if(isnan(jref.getX())||isnan(jref.getY())||isnan(jref.getZ())){
+                cout << "J" << jref.getX() << jref.getY() << jref.getZ() << " ITERACION " << iteraciones << endl;
+            }
+            if(isnan(kref.getX())||isnan(kref.getY())||isnan(kref.getZ())){
+                cout << "Z" << kref.getX() << kref.getY() << kref.getZ() << " ITERACION " << iteraciones << endl;
+            }
             referenceSystem = local.getMatrix().inverse();
             x = referenceSystem*x;
             wo.getUnitVector();
@@ -318,10 +349,19 @@ private:
                 Vec reflected = wiDirecta - 2 * local.getK() *  (local.getK() * wiDirecta);
                 // Hacer phong con el reflejado
                 RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
+                if(isnan(phong.getR())||isnan(phong.getG())||isnan(phong.getB())){
+                    cout<<"FALLA PHONG"<<endl;
+                }
                 //RGB phong = p.getKd();
                 RGB directLightVal = directLight(local, p,lights[i]);
+                if(isnan(directLightVal.getR())||isnan(directLightVal.getG())||isnan(directLightVal.getB())){
+                    cout<<"FALLA DIRECT LIGHT"<<endl;
+                }
                 // Aqui hay que poner la propiedad geometrica ya que no estamos muestreando
                 color = color + acumulado * phong * directLightVal * abs(local.getK()*wiDirecta);
+                if(isnan(phong.getR())||isnan(phong.getG())||isnan(phong.getB())){
+                    cout<<"FALLA LA PROP GEOM"<<endl;
+                }
                 //emitter = true;
             }
 
@@ -333,6 +373,18 @@ private:
 
             // TODO normalizar entre 0 y 0.9
             normalizeRR(kdAux, ksAux, kspAux, krAux);
+            if(isnan(kdAux.getR())||isnan(kdAux.getG())||isnan(kdAux.getB())){
+                cout<<"FALLA NORM"<<endl;
+            }
+            if(isnan(ksAux.getR())||isnan(ksAux.getG())||isnan(ksAux.getB())){
+                cout<<"FALLA PHONG"<<endl;
+            }
+            if(isnan(kspAux.getR())||isnan(kspAux.getG())||isnan(kspAux.getB())){
+                cout<<"FALLA PHONG"<<endl;
+            }
+            if(isnan(krAux.getR())||isnan(krAux.getG())||isnan(krAux.getB())){
+                cout<<"FALLA PHONG"<<endl;
+            }
             kd = kdAux.getMax();
             ks = ksAux.getMax();
             ksp = kspAux.getMax();
@@ -358,25 +410,52 @@ private:
                 // To local coordinates
                 //randPoint = referenceSystem*randPoint;
                 wi = randPoint - Vec(0, 0, 0, POINT);
+                if(isnan(wi.getX())||isnan(wi.getY())||isnan(wi.getZ())){
+                    cout<<"FALLA RANDOM"<<endl;
+                    cout<<randPoint.getX()<<randPoint.getY()<<randPoint.getZ()<<endl;
+                    cout<<wi.getX()<<wi.getY()<<wi.getZ()<<endl;
+                }
                 wi.getUnitVector();
+
+                if(isnan(wi.getX())||isnan(wi.getY())||isnan(wi.getZ())){
+                    cout<<"FALLA UNITARIO"<<endl;
+                }
 
                 // To global coordinates
                 // TODO no estoy seguro de wo
+
+                Vec wiAntiguo=wi;
                 wi = local.getMatrix()*wi;
                 x = local.getMatrix()*x;
+
+                if(isnan(wi.getX())||isnan(wi.getY())||isnan(wi.getZ())){
+                    cout<<"FALLA CAMBIO"<<endl;
+                    cout<<wiAntiguo.getX()<<","<<wiAntiguo.getY()<<","<<wiAntiguo.getZ()<<endl;
+                }
 
                 // PHONG BIEN
                 // Reflejado del rayo  saliente
                 Vec reflected = wi - 2 * local.getK() *  (local.getK() * wi);
+
+                if(isnan(reflected.getX())||isnan(reflected.getY())||isnan(reflected.getZ())){
+                    cout<<"FALLA REFLECTED"<<endl;
+                }
 
                 // Luz directa
                 //color = color + (p.getKd() / M_PI)*directLight(local, p);
                 // TODO phong
                 // TODO acumular angulo de incidencia
                 acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
+                if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                    //cout<<"FALLA ANG INC"<<endl;
+                    //cout << p.getAlpha() << "---" << p.getKd().getR() << "-" << p.getKd().getG() << "-" <<p.getKd().getB();
+                }
                 //acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
-                // TODO dividir para el anguludo de incidencia con la probabilidad esa
+                // TODO dividir para el angulo de incidencia con la probabilidad esa
                 acumulado = acumulado / (kd + ks); // TODO seguro que esto es asi?
+                if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                    //cout<<"FALLA ANG INC con prob"<<endl;
+                }
 
                 //wo = Vec(1, -1, -1, DIRECTION);
                 xViejo = x;
@@ -391,6 +470,9 @@ private:
                 wi = wo - 2*n*(wo*n);// rayo saliente desde donde miro
                 wi.getUnitVector();
                 acumulado = acumulado * (specularReflectionBRDF(p.getKsp(), n, wi) * abs(n*wi) / ksp);
+                if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                    //cout<<"FALLA ESPECULAR"<<endl;
+                }
                 interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 wo = wi;
             }
@@ -403,15 +485,24 @@ private:
                     wo = wi;
                     if(refraction(p, wo, wi)){
                         acumulado = acumulado * glassRefractionBTDF(p.getKr(),local.getK(),wi);
+                        if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                            //cout<<"FALLA REFRACT 1"<<endl;
+                        }
                         interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                     }
                     else{
                         acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                        if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                            //cout<<"FALLA REFRACT 2"<<endl;
+                        }
                         interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                     }
                 }
                 else{
                     acumulado = acumulado * specularReflectionBRDF(p.getKsp(), local.getK(), wi);
+                    if(isnan(acumulado.getR())||isnan(acumulado.getG())||isnan(acumulado.getB())){
+                        //cout<<"FALLA ESTO RARO"<<endl;
+                    }
                     interseccion = nearestIntersection(wi, x, p, x, p, local,false);
                 }
                 wo = wi;
@@ -430,6 +521,11 @@ private:
     RGB phongBRDF(RGB kd, RGB ks,float alpha, Vec wo, Vec wi){
         float aux = pow(abs(wo*wi),alpha);
         RGB part1 = kd / M_PI + ks * (alpha + 2)/(2*M_PI) * RGB(aux,aux,aux);
+        if(isnan(part1.getR())||isnan(part1.getG())||isnan(part1.getB())){
+            //cout<<"FALLA PHONG"<<endl;
+            //cout<< wo.getX() << "-" << wo.getY() << "-" << wo.getZ() << endl;
+            //cout<< wi.getX() << "-" << wi.getY() << "-" << wi.getZ() << endl;
+        }
         return part1;
     }
 
@@ -634,6 +730,16 @@ private:
     }
 
     void setPixel(int i, int j, RGB newPixel){
+        if(i>100&&i<102) {
+            //cout << i << "-" << j << endl;
+        }
+        if(i==101&&j==806){
+            cout<<"BUENO->"<<endl;
+            cout<<newPixel.getR()<<"-"<<newPixel.getB()<<"-"<<newPixel.getG()<<endl;
+        }
+        else if((i==100&&j==806)||i==101&&j==807){
+            cout<<newPixel.getR()<<"-"<<newPixel.getB()<<"-"<<newPixel.getG()<<endl;
+        }
         img[i*this->y + j] = newPixel;
     }
 

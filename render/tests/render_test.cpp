@@ -370,7 +370,7 @@ void pathTracerCornellBoxSummit(){
     p.setKs(RGB(0,0,0));
     p.setKsp(RGB(0,0,0));
     p.setKr(RGB(0,0,0));
-    p.setAlpha(0);
+    p.setAlpha(0.2);
     r.addPlane(p);
     Vec origin2(0,-10,0,1);
     Vec normal2(0,1,0,0);
@@ -384,6 +384,7 @@ void pathTracerCornellBoxSummit(){
     r.addPlane(q);
     Vec origin3(0,10,0,1);
     Vec normal3(0,-1,0,0);
+
     // Techo
     //Plane t(origin3,normal3,RGB(1000, 1000, 1000));
     Plane t(origin3,normal3,RGB(0, 0, 0));
@@ -438,7 +439,7 @@ void pathTracerCornellBoxSummit(){
     s2.setKsp(RGB(0.4,0.4,0.4));
     s2.setKr(RGB(0.8,0.8,0.8));
     s2.setAlpha(0.02);
-    r.addSphere(s2);
+    //r.addSphere(s2);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
