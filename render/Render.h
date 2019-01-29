@@ -74,7 +74,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 5; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 100; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -84,7 +84,7 @@ public:
                     double llevoY = (lMod+j)*50;
                     if(llevoX > 646 && llevoY > 496)
                     {
-                        cout << "x";
+                       // cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
