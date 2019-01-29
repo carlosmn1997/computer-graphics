@@ -131,60 +131,39 @@ public:
 
 private:
     void createRefSystem(){
-        float x,y,z;
+        float x=0;
+        float y=0;
+        float z=0;
         bool xDone = false;
         bool yDone=false;
         bool zDone=false;
         int numberDone=0;
-        if(normal.getX()==0){
-            xDone = true;
-            x = 1;
-            numberDone++;
+        if(normal.getX()==0&&normal.getY()==0){
+            x=1;
         }
-
-        if(normal.getY()==0){
-            yDone = true;
-            y = 1;
-            numberDone++;
+        else if(normal.getY()==0&normal.getZ()==0){
+            y=1;
         }
-
-        if(normal.getZ()==0){
-            zDone = true;
-            z = 1;
-            numberDone++;
+        else if(normal.getX()==0&normal.getZ()==0){
+            x=1;
         }
-
-        if(numberDone==2){
-            if(!xDone){
-                x = 0;
-            }
-            else if(!yDone){
-                y = 0;
-            }
-            else{
-                z = 0;
-            }
+        else if(normal.getX()==0){
+            y=1;
+            z=-normal.getY()/normal.getZ();
         }
-        else if(numberDone==1){
-            if(xDone){
-                y = 1;
-                z = -normal.getY()/normal.getZ();
-            }
-            else if(!yDone){
-                x = 1;
-                z = -normal.getX()/normal.getZ();
-            }
-            else{
-                x = 1;
-                y = -normal.getX()/normal.getY();
-            }
+        else if(normal.getY()==0){
+            x=1;
+            z=-normal.getX()/normal.getZ();
+        }
+        else if(normal.getZ()==0){
+            y=1;
+            x=-normal.getY()/normal.getX();
         }
         else{
-            x = 1;
-            y = 1;
-            z = (-normal.getY()-normal.getX())/normal.getZ();
+            x=1;
+            y=1;
+            z=(-normal.getX()-normal.getY())/normal.getZ();
         }
-
         Vec i(x,y,z,0);
         i.getUnitVector();
 
