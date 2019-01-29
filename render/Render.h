@@ -74,17 +74,17 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 100; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 50; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
-               // cout << i << "->" << j << endl;
+                // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
                     double llevoX = (uMod-i)*50;
                     double llevoY = (lMod+j)*50;
                     if(llevoX > 646 && llevoY > 496)
                     {
-                       // cout << "x";
+                        //cout << "x";
                     }
                     restI = rn.giveNumber();
                     sumJ = rn.giveNumber();
@@ -278,13 +278,13 @@ private:
         bool emitter = false;
 
         if (p.getKd().getB()>0.8){
-           //cout<<"choco azul"<<endl;
+            //cout<<"choco azul"<<endl;
         }
         if (p.getKd().getR()>0.8){
             //cout<<"choco rojo"<<endl;
         }
         else if(p.getProps().getB() > 0){
-        //    cout << "choco emisor" << endl;
+            //    cout << "choco emisor" << endl;
         }
         ReferenceSystem local;
         Matrix referenceSystem;
@@ -309,12 +309,19 @@ private:
                 emitter = true;
             }
 
+            // Next event estimation
             for(int i=0;i<numLights;++i){
                 wiDirecta = lights[i].getPosition()-local.getOrigin();
+                // Calcular el reflejado
                 wiDirecta.getUnitVector();
-                RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wiDirecta, local.getK());
+                wiDirecta = wiDirecta * -1; // Hay que darle la vuelta
+                Vec reflected = wiDirecta - 2 * local.getK() *  (local.getK() * wiDirecta);
+                // Hacer phong con el reflejado
+                RGB phong = phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
+                //RGB phong = p.getKd();
                 RGB directLightVal = directLight(local, p,lights[i]);
-                color = color + acumulado * phong * directLightVal;
+                // Aqui hay que poner la propiedad geometrica ya que no estamos muestreando
+                color = color + acumulado * phong * directLightVal * abs(local.getK()*wiDirecta);
                 //emitter = true;
             }
 
@@ -358,11 +365,15 @@ private:
                 wi = local.getMatrix()*wi;
                 x = local.getMatrix()*x;
 
+                // PHONG BIEN
+                // Reflejado del rayo  saliente
+                Vec reflected = wi - 2 * local.getK() *  (local.getK() * wi);
+
                 // Luz directa
                 //color = color + (p.getKd() / M_PI)*directLight(local, p);
                 // TODO phong
                 // TODO acumular angulo de incidencia
-                acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi);
+                acumulado = acumulado * M_PI * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, reflected);
                 //acumulado = acumulado * phongBRDF(p.getKd(),p.getKs(),p.getAlpha(),wo, wi) / (2 * M_PI); // Se divide para la pdf
                 // TODO dividir para el anguludo de incidencia con la probabilidad esa
                 acumulado = acumulado / (kd + ks); // TODO seguro que esto es asi?
@@ -373,7 +384,7 @@ private:
 
                 wo = x - xViejo;
             }
-            // Perfect specular
+                // Perfect specular
             else if (kd+ks < rr && rr < ksp + kd + ks){
                 x = local.getMatrix()*x;
                 Vec n = local.getK();//referenceSystem*n;
@@ -541,7 +552,7 @@ private:
             for (int i = 0; i < numPlanos; ++i) {
                 pAux = ps[i];
                 if (pAux != p) {
-                    if (p.intercepts(x, distance, point)) {
+                    if (pAux.intercepts(x, distance, point)) {
                         vp = point - x;
                         if (vp.modulus() < distance.modulus()) {
                             hit = true;

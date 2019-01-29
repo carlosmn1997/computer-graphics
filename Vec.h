@@ -24,6 +24,10 @@ public:
     //void accelerate(float intensity);
     //void brake(float intensity);
 
+    float dot(Vec u, Vec v){
+        return u.getX()*v.getX()+u.getY()*v.getY()+u.getZ()+v.getZ();
+    }
+
     friend ostream& operator<<(ostream& os, const Vec& vec);
 
     Vec operator+ (const Vec & second) const {
