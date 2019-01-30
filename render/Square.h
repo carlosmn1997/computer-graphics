@@ -45,9 +45,10 @@ public:
 
     Square() {}
 
-    Square(const Vec &origin, const Vec &wide, const Vec &height) : origin(origin) {
+    Square(const Vec &origin, const Vec &wide, const Vec &height,RGB props) : origin(origin) {
         Square::normal = Vec::crossProduct(height,wide);
         Square::normal.getUnitVector();
+        Square::props = props;
         Vec i = wide;
         Vec j = height;
         Square::height = j.modulus();
@@ -55,7 +56,7 @@ public:
         i.getUnitVector();
         j.getUnitVector();
         Square::r = ReferenceSystem(i,j,normal,origin);
-        Square::p = Plane(origin,normal,props);
+        Square::p = Plane(origin,Square::normal,props);
         Square::p.setR(Square::r);
         Square::p.setAlt(Square::height);
         Square::p.setAnch(Square::wide);
