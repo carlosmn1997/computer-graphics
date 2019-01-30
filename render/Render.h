@@ -74,7 +74,8 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 10; // NUMBER OF RAYS PER PIXEL
+        //int aux;
+        int numPaths = 1; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -98,12 +99,13 @@ public:
                     x = x + pixelAux;//pixelColor(pixel);
                 }
                 x = x / numPaths;
-                this->setPixel((uMod-i)*50,(lMod+j)*50,x);
+                double fila = (uMod-i)*50.0 + 0.01;
+                this->setPixel(fila,(int)((lMod+j)*50),x);
                 if((uMod - i) * 50 > 192) {
                     //cout << "Escribo i=" << (uMod - i) * 50 << " j=" << (lMod + j) * 50 << endl;
                 }
             }
-            cout << "Escribo i=" << (uMod-i)*50 << " de " << (uMod) * 100 <<endl;
+            cout << "Escribo i=" << (uMod - i) * 50 << " de " << (uMod) * 100 << endl;
         }
         cout << "ACABO" << endl;
         u=u*uMod;
