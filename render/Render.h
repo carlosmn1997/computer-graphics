@@ -302,8 +302,8 @@ private:
             color = p.getPixelFromImg(x);
         }
         int iteraciones=0;
-        bool mal = false;
-        while (!absorcion && interseccion && !emitter && !p.isTextura() && !mal){
+        bool nan=false;
+        while (!absorcion && interseccion && !emitter && !p.isTextura()&&!nan){
             iteraciones++;
             // Sistema de coordenadas local respecto del punto x en el objeto o
             ReferenceSystem r = p.getR();
@@ -312,13 +312,15 @@ private:
             Vec kref = r.getK();
             if(isnan(iref.getX())||isnan(iref.getY())||isnan(iref.getZ())){
                    cout << "I" << iref.getX() << iref.getY() << iref.getZ() << " ITERACION " << iteraciones << endl;
-                   mal = true;
+                   nan=true;
             }
-            if(isnan(jref.getX())||isnan(jref.getY())||isnan(jref.getZ())){
+            else if(isnan(jref.getX())||isnan(jref.getY())||isnan(jref.getZ())){
                 cout << "J" << jref.getX() << jref.getY() << jref.getZ() << " ITERACION " << iteraciones << endl;
+                nan=true;
             }
-            if(isnan(kref.getX())||isnan(kref.getY())||isnan(kref.getZ())){
+            else if(isnan(kref.getX())||isnan(kref.getY())||isnan(kref.getZ())){
                 cout << "Z" << kref.getX() << kref.getY() << kref.getZ() << " ITERACION " << iteraciones << endl;
+                nan=true;
             }
             local = p.createReferenceSystemLocal(x);
             iref=local.getI();
@@ -512,6 +514,11 @@ private:
             else{ // rr indica absorcion
                 absorcion = true;
             }
+        }
+
+        if(nan){
+            cout << "MAL COLOR, SE CAMBIA POR NEGRO" <<endl;
+            color=RGB(0.1,0.1,0.1);
         }
 
         return color;
