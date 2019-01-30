@@ -74,7 +74,7 @@ public:
         RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
-        int numPaths = 14; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 10; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);
@@ -114,11 +114,10 @@ public:
         file.open(path);
         file << "P3" << endl;
         file << "#MAX=1000000" << endl;
-        file << "# mpi_atrium_3.ppm" << endl;
+        file << "# salida.ppm" << endl;
         file << "1280 720" << endl;
         file << "10000000" << endl;
 
-        float coefficient = 1;//65535/255;
         for (int i = 0; i < x; i++){
             for (int j = 0; j < y; j++){
                 int R, G, B;
@@ -126,9 +125,9 @@ public:
                     cout<<"PASA"<<endl;
                 }
                 RGB aux = this->getPixel(i,j);
-                R = max(aux.getR() * coefficient,0);
-                G = max(aux.getG() * coefficient,0);
-                B = max(aux.getB() * coefficient,0);
+                R = max(aux.getR(),0);
+                G = max(aux.getG(),0);
+                B = max(aux.getB(),0);
                 file << R << " " << G << " " << B << "   ";
             }
             file << '\n';
@@ -377,13 +376,13 @@ private:
                 cout<<"FALLA NORM"<<endl;
             }
             if(isnan(ksAux.getR())||isnan(ksAux.getG())||isnan(ksAux.getB())){
-                cout<<"FALLA PHONG"<<endl;
+                cout<<"FALLA NORM"<<endl;
             }
             if(isnan(kspAux.getR())||isnan(kspAux.getG())||isnan(kspAux.getB())){
-                cout<<"FALLA PHONG"<<endl;
+                cout<<"FALLA NORM"<<endl;
             }
             if(isnan(krAux.getR())||isnan(krAux.getG())||isnan(krAux.getB())){
-                cout<<"FALLA PHONG"<<endl;
+                cout<<"FALLA NORM"<<endl;
             }
             kd = kdAux.getMax();
             ks = ksAux.getMax();
@@ -705,11 +704,12 @@ private:
         float maxKr = kr.getMax();
 
         float denominador = (phong + maxKsp + maxKr) * 1.1; // Para asegurarnos un 10% de absorción
-        kd = kd / denominador;
-        ks = ks / denominador;
-        ksp = ksp / denominador;
-        kr = kr / denominador;
-
+        if(denominador!=0) {
+            kd = kd / denominador;
+            ks = ks / denominador;
+            ksp = ksp / denominador;
+            kr = kr / denominador;
+        }
     }
 
 

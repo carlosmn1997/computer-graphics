@@ -31,7 +31,7 @@ public:
         // Reading #MAX = ...
         file >> word; // We need parsing
         //m = 65535;
-        m = 1000000;
+        m = stoi(word.substr(5));
 
         // Reading filename
         string line;
@@ -47,14 +47,14 @@ public:
         file >> c;
 
         // Reading RGB
-        float coefficient = 1;//m / c;
+        float coefficient = 1;
         for (int i = 0; i < y; i++){
             for (int j = 0; j < x; j++){
                 int R, G, B;
                 file >> R >> G >> B;
-                float vR = (float)R * coefficient;
-                float vG = (float)G * coefficient;
-                float vB = (float)B * coefficient;
+                float vR = (float)R;
+                float vG = (float)G;
+                float vB = (float)B;
                 setPixel(i, j, RGB(vR, vG, vB));
                 //image[(i*y)+j] = RGB(vR, vG, vB);
             }
