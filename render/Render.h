@@ -82,8 +82,9 @@ public:
                 for (int k = 0; k < numPaths; k++) {
                     int llevoX = (uMod-i)*50;
                     int llevoY = (lMod+j)*50;
-                    if(llevoX == 701 && llevoY == 806)
+                    if(llevoX == 84 && llevoY == 892 && k == 34)
                     {
+                        cout<< "Estoy en el rayo: "<< k <<endl;
                         cout << "x";
                     }
                     restI = rn.giveNumber();
@@ -301,7 +302,8 @@ private:
             color = p.getPixelFromImg(x);
         }
         int iteraciones=0;
-        while (!absorcion && interseccion && !emitter && !p.isTextura()){
+        bool mal = false;
+        while (!absorcion && interseccion && !emitter && !p.isTextura() && !mal){
             iteraciones++;
             // Sistema de coordenadas local respecto del punto x en el objeto o
             ReferenceSystem r = p.getR();
@@ -310,6 +312,7 @@ private:
             Vec kref = r.getK();
             if(isnan(iref.getX())||isnan(iref.getY())||isnan(iref.getZ())){
                    cout << "I" << iref.getX() << iref.getY() << iref.getZ() << " ITERACION " << iteraciones << endl;
+                   mal = true;
             }
             if(isnan(jref.getX())||isnan(jref.getY())||isnan(jref.getZ())){
                 cout << "J" << jref.getX() << jref.getY() << jref.getZ() << " ITERACION " << iteraciones << endl;

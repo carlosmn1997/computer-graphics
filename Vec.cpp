@@ -61,10 +61,13 @@ void Vec::setType(float type){
 }
 
 bool Vec::operator==(const Vec &rhs) const {
-    return x == rhs.x &&
-           y == rhs.y &&
-           z == rhs.z &&
-           type == rhs.type;
+    float error = abs(x - rhs.x) + abs(y - rhs.y) + abs(z - rhs.z);
+    if(error < 0.00001){ // Sino hay errores de decimales
+        return true;
+    }
+    else{
+        return false;
+    }
 }
 
 bool Vec::operator!=(const Vec &rhs) const {
