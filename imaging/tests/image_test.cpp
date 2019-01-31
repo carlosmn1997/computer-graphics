@@ -11,8 +11,9 @@ const lest::test toneMapping[] =
                 Image image("../cornellPuntual100.ppm");
                 //image.clamping();
                 //image.equalization();
-                //image.gammaCurve(2.5);
-                image.equalizeAndClamp();
+                image.gammaCurve(2.5);
+                //image.equalizeAndClamp();
+                //image.gammaCurveClamping(2.5);
                 //image.Reinhard();
                 image.writeImage();
                 cout << "fin" << endl;

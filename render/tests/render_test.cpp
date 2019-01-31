@@ -561,7 +561,7 @@ void pathTracerCornellBoxAreaSummit(int numpaths){
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
     sq.addTextura("../Ventana.ppm");
-    r.addSquare(sq);
+    //r.addSquare(sq);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
@@ -1189,11 +1189,11 @@ int main( int argc, char * argv[] )
     //pathTracerCornellBox1(numpaths);
     //pathTracerSquareTry(numpaths);
     //pathTracerCornellBoxSummit(numpaths);
-    //pathTracerCornellBoxAreaSummit(numpaths);
+    pathTracerCornellBoxAreaSummit(numpaths);
     //pathTracerCornellBoxAreaQuad(numpaths);
     // pathTracerColorBleeding(numpaths);
     //pathTracerBillar(numpaths);
-    bolos(numpaths);
+    //bolos(numpaths);
     t1 = clock();
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     int min = time/60;

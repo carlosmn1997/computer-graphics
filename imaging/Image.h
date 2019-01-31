@@ -203,6 +203,57 @@ public:
         }
     }
 
+    void gammaCurveClamping(float factor){
+        //equalization();
+        float maxY,r,g,b;
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                maxY = max(maxY, RGB_Y(r,g,b));
+            }
+        }
+
+        float coefficient = 1/maxY;
+
+        for (int i = 0; i < y; i++){
+            for (int j = 0; j < x; j++){
+                float X,Y,Z;
+                RGB pixel = getPixel(i, j);
+                r = pixel.getR();
+                g = pixel.getG();
+                b = pixel.getB();
+                X = RGB_X(r,g,b);
+                Y = RGB_Y(r,g,b); //* coefficient * m;
+                Z = RGB_Z(r,g,b);
+
+                float x,y,z;
+                x = X / (X+Y+Z);
+                y = Y / (X+Y+Z);
+
+                // equalization
+                //Y = Y / 65535;
+                // gamming
+                Y = pow(min(Y * coefficient,1), (1.0 / factor)); //* 65535;
+                // Y = pow(Y, 1.0/factor);
+
+                //clamping
+                Y = min(Y,0.5);
+
+                X = (Y / y)*x;
+                Z = (Y / y) * (1 - x - y);
+
+
+                pixel.setR(min(XYZ_R(X,Y,Z), 1));
+                pixel.setG(min(XYZ_G(X,Y,Z),1));
+                pixel.setB(min(XYZ_B(X,Y,Z),1));
+                setPixel(i, j, pixel);
+            }
+        }
+    }
+
     void clamping(){
         float X,Y,Z;
         float x,y;
