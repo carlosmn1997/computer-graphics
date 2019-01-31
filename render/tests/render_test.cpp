@@ -358,6 +358,7 @@ void pathTracerSquareTry(){
 }
 
 void pathTracerCornellBoxSummit(){
+    cout<<"Voy declarando"<<endl;
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -459,6 +460,7 @@ void pathTracerCornellBoxSummit(){
     Light luz(1000000, Vec(0, 7, 15, POINT));
     r.addLight(luz);
 
+    cout<<"Comienzo a ejecutar"<<endl;
     r.trazar();
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
@@ -1163,6 +1165,7 @@ void bolos(){
 
 int main( int argc, char * argv[] )
 {
+    cout<<"Comienzo del programa"<<endl;
     unsigned t0, t1;
     t0=clock();
     //rayTracingExample();
@@ -1170,8 +1173,9 @@ int main( int argc, char * argv[] )
     //pathTracer4();
     //pathTracerCornellBox1();
     //pathTracerSquareTry();
+    cout<<"Aqui bro"<<endl;
     //pathTracerCornellBoxSummit();
-    //pathTracerCornellBoxAreaSummit();
+    pathTracerCornellBoxAreaSummit();
     //pathTracerCornellBoxAreaQuad();
     // pathTracerColorBleeding();
     //pathTracerBillar();

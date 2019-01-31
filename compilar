@@ -1,0 +1,1 @@
+g++ -std=c++14 render/tests/render_test.cpp render/Plane.h render/Sphere.h Vec.cpp Vec.h ReferenceSystem.h exception.h render/Render.h render/Light.h render/Object.h render/RandomNumber.h -o main

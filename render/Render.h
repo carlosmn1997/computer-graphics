@@ -75,7 +75,7 @@ public:
         Vec pixel;
         double restI,sumJ;
         //int aux;
-        int numPaths = 50; // NUMBER OF RAYS PER PIXEL
+        int numPaths = 3; // NUMBER OF RAYS PER PIXEL
         for(double i=uMod;i>-uMod;i=i-0.02){
             for(double j=-lMod;j<lMod;j=j+0.02){
                 RGB x(0,0,0);

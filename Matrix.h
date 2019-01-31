@@ -3,7 +3,9 @@
 //
 #ifndef COMPUTER_GRAPHICS_MATRIX_H
 #define COMPUTER_GRAPHICS_MATRIX_H
-#define N 4
+//#define N 4
+
+const int N = 4;
 
 #include <iostream>
 #include <cmath>
