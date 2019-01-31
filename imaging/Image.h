@@ -84,6 +84,7 @@ public:
     }
 
     void writeImage(){
+        cout<<"Tone mapping"<<endl;
         ofstream file;
         file.open("salida.ppm");
         file << "P3" << endl;
