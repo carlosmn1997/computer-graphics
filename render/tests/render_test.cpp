@@ -572,7 +572,7 @@ void pathTracerCornellBoxAreaSummit(int numpaths,int height, int width, string s
 
     r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
-    r.escribirImagen(salida,"ldr"+salida,height,width);
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
 
 void pathTracerCornellBoxAreaQuad(int numpaths,int height,int width,string salida){
@@ -1206,11 +1206,11 @@ int main( int argc, char * argv[] )
     //pathTracerCornellBox1(numpaths,height,width,salida);
     //pathTracerSquareTry(numpaths,height,width,salida);
     //pathTracerCornellBoxSummit(numpaths,height,width,salida);
-    //pathTracerCornellBoxAreaSummit(numpaths,height,width,salida);
+    pathTracerCornellBoxAreaSummit(numpaths,height,width,salida);
     //pathTracerCornellBoxAreaQuad(numpaths,height,width,salida);
     // pathTracerColorBleeding(numpaths,height,width,salida);
     //pathTracerBillar(numpaths,height,width,salida);
-    munyeco(numpaths,height,width,salida);
+   // munyeco(numpaths,height,width,salida);
     t1 = clock();
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     int min = time/60;

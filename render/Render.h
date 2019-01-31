@@ -67,17 +67,20 @@ public:
     }
 
     void trazar(int numPaths){
-        double uMod = u.modulus()+0.001;
-        double lMod = l.modulus()+0.001;
+        double uMod = u.modulus();
+        double lMod = l.modulus();
         u.getUnitVector();
         l.getUnitVector();
         Vec pixel;
         double restI,sumJ;
-        double coeffalt = (uMod*100.0)/(x*1.0);
-        double coeffanch = (lMod*100.0)/(y*1.0);
+        double coeffalt = ((uMod*100.0)/(x*1.0))+0.000001;
+        double coeffanch = ((lMod*100.0)/(y*1.0))+0.000001;
         RandomNumber rn;
         //int aux;
+        int fila = 0;
+        int columna = 0;
         for(double i=uMod;i>-uMod;i=i-0.02*coeffalt){
+            cout << "Escribo i=" << (uMod - i) * 50 << " de " << (uMod) * 100 << " --> " << i << endl;
             for(double j=-lMod;j<lMod;j=j+0.02*coeffanch){
                 RGB x(0,0,0);
                 // cout << i << "->" << j << endl;
@@ -90,13 +93,14 @@ public:
                     x = x + pixelAux;//pixelColor(pixel);
                 }
                 x = x / numPaths;
-                double fila = (uMod-i)*50.0*(1/coeffalt) + 0.001;
-                this->setPixel(fila,(int)((lMod+j)*50.0*(1/coeffanch)+0.001),x);
+                this->setPixel(fila,columna,x);
                 if((uMod - i) * 50 > 192) {
                     //cout << "Escribo i=" << (uMod - i) * 50 << " j=" << (lMod + j) * 50 << endl;
                 }
+                columna++;
             }
-            cout << "Escribo i=" << (uMod - i) * 50 << " de " << (uMod) * 100 << endl;
+            columna=0;
+            fila++;
         }
         cout << "ACABO" << endl;
         u=u*uMod;

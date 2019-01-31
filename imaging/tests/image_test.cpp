@@ -15,7 +15,7 @@ const lest::test toneMapping[] =
                 //image.equalizeAndClamp();
                 //image.gammaCurveClamping(2.5);
                 //image.Reinhard();
-                image.writeImage();
+                //image.writeImage();
                 cout << "fin" << endl;
                 EXPECT(0.001 > 0.002);
             }
