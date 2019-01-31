@@ -442,8 +442,8 @@ void pathTracerCornellBoxSummit(){
     s2.setAlpha(0.02);
     r.addSphere(s2);
 
-    Vec origin6(-10,-10,44.95,1);
-    Vec heigh(0,20,0,0);
+    Vec origin6(-10,-10,20,1);
+    Vec heigh(0,0,20,0);
     Vec wide(20,0,0,0);
     Square sq(origin6,wide,heigh,RGB(0,0,0));
     sq.setKd(RGB(0.3,0,0));
@@ -452,7 +452,7 @@ void pathTracerCornellBoxSummit(){
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
     sq.addTextura("../Ventana.ppm");
-    //r.addSquare(sq);
+    r.addSquare(sq);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
@@ -809,7 +809,7 @@ void pathTracerBillar(){
     w.setAlpha(0.2);
     r.addPlane(w);
 
-    RGB color = RGB(0.4,0.8,0.4);
+    RGB color = RGB(0.2,0.4,0.2);
     //Suelo mesa
     Vec origin6(-20,-17,45,1);
     Vec heigh(0,0,80,0);
@@ -873,7 +873,7 @@ void pathTracerBillar(){
     //pared derecha
     Vec origin7(-20.01,-16.9,48,1);
     heigh = Vec(0,3,0,0);
-    wide = Vec(0,0,74,0);
+    wide = Vec(0,0,77,0);
     Square sq1(origin7,wide,heigh,RGB(0,0,0));
     sq1.setKd(color);
     sq1.setKs(RGB(0,0,0));
@@ -884,7 +884,7 @@ void pathTracerBillar(){
 
     //techo derecha
     Vec origin13(-23,-13.99,47,1);
-    heigh=Vec(0,0,74,0);
+    heigh=Vec(0,0,77,0);
     wide=Vec(3,0,0,0);
     Square sq8(origin13,wide,heigh,RGB(0,0,0));
     sq8.setKd(color);
@@ -897,7 +897,7 @@ void pathTracerBillar(){
     //pared izquierda
     Vec origin8(20.01,-13.99,122,1);
     heigh = Vec(0,-3,0,0);
-    wide = Vec(0,0,74,0);
+    wide = Vec(0,0,77,0);
     Square sq2(origin8,wide,heigh,RGB(0,0,0));
     sq2.setKd(color);
     sq2.setKs(RGB(0,0,0));
@@ -908,7 +908,7 @@ void pathTracerBillar(){
 
     //techo izquierda
     Vec origin14(20,-13.99,47,1);
-    heigh=Vec(0,0,74,0);
+    heigh=Vec(0,0,77,0);
     wide=Vec(3,0,0,0);
     Square sq9(origin14,wide,heigh,RGB(0,0,0));
     sq9.setKd(color);
@@ -917,56 +917,244 @@ void pathTracerBillar(){
     sq9.setKr(RGB(0,0,0));
     sq9.setAlpha(0);
     r.addSquare(sq9);
-
+cout <<"0";
     // Pelota Plastico
-    Vec center(0,-16.9,68,1);
-    Vec normal6(0,6,0,0);
-    Vec refCity(0,-16.9,65,1);
+    Vec center(0,-15.39,68,1);
+    Vec normal6(0,3,0,0);
+    Vec refCity(0,-15.39,66.5,1);
     Sphere s(center,normal6,refCity);
-    s.setKd(RGB(0.5,0.5,0.5));
-    s.setKs(RGB(0.5,0.5,0.5));
+    s.setKd(RGB(0.9,0.9,0.9));
+    s.setKs(RGB(0.3,0.3,0.3));
     s.setKsp(RGB(0,0,0));
     s.setKr(RGB(0,0,0));
     s.setAlpha(8);
     r.addSphere(s);
-
+    cout << "1";
     // Pelota Plastico
-    Vec center2(5,-16.9,90,1);
-    Vec refCity2(0,-16.9,95,1);
+    Vec center2(5,-15.39,90,1);
+    Vec refCity2(5,-15.39,88.5,1);
     Sphere s2(center2,normal6,refCity2);
     s2.setKd(RGB(0.8,0.5,0));
-    s2.setKs(RGB(0.8,0.5,0));
+    s2.setKs(RGB(0.6,0.3,0));
     s2.setKsp(RGB(0,0,0));
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(8);
     r.addSphere(s2);
-
+cout << "2";
     // Pelota Plastico
-    Vec center7(0,-16.9,115,1);
-    Vec refCity3(0,-16.9,112,1);
+    Vec center7(-10,-15.39,115,1);
+    Vec refCity3(-10,-15.39,113.5,1);
     Sphere s3(center7,normal6,refCity3);
-    s3.setKd(RGB(0.8,0,0.8));
-    s3.setKs(RGB(0.8,0,0.8));
+    s3.setKd(RGB(0.3,0,0.3));
+    s3.setKs(RGB(0.1,0,0.1));
     s3.setKsp(RGB(0,0,0));
     s3.setKr(RGB(0,0,0));
     s3.setAlpha(8);
     r.addSphere(s3);
-
+cout << "3";
     // Pelota Plastico
-    Vec center8(0,-16.9,100,1);
-    Vec refCity4(0,-16.9,97,1);
+    Vec center8(13,-15.39,100,1);
+    Vec refCity4(13,-15.39,98.5,1);
     Sphere s4(center8,normal6,refCity4);
     s4.setKd(RGB(0.8,0.8,0));
-    s4.setKs(RGB(0.8,0.8,0));
+    s4.setKs(RGB(0.4,0.4,0));
     s4.setKsp(RGB(0,0,0));
     s4.setKr(RGB(0,0,0));
     s4.setAlpha(8);
     r.addSphere(s4);
+cout << "4";
+    // Luz
+    //Light luz(100000000, Vec(10, 1, 15, POINT));
+    Light luz(1000000, Vec(0, 20, 20, POINT));
+    r.addLight(luz);
+
+    r.trazar();
+    cout<<"acabo y escribo"<<endl;
+    r.escribirImagen("nombre.ppm");
+}
+
+void bolos(){
+    Vec l(-12.8,0,0,0);
+    Vec u(0,7.2,0,0);
+    Vec f(0,0,15,0);
+    Vec o(0,0,0,1);
+    Render r(720,1280,u,l,f,o);
+    Vec origin1(0,0,45,1);
+    Vec normal(0,0,-1,0);
+    // Fondo
+    Plane p(origin1,normal,RGB(0,0,0));
+    p.setKd(RGB(0.5,0.5,0.5));
+    p.setKs(RGB(0,0,0));
+    p.setKsp(RGB(0,0,0));
+    p.setKr(RGB(0,0,0));
+    p.setAlpha(0.2);
+    r.addPlane(p);
+    Vec origin2(0,-10,0,1);
+    Vec normal2(0,1,0,0);
+    // Suelo
+    Plane q(origin2,normal2,RGB(0,0,0));
+    q.setKd(RGB(0.5,0.5,0.5));
+    q.setKs(RGB(0,0,0));
+    q.setKsp(RGB(0,0,0));
+    q.setKr(RGB(0,0,0));
+    q.setAlpha(0.2);
+    r.addPlane(q);
+    Vec origin3(0,40,0,1);
+    Vec normal3(0,-1,0,0);
+
+    // Techo
+    Plane t(origin3,normal3,RGB(1000, 1000, 1000));
+    //Plane t(origin3,normal3,RGB(0, 0, 0));
+    //Plane t(origin3,normal3,RGB(254, 254, 254));
+    //t.setKd(RGB(0.5,0.5,0.5));
+    t.setKd(RGB(0,0,0));
+    t.setKs(RGB(0,0,0));
+    t.setKsp(RGB(0,0,0));
+    t.setKr(RGB(0,0,0));
+    t.setAlpha(0.2);
+    r.addPlane(t);
+    // Plano izquierda
+    Vec origin4(80,0,0,1);
+    Vec normal4(-1,0,0,0);
+    Plane v(origin4,normal4,RGB(0, 0,0));
+    v.setKd(RGB(0.5,0.1,0.1));
+    v.setKs(RGB(0,0,0));
+    v.setKsp(RGB(0,0,0));
+    v.setKr(RGB(0,0,0));
+    v.setAlpha(0.2);
+    r.addPlane(v);
+    // Plano derecha
+    Vec origin5(-80,0,0,1);
+    Vec normal5(1,0,0,0);
+    Plane w(origin5,normal5,RGB(0, 0,0));
+    w.setKd(RGB(0.1,0.5,0.1));
+    w.setKs(RGB(0,0,0));
+    w.setKsp(RGB(0,0,0));
+    w.setKr(RGB(0,0,0));
+    w.setAlpha(0.2);
+    r.addPlane(w);
+
+    // Pelota Plastico
+    Vec center(0,-6.95,27,1);
+    Vec normal6(0,6,0,0);
+    Vec refCity(0,-6.95,24,1);
+    Sphere s(center,normal6,refCity);
+    s.setKd(RGB(0.5,0.5,0.5));
+    s.setKs(RGB(0.4,0.4,0.4));
+    s.setKsp(RGB(0,0,0));
+    s.setKr(RGB(0,0,0));
+    s.setAlpha(0.02);
+    r.addSphere(s);
+
+    // Pelota arriba
+    Vec center1(0,-1.9,27,1);
+    Vec normal7(0,4,0,0);
+    Vec refCity2(0,-1.9,25,1);
+    Sphere s2(center1,normal7,refCity2);
+    s2.setKd(RGB(0.5,0.5,0.5));
+    s2.setKs(RGB(0.4,0.4,0.4));
+    s2.setKsp(RGB(0,0,0));
+    s2.setKr(RGB(0,0,0));
+    s2.setAlpha(0.02);
+    r.addSphere(s2);
+
+    // Ojo derecho
+    Vec center3(-0.75,-1.5,25,1);
+    Vec normal8(0,0.5,0,0);
+    Vec refCity3(-0.75,-1.5,24.75,1);
+    Sphere s3(center3,normal8,refCity3);
+    s3.setKd(RGB(0.01,0.01,0.01));
+    s3.setKs(RGB(0.01,0.01,0.01));
+    s3.setKsp(RGB(0,0,0));
+    s3.setKr(RGB(0,0,0));
+    s3.setAlpha(0);
+    r.addSphere(s3);
+
+    // Ojo izquierdo
+    Vec center4(0.75,-1.5,25,1);
+    Vec normal9(0,0.5,0,0);
+    Vec refCity4(0.75,-1.5,24.75,1);
+    Sphere s4(center4,normal9,refCity4);
+    s4.setKd(RGB(0.01,0.01,0.01));
+    s4.setKs(RGB(0.01,0.01,0.01));
+    s4.setKsp(RGB(0,0,0));
+    s4.setKr(RGB(0,0,0));
+    s4.setAlpha(0);
+    r.addSphere(s4);
+
+    // Nariz
+    Vec center5(0,-2.25,25,1);
+    Vec normal10(0,0.5,0,0);
+    Vec refCity5(0,-2.25,24.75,1);
+    Sphere s5(center5,normal10,refCity5);
+    s5.setKd(RGB(0.6,0.3,0.1));
+    s5.setKs(RGB(0.6,0.3,0.1));
+    s5.setKsp(RGB(0,0,0));
+    s5.setKr(RGB(0,0,0));
+    s5.setAlpha(0);
+    r.addSphere(s5);
+
+    // Boton 1
+    Vec center6(0,-4.5,23.5,1);
+    Vec refCity6(0,-4.5,23.25,1);
+    Sphere s6(center6,normal10,refCity6);
+    s6.setKd(RGB(0.01,0.01,0.01));
+    s6.setKs(RGB(0.01,0.01,0.01));
+    s6.setKsp(RGB(0,0,0));
+    s6.setKr(RGB(0,0,0));
+    s6.setAlpha(0);
+    r.addSphere(s6);
+
+    // Boton 1
+    Vec center7(0,-6,23.5,1);
+    Vec refCity7(0,-6,23.25,1);
+    Sphere s7(center7,normal10,refCity7);
+    s7.setKd(RGB(0.01,0.01,0.01));
+    s7.setKs(RGB(0.01,0.01,0.01));
+    s7.setKsp(RGB(0,0,0));
+    s7.setKr(RGB(0,0,0));
+    s7.setAlpha(0);
+    r.addSphere(s7);
+
+    // Boton 1
+    Vec center8(0,-8,23.5,1);
+    Vec refCity8(0,-8,23.25,1);
+    Sphere s8(center8,normal10,refCity8);
+    s8.setKd(RGB(0.01,0.01,0.01));
+    s8.setKs(RGB(0.01,0.01,0.01));
+    s8.setKsp(RGB(0,0,0));
+    s8.setKr(RGB(0,0,0));
+    s8.setAlpha(0);
+    r.addSphere(s8);
+
+    Vec origin6(-39,-10,20,1);
+    Vec heigh(0,0,44,0);
+    Vec wide(80,0,0,0);
+    Square sq(origin6,wide,heigh,RGB(0,0,0));
+    sq.setKd(RGB(0.3,0,0));
+    sq.setKs(RGB(0,0,0));
+    sq.setKsp(RGB(0,0,0));
+    sq.setKr(RGB(0,0,0));
+    sq.setAlpha(0);
+    sq.addTextura("../nieve.ppm");
+    r.addSquare(sq);
+
+    Vec origin10(-40,-10,44.95,1);
+    heigh = Vec(0,50,0,0);
+    wide = Vec(80,0,0,0);
+    Square sq2(origin10,wide,heigh,RGB(0,0,0));
+    sq2.setKd(RGB(0.3,0,0));
+    sq2.setKs(RGB(0,0,0));
+    sq2.setKsp(RGB(0,0,0));
+    sq2.setKr(RGB(0,0,0));
+    sq2.setAlpha(0);
+    sq2.addTextura("../bosque.ppm");
+    r.addSquare(sq2);
 
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(0, 7, 15, POINT));
-    r.addLight(luz);
+    //r.addLight(luz);
 
     r.trazar();
     cout<<"acabo y escribo"<<endl;
@@ -986,7 +1174,8 @@ int main( int argc, char * argv[] )
     //pathTracerCornellBoxAreaSummit();
     //pathTracerCornellBoxAreaQuad();
     // pathTracerColorBleeding();
-    pathTracerBillar();
+    //pathTracerBillar();
+    bolos();
     t1 = clock();
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     int min = time/60;
