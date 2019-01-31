@@ -305,7 +305,6 @@ void pathTracerCornellBox1(int numpaths){
     sq.setKsp(RGB(0,0,0));
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
-    sq.addTextura("../negro.ppm");
     //r.addSquare(sq);
 
     // Luz
@@ -361,14 +360,13 @@ void pathTracerSquareTry(int numpaths){
     r.escribirImagen("nombre.ppm");
 }
 */
-/*
-void pathTracerCornellBoxSummit(int numpaths){
-    cout<<"Voy declarando"<<endl;
+
+void pathTracerCornellBoxSummit(int numpaths,int height,int width,string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
     Vec o(0,0,0,1);
-    Render r(720,1280,u,l,f,o);
+    Render r(height,width,u,l,f,o);
     Vec origin1(0,0,45,1);
     Vec normal(0,0,-1,0);
     // Fondo
@@ -457,7 +455,7 @@ void pathTracerCornellBoxSummit(int numpaths){
     sq.setKsp(RGB(0,0,0));
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
-    sq.addTextura("../Ventana.ppm");
+    //sq.addTextura("../Ventana.ppm");
     r.addSquare(sq);
 
     // Luz
@@ -465,12 +463,11 @@ void pathTracerCornellBoxSummit(int numpaths){
     Light luz(1000000, Vec(0, 7, 15, POINT));
     r.addLight(luz);
 
-    cout<<"Comienzo a ejecutar"<<endl;
     r.trazar(numpaths);
-    cout<<"acabo y escribo"<<endl;
-    r.escribirImagen("nombre.ppm");
+
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
-*/
+
 void pathTracerCornellBoxAreaSummit(int numpaths,int height, int width, string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
@@ -565,7 +562,7 @@ void pathTracerCornellBoxAreaSummit(int numpaths,int height, int width, string s
     sq.setKsp(RGB(0,0,0));
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
-    sq.addTextura("../Ventana.ppm");
+    //sq.addTextura("../Ventana.ppm");
     //r.addSquare(sq);
 
     // Luz
@@ -577,13 +574,13 @@ void pathTracerCornellBoxAreaSummit(int numpaths,int height, int width, string s
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen(salida,"ldr"+salida,height,width);
 }
-/*
-void pathTracerCornellBoxAreaQuad(int numpaths){
+
+void pathTracerCornellBoxAreaQuad(int numpaths,int height,int width,string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
     Vec o(0,0,0,1);
-    Render r(720,1280,u,l,f,o);
+    Render r(height,width,u,l,f,o);
     Vec origin1(0,0,45,1);
     Vec normal(0,0,-1,0);
     // Fondo
@@ -681,17 +678,17 @@ void pathTracerCornellBoxAreaQuad(int numpaths){
 
     r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
-    r.escribirImagen("nombre.ppm");
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
-*/
 
-/*
-void pathTracerColorBleeding(int numpaths){
+
+
+void pathTracerColorBleeding(int numpaths,int height,int width,string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
     Vec o(0,0,0,1);
-    Render r(720,1280,u,l,f,o);
+    Render r(height,width,u,l,f,o);
     Vec origin1(0,0,45,1);
     Vec normal(0,0,-1,0);
     // Fondo
@@ -766,17 +763,17 @@ void pathTracerColorBleeding(int numpaths){
 
     r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
-    r.escribirImagen("nombre.ppm");
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
-*/
 
-/*
-void pathTracerBillar(int numpaths){
+
+
+void pathTracerBillar(int numpaths,int height,int width,string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
     Vec o(0,0,0,1);
-    Render r(720,1280,u,l,f,o);
+    Render r(height,width,u,l,f,o);
     Vec origin1(0,0,1000,1);
     Vec normal(0,0,-1,0);
     // Fondo
@@ -993,17 +990,17 @@ void pathTracerBillar(int numpaths){
 
     r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
-    r.escribirImagen("nombre.ppm");
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
-*/
 
-/*
-void bolos(int numpaths){
+
+
+void munyeco(int numpaths,int height,int width,string salida){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
     Vec o(0,0,0,1);
-    Render r(720,1280,u,l,f,o);
+    Render r(height,width,u,l,f,o);
     Vec origin1(0,0,45,1);
     Vec normal(0,0,-1,0);
     // Fondo
@@ -1161,7 +1158,7 @@ void bolos(int numpaths){
     sq.setKsp(RGB(0,0,0));
     sq.setKr(RGB(0,0,0));
     sq.setAlpha(0);
-    sq.addTextura("../nieve.ppm");
+    //sq.addTextura("../nieve.ppm");
     r.addSquare(sq);
 
     Vec origin10(-40,-10,44.95,1);
@@ -1173,7 +1170,7 @@ void bolos(int numpaths){
     sq2.setKsp(RGB(0,0,0));
     sq2.setKr(RGB(0,0,0));
     sq2.setAlpha(0);
-    sq2.addTextura("../bosque.ppm");
+    //sq2.addTextura("../bosque.ppm");
     r.addSquare(sq2);
 
     // Luz
@@ -1183,9 +1180,9 @@ void bolos(int numpaths){
 
     r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
-    r.escribirImagen("nombre.ppm");
+    r.escribirImagen(salida,"ldr_"+salida,height,width);
 }
-*/
+
 
 int main( int argc, char * argv[] )
 {
@@ -1206,14 +1203,14 @@ int main( int argc, char * argv[] )
     }
     unsigned t0, t1;
     t0=clock();
-    //pathTracerCornellBox1(numpaths);
-    //pathTracerSquareTry(numpaths);
-    //pathTracerCornellBoxSummit(numpaths);
-    pathTracerCornellBoxAreaSummit(numpaths,height,width,salida);
-    //pathTracerCornellBoxAreaQuad(numpaths);
-    // pathTracerColorBleeding(numpaths);
-    //pathTracerBillar(numpaths);
-    //bolos(numpaths);
+    //pathTracerCornellBox1(numpaths,height,width,salida);
+    //pathTracerSquareTry(numpaths,height,width,salida);
+    //pathTracerCornellBoxSummit(numpaths,height,width,salida);
+    //pathTracerCornellBoxAreaSummit(numpaths,height,width,salida);
+    //pathTracerCornellBoxAreaQuad(numpaths,height,width,salida);
+    // pathTracerColorBleeding(numpaths,height,width,salida);
+    //pathTracerBillar(numpaths,height,width,salida);
+    munyeco(numpaths,height,width,salida);
     t1 = clock();
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     int min = time/60;

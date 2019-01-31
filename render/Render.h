@@ -90,8 +90,8 @@ public:
                     x = x + pixelAux;//pixelColor(pixel);
                 }
                 x = x / numPaths;
-                double fila = (uMod-i)*50.0*(1/coeffalt) + 0.01;
-                this->setPixel(fila,(int)((lMod+j)*50.0*(1/coeffanch)+0.01),x);
+                double fila = (uMod-i)*50.0*(1/coeffalt) + 0.001;
+                this->setPixel(fila,(int)((lMod+j)*50.0*(1/coeffanch)+0.001),x);
                 if((uMod - i) * 50 > 192) {
                     //cout << "Escribo i=" << (uMod - i) * 50 << " j=" << (lMod + j) * 50 << endl;
                 }
@@ -503,7 +503,7 @@ private:
         }
 
         if(nan){
-            cout << "MAL COLOR, SE CAMBIA POR NEGRO" <<endl;
+            //cout << "MAL COLOR, SE CAMBIA POR NEGRO" <<endl;
             color=RGB(0.1,0.1,0.1);
         }
 
