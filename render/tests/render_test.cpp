@@ -103,7 +103,7 @@ void pathTracer2(){
    r.escribirImagen("nombre.ppm");
 }
 */
-void pathTracer3(){
+void pathTracer3(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -191,12 +191,12 @@ void pathTracer3(){
     Light luz(1000000, Vec(10, 5, 15, POINT));
     //r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerCornellBox1(){
+void pathTracerCornellBox1(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -310,12 +310,12 @@ void pathTracerCornellBox1(){
     Light luz(1000000, Vec(10, 4, 15, POINT));
     r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerSquareTry(){
+void pathTracerSquareTry(int numpaths){
 
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
@@ -352,12 +352,12 @@ void pathTracerSquareTry(){
     Light luz(1000000, Vec(10, 5, 15, POINT));
     //r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerCornellBoxSummit(){
+void pathTracerCornellBoxSummit(int numpaths){
     cout<<"Voy declarando"<<endl;
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
@@ -461,12 +461,12 @@ void pathTracerCornellBoxSummit(){
     r.addLight(luz);
 
     cout<<"Comienzo a ejecutar"<<endl;
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerCornellBoxAreaSummit(){
+void pathTracerCornellBoxAreaSummit(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -551,17 +551,29 @@ void pathTracerCornellBoxAreaSummit(){
     s2.setAlpha(0.02);
     r.addSphere(s2);
 
+    Vec origin6(-10,-10,44.95,1);
+    Vec heigh(0,20,0,0);
+    Vec wide(20,0,0,0);
+    Square sq(origin6,wide,heigh,RGB(0,0,0));
+    sq.setKd(RGB(0.3,0,0));
+    sq.setKs(RGB(0,0,0));
+    sq.setKsp(RGB(0,0,0));
+    sq.setKr(RGB(0,0,0));
+    sq.setAlpha(0);
+    sq.addTextura("../Ventana.ppm");
+    r.addSquare(sq);
+
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(0, 7, 15, POINT));
     //r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerCornellBoxAreaQuad(){
+void pathTracerCornellBoxAreaQuad(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -662,12 +674,12 @@ void pathTracerCornellBoxAreaQuad(){
     Light luz(1000000, Vec(0, -7, 15, POINT));
     //r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerColorBleeding(){
+void pathTracerColorBleeding(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -745,12 +757,12 @@ void pathTracerColorBleeding(){
     Light luz(1000000, Vec(0, 7, 15, POINT));
     r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void pathTracerBillar(){
+void pathTracerBillar(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -919,7 +931,7 @@ void pathTracerBillar(){
     sq9.setKr(RGB(0,0,0));
     sq9.setAlpha(0);
     r.addSquare(sq9);
-cout <<"0";
+
     // Pelota Plastico
     Vec center(0,-15.39,68,1);
     Vec normal6(0,3,0,0);
@@ -931,7 +943,7 @@ cout <<"0";
     s.setKr(RGB(0,0,0));
     s.setAlpha(8);
     r.addSphere(s);
-    cout << "1";
+
     // Pelota Plastico
     Vec center2(5,-15.39,90,1);
     Vec refCity2(5,-15.39,88.5,1);
@@ -942,7 +954,7 @@ cout <<"0";
     s2.setKr(RGB(0,0,0));
     s2.setAlpha(8);
     r.addSphere(s2);
-cout << "2";
+
     // Pelota Plastico
     Vec center7(-10,-15.39,115,1);
     Vec refCity3(-10,-15.39,113.5,1);
@@ -953,7 +965,7 @@ cout << "2";
     s3.setKr(RGB(0,0,0));
     s3.setAlpha(8);
     r.addSphere(s3);
-cout << "3";
+
     // Pelota Plastico
     Vec center8(13,-15.39,100,1);
     Vec refCity4(13,-15.39,98.5,1);
@@ -964,18 +976,18 @@ cout << "3";
     s4.setKr(RGB(0,0,0));
     s4.setAlpha(8);
     r.addSphere(s4);
-cout << "4";
+
     // Luz
     //Light luz(100000000, Vec(10, 1, 15, POINT));
     Light luz(1000000, Vec(0, 20, 20, POINT));
     r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
-void bolos(){
+void bolos(int numpaths){
     Vec l(-12.8,0,0,0);
     Vec u(0,7.2,0,0);
     Vec f(0,0,15,0);
@@ -1158,28 +1170,30 @@ void bolos(){
     Light luz(1000000, Vec(0, 7, 15, POINT));
     //r.addLight(luz);
 
-    r.trazar();
+    r.trazar(numpaths);
     cout<<"acabo y escribo"<<endl;
     r.escribirImagen("nombre.ppm");
 }
 
 int main( int argc, char * argv[] )
 {
-    cout<<"Comienzo del programa"<<endl;
+    int numpaths;
+    if(argc == 2){
+        numpaths = stoi(argv[1]);
+    }
+    else{
+        numpaths = 10;
+    }
     unsigned t0, t1;
     t0=clock();
-    //rayTracingExample();
-    //pathTracer3();
-    //pathTracer4();
-    //pathTracerCornellBox1();
-    //pathTracerSquareTry();
-    cout<<"Aqui bro"<<endl;
-    //pathTracerCornellBoxSummit();
-    pathTracerCornellBoxAreaSummit();
-    //pathTracerCornellBoxAreaQuad();
-    // pathTracerColorBleeding();
-    //pathTracerBillar();
-    bolos();
+    //pathTracerCornellBox1(numpaths);
+    //pathTracerSquareTry(numpaths);
+    //pathTracerCornellBoxSummit(numpaths);
+    //pathTracerCornellBoxAreaSummit(numpaths);
+    //pathTracerCornellBoxAreaQuad(numpaths);
+    // pathTracerColorBleeding(numpaths);
+    //pathTracerBillar(numpaths);
+    bolos(numpaths);
     t1 = clock();
     double time = (double(t1-t0)/CLOCKS_PER_SEC);
     int min = time/60;

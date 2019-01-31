@@ -8,13 +8,14 @@ const lest::test toneMapping[] =
             CASE( "Tone Mapping" )
             {
 
-                Image image("nombre.ppm");
+                Image image("../cornellPuntual100.ppm");
                 //image.clamping();
-                image.equalization();
+                //image.equalization();
                 //image.gammaCurve(2.5);
-                //image.equalizeAndClamp();
+                image.equalizeAndClamp();
                 //image.Reinhard();
                 image.writeImage();
+                cout << "fin" << endl;
                 EXPECT(0.001 > 0.002);
             }
 
