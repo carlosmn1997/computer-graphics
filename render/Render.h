@@ -67,29 +67,31 @@ public:
     }
 
     void trazar(int numPaths){
-        float uMod = u.modulus();
-        float lMod = l.modulus();
+        double uMod = u.modulus()+0.001;
+        double lMod = l.modulus()+0.001;
         u.getUnitVector();
         l.getUnitVector();
-        RandomNumber rn(0.001,0.019);
         Vec pixel;
         double restI,sumJ;
+        double coeffalt = (uMod*100.0)/(x*1.0);
+        double coeffanch = (lMod*100.0)/(y*1.0);
+        RandomNumber rn;
         //int aux;
-        for(double i=uMod;i>-uMod;i=i-0.02){
-            for(double j=-lMod;j<lMod;j=j+0.02){
+        for(double i=uMod;i>-uMod;i=i-0.02*coeffalt){
+            for(double j=-lMod;j<lMod;j=j+0.02*coeffanch){
                 RGB x(0,0,0);
                 // cout << i << "->" << j << endl;
                 for (int k = 0; k < numPaths; k++) {
-                    restI = rn.giveNumber();
-                    sumJ = rn.giveNumber();
+                    restI = rn.giveNumber()*0.02*coeffalt;
+                    sumJ = rn.giveNumber()*0.02*coeffanch;
                     pixel = f + (i - restI) * u + (j + sumJ) * l;
                     pixel.setType(1);
                     RGB pixelAux = pixelColor(pixel);
                     x = x + pixelAux;//pixelColor(pixel);
                 }
                 x = x / numPaths;
-                double fila = (uMod-i)*50.0 + 0.01;
-                this->setPixel(fila,(int)((lMod+j)*50),x);
+                double fila = (uMod-i)*50.0*(1/coeffalt) + 0.01;
+                this->setPixel(fila,(int)((lMod+j)*50.0*(1/coeffanch)+0.01),x);
                 if((uMod - i) * 50 > 192) {
                     //cout << "Escribo i=" << (uMod - i) * 50 << " j=" << (lMod + j) * 50 << endl;
                 }
@@ -101,13 +103,13 @@ public:
         l=l*lMod;
     }
 
-    void escribirImagen(string path){
+    void escribirImagen(string path,string salida,int height,int width){
         ofstream file;
         file.open(path);
         file << "P3" << endl;
         file << "#MAX=1000000" << endl;
         file << "# salida.ppm" << endl;
-        file << "1280 720" << endl;
+        file << width << " " << height << endl;
         file << "10000000" << endl;
 
         for (int i = 0; i < x; i++){
@@ -133,7 +135,7 @@ public:
         image.gammaCurve(2.5);
         //image.clamping();
         //image.equalization();
-        image.writeImage();
+        image.writeImage(salida);
     }
 
     const Vec &getU() const {

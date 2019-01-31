@@ -83,9 +83,9 @@ public:
         return Image::y;
     }
 
-    void writeImage(){
+    void writeImage(string salida){
         ofstream file;
-        file.open("salida.ppm");
+        file.open(salida);
         file << "P3" << endl;
         file << x << " " << y << endl;
         file << "255" << endl;
